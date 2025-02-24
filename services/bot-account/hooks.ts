@@ -4,6 +4,7 @@ import {
   getAccountById,
   getAllAccounts,
   removeAccount,
+  setAccountBio,
   startAccount,
   updateAccount,
   updateAccountContent,
@@ -18,6 +19,7 @@ export const botaccountQueryKeys = {
   removeBotaccountKey: (id: string) => ["removeBotaccount"],
   startBotaccountKey: (id: string) => ["startBotaccount"],
   updateBotaccountContentKey: (id: string) => ["updateBotaccountContent"],
+  setAccountBioKey: (id: string) => ["setAccountBio", id],
 };
 
 export const useBotaccount = (id: string) => {
@@ -106,3 +108,17 @@ export const useUpdateBotAccountContent = (id: string) => {
     },
   });
 };
+
+export const useSetAccountBio = (id: string) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (bio: string) => setAccountBio(id, bio),
+        onSettled: () => {
+        queryClient.invalidateQueries({
+            queryKey: botaccountQueryKeys.botaccountsKey,
+        });
+        },
+    });
+
+}

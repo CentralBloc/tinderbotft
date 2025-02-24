@@ -2,11 +2,12 @@ import {BotAccountInterface} from "@/types";
 import {useEffect, useState} from "react";
 import {
     useRemoveBotAccount,
+    useSetAccountBio,
     useStartBotAccount,
     useUpdateBotaccount,
     useUpdateBotAccountContent
 } from "@/services/bot-account/hooks";
-import {Check, ChevronsUpDown, PencilLine, Play, RefreshCcwDot, Trash2} from "lucide-react";
+import {BookUser, Check, ChevronsUpDown, PencilLine, Play, RefreshCcwDot, Trash2} from "lucide-react";
 import Link from "next/link";
 import {routes} from "@/lib/routes";
 import {
@@ -29,13 +30,15 @@ import {CommandEmpty, CommandInput, CommandItem, CommandList} from "@/components
 import {cn} from "@/lib/utils";
 import {EditableStrategyCell} from "../strategies/strategy-columns";
 import {ModelCell} from "@/components/tables/modele/model-columns";
+import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
+import {Input} from "@/components/ui/input";
 
-
-const AccountActionsCell = ({
-                                row,
-                            }: {
-    row: { original: BotAccountInterface };
-}) => {
+interface TinderBioCellProps {
+    row: {
+        original: Partial<BotAccountInterface>
+    }
+}
+const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const deleteMutation = useRemoveBotAccount(row.original.id);
 
@@ -94,12 +97,7 @@ const AccountActionsCell = ({
     );
 };
 
-
-export const EditableProgressCell = ({
-                                         row,
-                                     }: {
-    row: { original: BotAccountInterface };
-}) => {
+export const EditableProgressCell = ({row,}: { row: { original: BotAccountInterface }; }) => {
     const { data: strategies = [] } = useStrategies();
     const updateMutation = useUpdateBotaccount(row.original.id);
     const [daysNumber, setDaysNumber] = useState<number[]>([]);
@@ -166,6 +164,58 @@ export const EditableProgressCell = ({
     );
 };
 
+export const TinderBioCell = ({ row }: TinderBioCellProps) => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [newBio, setNewBio] = useState(row.original.tinder_bio ?? "")
+    const updateMutation = useSetAccountBio(row.original.id ?? "")
+
+    const handleSave = () => {
+        updateMutation.mutate(newBio)
+        setIsModalOpen(false)
+    }
+
+    const iconColor = row.original.tinder_bio ? "text-blue-500" : "text-red-500"
+
+    return (
+        <div className="flex items-center">
+            <TooltipProvider>
+                <Tooltip>
+                    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                        <TooltipTrigger asChild>
+                            <DialogTrigger asChild>
+                                <Button variant="ghost" className={`${iconColor} flex items-center gap-2`}>
+                                    <BookUser  />
+
+                                </Button>
+                            </DialogTrigger>
+                        </TooltipTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Edit Tinder Bio</DialogTitle>
+                            </DialogHeader>
+                            <Input
+                                type="text"
+                                value={newBio}
+                                onChange={(e) => setNewBio(e.target.value)}
+                                placeholder="Enter new bio"
+                            />
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                                    Cancel
+                                </Button>
+                                <Button onClick={handleSave}>Save</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                    <TooltipContent>
+                        <p>{row.original.tinder_bio ?? "No bio set"}</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+        </div>
+    )
+}
+
 export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
     {
         accessorKey: "profile_url",
@@ -213,9 +263,10 @@ export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
         cell: ({ row }) => <EditableProgressCell row={row} />,
     },
     {
-        accessorKey: "tinder_bio",
-        header: "Tinder Bio",
-        size: 30,
+        accessorKey: "infos",
+        header: "Account infos",
+        cell: ({ row }) => <TinderBioCell row={row} />,
+
     },
     {
         accessorKey: "strategy",

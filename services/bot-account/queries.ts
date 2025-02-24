@@ -52,3 +52,8 @@ export const updateAccountContent = async (id: string) => {
     const response = await axios.patch(`/update-account-content/${id}/`);
     return response.data;
 };
+
+export const setAccountBio = async (id: string, bio: string) => {
+    const response = await axios.patch(`/set-tinder-bio/${id}/`, { bio });
+    return response.data;
+}

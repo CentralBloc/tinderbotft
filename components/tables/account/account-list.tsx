@@ -156,10 +156,7 @@ export default function AccountList() {
                     </Button>
                 </div>
             </div>
-            <div className="space-y-2">
-                <Button onClick={getSelectedRowIds}>Get Selected IDs</Button>
-                {selectedIds.length > 0 && <div className="text-sm">Selected IDs: {selectedIds.join(", ")}</div>}
-            </div>
+           
         </div>
     )
 }
