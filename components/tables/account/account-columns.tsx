@@ -7,7 +7,17 @@ import {
     useUpdateBotaccount,
     useUpdateBotAccountContent
 } from "@/services/bot-account/hooks";
-import {BookUser, Check, ChevronsUpDown, PencilLine, Play, RefreshCcwDot, Trash2} from "lucide-react";
+import {
+    BadgeCheck,
+    BookUser,
+    Check,
+    ChevronsUpDown,
+    PencilLine,
+    Play,
+    RefreshCcwDot,
+    Rocket,
+    Trash2
+} from "lucide-react";
 import Link from "next/link";
 import {routes} from "@/lib/routes";
 import {
@@ -178,6 +188,8 @@ export const TinderBioCell = ({ row }: TinderBioCellProps) => {
 
     return (
         <div className="flex items-center">
+            <Rocket />
+            <BadgeCheck />
             <TooltipProvider>
                 <Tooltip>
                     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -185,7 +197,6 @@ export const TinderBioCell = ({ row }: TinderBioCellProps) => {
                             <DialogTrigger asChild>
                                 <Button variant="ghost" className={`${iconColor} flex items-center gap-2`}>
                                     <BookUser  />
-
                                 </Button>
                             </DialogTrigger>
                         </TooltipTrigger>
@@ -208,7 +219,7 @@ export const TinderBioCell = ({ row }: TinderBioCellProps) => {
                         </DialogContent>
                     </Dialog>
                     <TooltipContent>
-                        <p>{row.original.tinder_bio ?? "No bio set"}</p>
+                        <p>{row.original.tinder_bio ||  "No bio set"}</p>
                     </TooltipContent>
                 </Tooltip>
             </TooltipProvider>
