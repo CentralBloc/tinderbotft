@@ -82,7 +82,7 @@ export default function AccountList() {
         },
         initialState: {
             pagination: {
-                pageSize: 3,
+                pageSize: 4,
             },
         },
     })
@@ -142,6 +142,10 @@ export default function AccountList() {
                 <div className="text-sm text-muted-foreground">
                     {table.getFilteredSelectedRowModel().rows.length} of {table.getFilteredRowModel().rows.length} row(s)
                     selected.
+                </div>
+                <div className="text-sm text-muted-foreground">
+                    Showing {pageIndex * pageSize + 1} to {Math.min((pageIndex + 1) * pageSize, filteredData.length)} of{" "}
+                    {filteredData.length} entries
                 </div>
                 <div className="space-x-2">
                     <Button variant="outline" size="sm" onClick={handlePreviousPage} disabled={!table.getCanPreviousPage()}>
