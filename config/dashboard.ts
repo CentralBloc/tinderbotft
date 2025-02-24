@@ -1,6 +1,6 @@
 import {routes} from "@/lib/routes";
 import {MainNavItem} from "@/types";
-import {Cable, Instagram, LayoutGrid, NotebookTabs, UserRound, Waypoints,} from "lucide-react";
+import {GitBranch, Instagram, LayoutGrid, Network, NotebookTabs, Settings, UserRound,} from "lucide-react";
 
 // Function to generate the dashboard configuration based on user info
 export const dashboardConfig = (user: { super_user: boolean }) => ({
@@ -22,13 +22,13 @@ export const dashboardConfig = (user: { super_user: boolean }) => ({
     },
     {
       title: "Strategy",
+      icon: GitBranch,
       href: routes.dashboard.strategy.index,
-      icon: Cable,
     },
     {
       title: "Proxies",
+      icon: Network,
       href: routes.dashboard.proxy.index,
-      icon: Waypoints,
     },
     // Conditionally include the Admin panel
     ...(user.super_user
@@ -41,7 +41,7 @@ export const dashboardConfig = (user: { super_user: boolean }) => ({
           {
             title: "Admin",
             href: routes.dashboard.admin.index,
-            icon: LayoutGrid,
+            icon: Settings,
           },
         ]
       : []),

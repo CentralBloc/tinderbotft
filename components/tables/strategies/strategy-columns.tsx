@@ -32,11 +32,7 @@ const StrategyCell = ({ row }: { row: { original: any } }) => {
     return <div>{strategy ? strategy.name : ""}</div>;
 };
 
-const StrategyActionsCell = ({
-                                 row,
-                             }: {
-    row: { original: StrategyInterface };
-}) => {
+const StrategyActionsCell = ({row,}: { row: { original: StrategyInterface }; }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const deleteMutation = useRemoveStrategy(row.original.id);
 
@@ -85,12 +81,7 @@ const StrategyActionsCell = ({
     );
 };
 
-
-export const EditableStrategyCell = ({
-                                  row,
-                              }: {
-    row: { original: BotAccountInterface };
-}) => {
+export const EditableStrategyCell = ({row,}: { row: { original: BotAccountInterface }; }) => {
     const { data: strategies = [] } = useStrategies();
     const updateMutation = useUpdateBotaccount(row.original.id);
 
@@ -144,9 +135,6 @@ export const EditableStrategyCell = ({
     );
 };
 
-
-
-
 export const strategyListColumns: ColumnDef<StrategyInterface>[] = [
     {
         accessorKey: "name",
@@ -163,7 +151,7 @@ export const strategyListColumns: ColumnDef<StrategyInterface>[] = [
     {
         accessorKey: "proxy",
         header: "Proxy",
-        cell: ({ row }) => <EditableProxyCell row={row} />, // Utilisation de la cellule modifiable
+        cell: ({ row }) => <EditableProxyCell row={row} view="strategy"/>, // Utilisation de la cellule modifiable
     },
     {
         accessorKey: "actions",

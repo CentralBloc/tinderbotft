@@ -1,25 +1,22 @@
-import MoneyBagIcon from "../icons/money-bag";
-import SmsSentIcon from "../icons/sms-sent";
+import type React from "react"
+import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 
-export type StatsCardProps = {
-	type: "credit" | "message";
-	value: number;
-};
+export interface StatsCardProps {
+	title: string
+	value: string | number
+	icon: React.ReactNode
+}
 
-export default function StatsCard({ props }: { props: StatsCardProps }) {
+export function StatsCard({ title, value, icon }: Readonly<StatsCardProps>) {
 	return (
-		<div className="flex flex-col gap-y-2 rounded-xl border border-slate-300 p-5 dark:border-foreground/30">
-			<div className="flex items-center justify-between">
-				<h1 className="font-heading">{props.type === "credit" ? "Crédit(s) disponible" : "Sms envoyés"}</h1>
-				{props.type === "credit" ? (
-					<MoneyBagIcon className="text-slate-600 dark:text-foreground" />
-				) : (
-					<SmsSentIcon className="text-slate-600 dark:text-foreground" />
-				)}
-			</div>
-			<span className="text-lg font-medium xl:text-2xl">
-				{props.type === "credit" ? `${props.value} credit(s)` : `${props.value}`}
-			</span>
-		</div>
-	);
+		<Card className="bg-accent">
+			<CardHeader className="flex flex-row items-center justify-between pb-2">
+				<CardTitle className="text-sm font-medium text-muted-foreground">{title}</CardTitle>
+				{icon}
+			</CardHeader>
+			<CardContent>
+				<div className="text-2xl font-bold">{value}</div>
+			</CardContent>
+		</Card>
+	)
 }

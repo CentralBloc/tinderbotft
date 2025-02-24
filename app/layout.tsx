@@ -1,14 +1,14 @@
-import { TailwindIndicator } from "@/components/tailwind-indicator";
-import { Toaster } from "@/components/ui/toaster";
-import { siteConfig } from "@/config/site";
+import {TailwindIndicator} from "@/components/tailwind-indicator";
+import {Toaster} from "@/components/ui/toaster";
+import {siteConfig} from "@/config/site";
 import QueryProvider from "@/lib/providers/query-provider";
 import SessionProvider from "@/lib/providers/session-provider";
-import { cn } from "@/lib/utils";
-import type { Metadata } from "next";
-import { Outfit as FontSans } from "next/font/google";
+import {cn} from "@/lib/utils";
+import type {Metadata} from "next";
+import {Outfit as FontSans} from "next/font/google";
 import localFont from "next/font/local";
 import "./globals.css";
-import { ThemeProvider } from "@/components/theme-provider";
+import {ThemeProvider} from "@/components/theme-provider";
 
 const fontSans = FontSans({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -23,7 +23,7 @@ export const metadata: Metadata = {
 		default: siteConfig.name,
 		template: `%s | ${siteConfig.name}`,
 	},
-	keywords: ["auto-date-swiper", "auto", "date", "swiper", "auto-date-swiper.com", "tinder"],
+	keywords: ["auto-date-swiper", "auto", "date", "swiper", "auto-date-swiper.com", "tinder", "dating app", "dating", "autoswiperdate"],
 	openGraph: {
 		type: "website",
 		locale: "fr_FR",

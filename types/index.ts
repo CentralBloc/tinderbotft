@@ -116,6 +116,7 @@ export interface BotAccountInterface {
   token: string;
   refresh_token: string | null;
   strategy: string | StrategyInterface | undefined;
+  proxy: string | ProxyInterface | undefined;
   status: string;
   progress: number | undefined;
   device_id: string | undefined;

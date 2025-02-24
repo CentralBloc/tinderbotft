@@ -1,6 +1,6 @@
 import {Metadata} from "next";
 import {Breadcrumbs} from "@/components/pagers/breadcrumbs";
-import AccountList from "@/components/tables/account/account-list";
+import AccountTabs from "@/components/tabs/account-tabs";
 
 export const metadata: Metadata = {
   title: "Dashboard - Accounts",
@@ -13,7 +13,7 @@ export default function AccountsPage() {
       <Breadcrumbs segments={[{ title: "Accounts" }]} />
 
       <div className="space-y-6">
-        <AccountList />
+          <AccountTabs />
       </div>
     </div>
   );

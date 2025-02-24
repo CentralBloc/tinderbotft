@@ -6,18 +6,19 @@ import {
     getCoreRowModel,
     getFilteredRowModel,
     getPaginationRowModel,
+    Row,
     type RowSelectionState,
+    Table,
     useReactTable,
 } from "@tanstack/react-table"
 import {DataTable} from "@/components/ui/data-table"
 import {useBotaccounts} from "@/services/bot-account/hooks"
 import {useModels} from "@/services/models/hooks"
 import {Input} from "@/components/ui/input"
-import {accountListColumns} from "@/components/tables/account/account-columns"
 import {Button} from "@/components/ui/button"
 import {Checkbox} from "@/components/ui/checkbox"
 
-export default function AccountList() {
+export default function AccountList({customColumns}: Readonly<{ customColumns?: ColumnDef<any>[]; }>) {
     const { data = [] } = useBotaccounts()
     const { data: models = [] } = useModels()
     const [accountFilter, setAccountFilter] = useState("")
@@ -45,30 +46,30 @@ export default function AccountList() {
     }, [data, models, accountFilter, modelFilter])
 
     const columns = useMemo<ColumnDef<any>[]>(
-        () => [
-            {
-                id: "select",
-                header: ({ table }) => (
-                    <Checkbox
-                        checked={table.getIsAllPageRowsSelected()}
-                        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-                        aria-label="Select all"
-                    />
-                ),
-                cell: ({ row }) => (
-                    <Checkbox
-                        checked={row.getIsSelected()}
-                        onCheckedChange={(value) => row.toggleSelected(!!value)}
-                        aria-label="Select row"
-                    />
-                ),
-                enableSorting: false,
-                enableHiding: false,
-            },
-            ...accountListColumns,
-        ],
-        [],
-    )
+      () => [
+        {
+          id: "select",
+          header: ({ table }: { table: Table<any> }) => (
+            <Checkbox
+              checked={table.getIsAllPageRowsSelected()}
+              onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+              aria-label="Select all"
+            />
+          ),
+          cell: ({ row }: { row: Row<any> }) => (
+            <Checkbox
+              checked={row.getIsSelected()}
+              onCheckedChange={(value) => row.toggleSelected(!!value)}
+              aria-label="Select row"
+            />
+          ),
+          enableSorting: true,
+          enableHiding: false,
+        },
+        ...(customColumns ?? []),
+      ],
+      [customColumns],
+    );
 
     const table = useReactTable({
         data: filteredData,
@@ -82,7 +83,7 @@ export default function AccountList() {
         },
         initialState: {
             pagination: {
-                pageSize: 4,
+                pageSize: 8,
             },
         },
     })
@@ -120,7 +121,7 @@ export default function AccountList() {
 
     return (
         <div className="space-y-3">
-            <h1 className="font-heading">Accounts List</h1>
+
             <div className="flex w-1/3 space-x-3">
                 <Input
                     type="text"
@@ -156,7 +157,7 @@ export default function AccountList() {
                     </Button>
                 </div>
             </div>
-           
+
         </div>
     )
 }

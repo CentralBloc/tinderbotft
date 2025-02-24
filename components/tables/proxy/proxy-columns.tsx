@@ -1,4 +1,4 @@
-import {ProxyInterface, StrategyInterface} from "@/types";
+import {BotAccountInterface, ProxyInterface, StrategyInterface} from "@/types";
 import {useState} from "react";
 import {useProxies, useRemoveProxy} from "@/services/proxy/hooks";
 import Link from "next/link";
@@ -19,6 +19,8 @@ import {useUpdateStrategy} from "@/services/strategy/hooks";
 import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Command, CommandEmpty, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {cn} from "@/lib/utils";
+import {useUpdateBotaccount} from "@/services/bot-account/hooks";
+
 
 const ProxyCell = ({ proxyId }: { proxyId: string | undefined }) => {
     const { data: proxies = [] } = useProxies();
@@ -26,16 +28,23 @@ const ProxyCell = ({ proxyId }: { proxyId: string | undefined }) => {
     return <div>{proxy ? proxy.name : ""}</div>;
 };
 
-export const EditableProxyCell = ({
-                               row,
-                           }: {
-    row: { original: StrategyInterface };
-}) => {
+interface UdpdateStratOrAccountPropsInterface {
+    view: "account" | "strategy";
+    row: { original: StrategyInterface | BotAccountInterface };
+}
+
+export const EditableProxyCell = ({row, view}: Readonly<UdpdateStratOrAccountPropsInterface>) => {
     const { data: proxies = [] } = useProxies();
     const updateMutation = useUpdateStrategy(row.original.id);
 
+    const updateAccountMutation = useUpdateBotaccount(row.original.id);
+
     const handleProxyChange = (newProxyId: string) => {
-        updateMutation.mutate({ proxy: newProxyId });
+        if (view === "strategy") {
+            updateMutation.mutate({ proxy: newProxyId });
+        } else {
+            updateAccountMutation.mutate({ proxy: newProxyId });
+        }
     };
 
     const selectedProxyId = row.original.proxy

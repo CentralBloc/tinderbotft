@@ -17,6 +17,7 @@ export interface createBotAccountCredentials {
   title: string;
   model: string;
   strategy: string | null;
+  proxy : string | null;
   token: string;
   refresh_token: string | null;
   progress: number | undefined;

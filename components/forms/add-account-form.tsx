@@ -21,6 +21,7 @@ import {cn} from "@/lib/utils";
 import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList,} from "@/components/ui/command";
 import {useModels} from "@/services/models/hooks";
 import {timezones} from "@/lib/timezone";
+import {useProxies} from "@/services/proxy/hooks";
 
 type Credentials = z.infer<typeof accountSchema>;
 
@@ -29,14 +30,12 @@ interface AddOrUpdateAccountFormProps {
     initialData?: BotAccountInterface;
 }
 
-export default function AddOrUpdateAccountForm({
-                                                   mode,
-                                                   initialData,
-                                               }: Readonly<AddOrUpdateAccountFormProps>) {
+export default function AddOrUpdateAccountForm({mode, initialData,}: Readonly<AddOrUpdateAccountFormProps>) {
     const router = useRouter();
     const addMutation = useAddBotaccount();
     const updateMutation = useUpdateBotaccount(initialData?.id ?? "");
     const {data: strategies = []} = useStrategies();
+    const {data: proxies = []} = useProxies();
     const {data: models = []} = useModels();
 
     const form = useForm<Credentials>({
@@ -53,6 +52,10 @@ export default function AddOrUpdateAccountForm({
                 typeof initialData?.strategy === "object"
                     ? initialData?.strategy?.id
                     : initialData?.strategy ?? undefined,
+            proxy:
+                typeof initialData?.proxy === "object"
+                    ? initialData?.proxy?.id
+                    : initialData?.proxy ?? undefined,
             device_id: initialData?.device_id ?? "",
             min_age: initialData?.min_age ?? undefined,
             max_age: initialData?.max_age ?? undefined,
@@ -69,6 +72,10 @@ export default function AddOrUpdateAccountForm({
         // Remove the strategy field if it is not a valid UUID
         if (!data.strategy) {
             payload.strategy = undefined; // Ensure strategy is not sent as null or empty
+        }
+
+        if (!data.proxy) {
+            payload.proxy = undefined; // Ensure proxy is not sent as null or empty
         }
 
         if (mode === "add") {
@@ -154,16 +161,16 @@ export default function AddOrUpdateAccountForm({
                                                     ? models.find(
                                                         (model) => model.id === field.value,
                                                     )?.name
-                                                    : "Select strategy"}
+                                                    : "Select model"}
                                                 <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50"/>
                                             </Button>
                                         </FormControl>
                                     </PopoverTrigger>
                                     <PopoverContent className="w-full p-0">
                                         <Command>
-                                            <CommandInput placeholder="Search proxy..."/>
+                                            <CommandInput placeholder="Search strategy..."/>
                                             <CommandList>
-                                                <CommandEmpty>No strategy found.</CommandEmpty>
+                                                <CommandEmpty>No model found.</CommandEmpty>
                                                 <CommandGroup>
                                                     {models.map((model) => (
                                                         <CommandItem
@@ -281,6 +288,81 @@ export default function AddOrUpdateAccountForm({
                                         value={field.value ?? ""}
                                     />
                                 </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                </div>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-7">
+                    <FormField
+                        control={form.control}
+                        name="device_id"
+                        render={({field}) => (
+                            <FormItem>
+                                <FormLabel>Device ID</FormLabel>
+                                <FormControl>
+                                    <Input placeholder="Device ID" {...field} />
+                                </FormControl>
+                                <FormMessage/>
+                            </FormItem>
+                        )}
+                    />
+                    <FormField
+                        control={form.control}
+                        name="modele"
+                        render={({field}) => (
+                            <FormItem className="mt-0 ">
+                                <FormLabel>Proxy</FormLabel>
+                                <Popover>
+                                    <PopoverTrigger asChild>
+                                        <FormControl>
+                                            <Button
+                                                variant="outline"
+                                                role="combobox"
+                                                className={cn(
+                                                    "w-full justify-between h-11 md:h-12",
+                                                    !field.value && "text-muted-foreground",
+                                                )}
+                                            >
+                                                {field.value
+                                                    ? proxies.find(
+                                                        (proxy) => proxy.id === field.value,
+                                                    )?.name
+                                                    : "Select proxy"}
+                                                <ChevronsUpDown className="ml-2 size-4 shrink-0 opacity-50"/>
+                                            </Button>
+                                        </FormControl>
+                                    </PopoverTrigger>
+                                    <PopoverContent className="w-full p-0">
+                                        <Command>
+                                            <CommandInput placeholder="Search strategy..."/>
+                                            <CommandList>
+                                                <CommandEmpty>No proxy found.</CommandEmpty>
+                                                <CommandGroup>
+                                                    {proxies.map((proxy) => (
+                                                        <CommandItem
+                                                            value={proxy.name}
+                                                            key={proxy.id}
+                                                            onSelect={() => {
+                                                                form.setValue("proxy", proxy.id);
+                                                            }}
+                                                        >
+                                                            <Check
+                                                                className={cn(
+                                                                    "mr-2 h-4 w-4",
+                                                                    proxy.id === field.value
+                                                                        ? "opacity-100"
+                                                                        : "opacity-0",
+                                                                )}
+                                                            />
+                                                            {proxy.name}
+                                                        </CommandItem>
+                                                    ))}
+                                                </CommandGroup>
+                                            </CommandList>
+                                        </Command>
+                                    </PopoverContent>
+                                </Popover>
                                 <FormMessage/>
                             </FormItem>
                         )}
@@ -408,7 +490,7 @@ export default function AddOrUpdateAccountForm({
                         )}
                     />
                 </div>
-                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-7">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-7">
                         <Button
                             disabled={addMutation.isPending || updateMutation.isPending}
                             className="w-fit"

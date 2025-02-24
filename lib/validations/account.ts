@@ -18,6 +18,7 @@ export const accountSchema = z.object({
     .min(1, "Token is required"),
   refresh_token: z.string().nullable(),
   strategy: z.string().optional(),
+  proxy: z.string().optional(),
   device_id: z.string().optional(),
   min_age: z.number().optional(),
   max_age: z.number().optional(),

@@ -8,14 +8,16 @@ import {
     useUpdateBotAccountContent
 } from "@/services/bot-account/hooks";
 import {
-    BadgeCheck,
+    ArrowLeftRight,
     BookUser,
     Check,
     ChevronsUpDown,
+    ExternalLink,
+    Heart,
     PencilLine,
     Play,
     RefreshCcwDot,
-    Rocket,
+    ThumbsUp,
     Trash2
 } from "lucide-react";
 import Link from "next/link";
@@ -42,6 +44,7 @@ import {EditableStrategyCell} from "../strategies/strategy-columns";
 import {ModelCell} from "@/components/tables/modele/model-columns";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import {Input} from "@/components/ui/input";
+import {EditableProxyCell} from "@/components/tables/proxy/proxy-columns";
 
 interface TinderBioCellProps {
     row: {
@@ -188,8 +191,8 @@ export const TinderBioCell = ({ row }: TinderBioCellProps) => {
 
     return (
         <div className="flex items-center">
-            <Rocket />
-            <BadgeCheck />
+            <ExternalLink />
+
             <TooltipProvider>
                 <Tooltip>
                     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -283,6 +286,84 @@ export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
         accessorKey: "strategy",
         header: "Strategy",
         cell: ({ row }) => <EditableStrategyCell row={row} />,
+    },
+    {
+        accessorKey: "proxy",
+        header: "Proxy",
+        cell: ({ row }) => <EditableProxyCell row={row} view="account" />, // Utilisation de la cellule modifiable
+    },
+    {
+        accessorKey: "actions",
+        header: "Actions",
+        cell: ({ row }) => <AccountActionsCell row={row} />,
+    },
+];
+
+export const accountStatsColumns: ColumnDef<BotAccountInterface>[] = [
+    {
+        accessorKey: "profile_url",
+        header:"",
+        cell: ({ row }) => {
+            return (
+                <Image
+                    src={row.original.profile_url ?? "/public/images/landscape-placeholder.svg"} width={40} height={40}
+                    alt="profile"
+                />
+            );
+        }
+    },
+    {
+        accessorKey: "title",
+        header: "Title",
+    },
+    {
+        accessorKey: "modele",
+        header: "Model",
+        cell: ModelCell,
+    },
+    {
+        accessorKey: "status",
+        header: "Status",
+        cell: ({ row }) => {
+            if (row.original.status === "active") {
+                return <Badge className="bg-green-800">Active</Badge>;
+            } else if (row.original.status === "failed") {
+                return <Badge className="bg-amber-800">Token Expired</Badge>;
+            } else if (row.original.status === "shadowBan" || row.original.status === "banned") {
+                return <Badge variant="destructive">Ban</Badge>;
+            } else if (row.original.status === "standby") {
+                return <Badge className="bg-blue-800">Inactive</Badge>;
+            } else if ( row.original.status === "working") {
+                return <Badge className="bg-purple-700">Working</Badge>;
+            } else {
+                return <Badge className="bg-gray-800">{row.original.status}</Badge>;
+            }
+        },
+    },
+    {
+        accessorKey: "infos",
+        header: "Account infos",
+        cell: ({ row }) => <TinderBioCell row={row} />,
+
+    },
+    {
+        accessorKey: "proxy",
+        header: "Proxy",
+        cell: ({ row }) => <EditableProxyCell row={row} view="account" />, // Utilisation de la cellule modifiable
+    },
+    {
+        accessorKey: "stats",
+        header: "Account stats",
+        cell: ({ row }) => {
+            return (
+                <div className="flex items-center gap-2">
+                    {row.original.swipes}<ArrowLeftRight color="#201dc9" className="ml-2 size-4" />
+                    {row.original.likes} <ThumbsUp color="#0b4116" className="ml-2 size-4" />
+                    {row.original.matches} <Heart className="ml-2 size-4 " color="#c91d1d" />
+                </div>
+            );
+        },
+
     },
     {
         accessorKey: "actions",
