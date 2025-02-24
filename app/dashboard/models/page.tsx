@@ -1,6 +1,6 @@
 import {Metadata} from "next";
 import {Breadcrumbs} from "@/components/pagers/breadcrumbs";
-import ModelList from "@/components/tables/model-list";
+import ModelList from "@/components/tables/modele/model-list";
 import Link from "next/link";
 import {routes} from "@/lib/routes";
 import {Button} from "@/components/ui/button";

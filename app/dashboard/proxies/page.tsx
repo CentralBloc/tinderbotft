@@ -1,10 +1,10 @@
-import { Breadcrumbs } from "@/components/pagers/breadcrumbs";
-import { Button } from "@/components/ui/button";
-import { routes } from "@/lib/routes";
-import { Metadata } from "next";
+import {Breadcrumbs} from "@/components/pagers/breadcrumbs";
+import {Button} from "@/components/ui/button";
+import {routes} from "@/lib/routes";
+import {Metadata} from "next";
 import Link from "next/link";
-import { Suspense } from "react";
-import ProxyList from "@/components/tables/proxy-list";
+import {Suspense} from "react";
+import ProxyList from "@/components/tables/proxy/proxy-list";
 
 export const metadata: Metadata = {
   title: "Dashboard - Proxies",

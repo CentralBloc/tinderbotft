@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     images: {
-        domains: ['images-ssl.gotinder.com'],
+        remotePatterns: [
+            {
+                protocol: 'https',
+                hostname: 'images-ssl.gotinder.com',
+            },
+        ],
     }
 };
 

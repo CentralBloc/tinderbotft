@@ -1,8 +1,9 @@
 "use client";
 
 import {useModels} from "@/services/models/hooks";
-import {modelListColumns} from "@/components/tables/columns";
+
 import {DataTable} from "@/components/ui/data-table";
+import {modelListColumns} from "@/components/tables/modele/model-columns";
 
 
 export default function ModelList() {

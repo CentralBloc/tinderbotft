@@ -1,9 +1,9 @@
 "use client";
 
-import { proxyListColumns } from "@/components/tables/columns";
 
-import { DataTable } from "@/components/ui/data-table";
-import { useProxies } from "@/services/proxy/hooks";
+import {DataTable} from "@/components/ui/data-table";
+import {useProxies} from "@/services/proxy/hooks";
+import {proxyListColumns} from "@/components/tables/proxy/proxy-columns";
 
 export default function ProxyList() {
   const { data: proxies = [], isLoading, isError } = useProxies();

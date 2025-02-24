@@ -4,7 +4,7 @@ import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {routes} from "@/lib/routes";
 import {Suspense} from "react";
-import InstaList from "@/components/tables/insta-list";
+import InstaList from "@/components/tables/instagram/insta-list";
 
 export const metadata: Metadata = {
     title: "Dashboard - Insta",

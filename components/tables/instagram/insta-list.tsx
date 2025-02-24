@@ -1,8 +1,9 @@
 "use client";
 
-import {instaListColumns} from "@/components/tables/columns";
+
 import {DataTable} from "@/components/ui/data-table";
 import {useInstaAccount} from "@/services/instagram/hooks";
+import {instaListColumns} from "@/components/tables/instagram/insta-columns";
 
 
 export default function InstaList() {
