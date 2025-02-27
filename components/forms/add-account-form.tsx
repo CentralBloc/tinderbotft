@@ -309,7 +309,7 @@ export default function AddOrUpdateAccountForm({mode, initialData,}: Readonly<Ad
                     />
                     <FormField
                         control={form.control}
-                        name="modele"
+                        name="proxy"
                         render={({field}) => (
                             <FormItem className="mt-0 ">
                                 <FormLabel>Proxy</FormLabel>

@@ -2,7 +2,7 @@
 
 import {StatsCard} from "@/components/cards/stats-card";
 import {useStats} from "@/services/users/hooks";
-import {Heart, ThumbsDown, ThumbsUp} from "lucide-react";
+import {ArrowLeftRight, Heart, ThumbsUp} from "lucide-react";
 import {Card} from "@/components/ui/card";
 
 
@@ -19,11 +19,11 @@ export default function DashboardStats() {
 				</div>
 
 				<div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-					<StatsCard title="Total Likes Made" value="10,869" icon={<ThumbsUp className="text-success size-4" />} />
+					<StatsCard title="Total Swipes Made" value="10,869" icon={<ArrowLeftRight color="#201dc9" className="text-success size-4" />} />
 					<StatsCard
-						title="Total Dislikes Made"
+						title="Total Likes Made"
 						value="1,767"
-						icon={<ThumbsDown className="size-4 text-red-500" />}
+						icon={<ThumbsUp className="size-4 text-blue-500" />}
 					/>
 					<StatsCard title="Total Matches Made" value="7,552" icon={<Heart className="size-4 text-pink-500" />} />
 					<StatsCard title="Match per like %" value="69.4%" icon={<Heart className="text-success size-4" />} />
@@ -36,7 +36,7 @@ export default function DashboardStats() {
 					</Card>
 
 					<Card className="p-6">
-						<h3 className="mb-4 font-semibold">Matches Per Day</h3>
+						<h3 className="mb-4 font-semibold">Accounts Overviews</h3>
 						<div className="aspect-[16/9] rounded-lg bg-muted"></div>
 					</Card>
 				</div>

@@ -128,6 +128,9 @@ export interface BotAccountInterface {
   swipes: number | undefined;
   matches: number | undefined;
   profile_url: string | undefined;
+  longitude: number | undefined;
+  latitude: number | undefined;
+  location: string | undefined;
   timezone_field: string;
 }
 
@@ -150,4 +153,16 @@ export interface AllModelsInterface {
   name: string;
   description: string;
   account_count: number;
+}
+
+
+export interface SwipesInterface {
+  id: string;
+  account: string | BotAccountInterface;
+  likes: number;
+  swipe_number: number;
+  matches: number;
+  days: number;
+  strategy: string | StrategyInterface;
+
 }

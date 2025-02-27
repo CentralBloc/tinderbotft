@@ -26,9 +26,9 @@ export const routes = {
     profile: "/dashboard/profile",
     account: {
       index: "/dashboard/accounts",
+      view: (id: string) => `/dashboard/accounts/${id}`,
       update: (id: string) => `/dashboard/accounts/update-account/${id}`,
       add: "/dashboard/accounts/add-account",
-      view: (id: string) => `/dashboard/accounts/${id}`,
     },
     strategy: {
       index: "/dashboard/strategies",

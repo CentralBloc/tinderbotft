@@ -17,6 +17,7 @@ import {
     PencilLine,
     Play,
     RefreshCcwDot,
+    SquareTerminal,
     ThumbsUp,
     Trash2
 } from "lucide-react";
@@ -191,8 +192,12 @@ export const TinderBioCell = ({ row }: TinderBioCellProps) => {
 
     return (
         <div className="flex items-center">
-            <ExternalLink />
-
+            <Link href={routes.dashboard.account.view(row.original.id ?? "")}>
+                <Button variant="ghost" className="flex items-center gap-2 ">
+                    <ExternalLink color="#5c0783" />
+                </Button>
+            </Link>
+            <SquareTerminal color="#4053b5" />
             <TooltipProvider>
                 <Tooltip>
                     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
