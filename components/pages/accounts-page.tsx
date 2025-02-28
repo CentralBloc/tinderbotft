@@ -1,16 +1,15 @@
 "use client"
 
 import {useState} from "react"
-import {Grid, LayoutList, Table} from "lucide-react"
+import {Grid, Table} from "lucide-react"
 import {Button} from "@/components/ui/button"
 import {useBotaccounts} from "@/services/bot-account/hooks";
 import {GridAccountCard} from "@/components/cards/grid-account-card";
-import {ListAccountCard} from "../cards/list-account-card";
 import AccountTabs from "@/components/tabs/account-tabs";
 
 
 export default function BotAccountsPage() {
-    const [viewType, setViewType] = useState<"grid" | "list" | "table">("table")
+    const [viewType, setViewType] = useState<"grid" | "table">("table")
 
     const { data: botAccounts = [] } = useBotaccounts()
 
@@ -35,28 +34,20 @@ export default function BotAccountsPage() {
                         >
                             <Grid className="size-4" />
                         </Button>
-                        <Button
-                            variant={viewType === "list" ? "secondary" : "ghost"}
-                            size="icon"
-                            onClick={() => setViewType("list")}
-                        >
-                            <LayoutList className="size-4" />
-                        </Button>
+
                     </div>
                 </div>
             </div>
 
             <div
                 className={
-                    viewType === "grid" ? "grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3" : "grid grid-cols-1 gap-6"
+                    viewType === "grid" ? "grid grid-cols-2 gap-6 md:grid-cols-3 lg:grid-cols-4" : "grid grid-cols-1 gap-6"
                 }
             >
                 {botAccounts.map((bot) =>
                     {
                         if (viewType === "grid") {
                             return <GridAccountCard key={bot.id} botAccount={bot} />
-                        } else if (viewType === "list") {
-                            return <ListAccountCard key={bot.id} botAccount={bot} />
                         } else {
                             return <AccountTabs key={bot.id} />
                         }

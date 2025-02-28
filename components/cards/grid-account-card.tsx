@@ -1,6 +1,6 @@
 "use client"
 
-import {Bath, Bed, Heart, MapPin, Maximize} from 'lucide-react'
+import {ArrowLeftRight, Heart, MapPin, ThumbsUp} from 'lucide-react'
 import {Progress} from "@/components/ui/progress"
 import {Badge} from "@/components/ui/badge"
 import {Button} from "@/components/ui/button"
@@ -11,6 +11,8 @@ import {useEffect, useState} from "react"
 import {useModel} from "@/services/models/hooks";
 import {useStrategy} from "@/services/strategy/hooks";
 import {useProxy} from "@/services/proxy/hooks";
+import {routes} from "@/lib/routes";
+import Link from "next/link";
 
 
 interface GridCardProps {
@@ -59,13 +61,13 @@ export function GridAccountCard({ botAccount, onFavorite, onViewDetails }: GridC
     const getStatusColor = (status = "") => {
         switch (status.toLowerCase()) {
             case "active":
-                return "bg-green-500/10 text-green-500"
+                return "bg-green-700"
             case "paused":
-                return "bg-yellow-500/10 text-yellow-500"
+                return "bg-yellow-700"
             case "error":
-                return "bg-red-500/10 text-red-500"
+                return "bg-red-700"
             default:
-                return "bg-gray-500/10 text-gray-500"
+                return "bg-gray-700"
         }
     }
 
@@ -119,15 +121,15 @@ export function GridAccountCard({ botAccount, onFavorite, onViewDetails }: GridC
                 </div>
                 <div className="mt-4 grid grid-cols-3 gap-4 text-sm text-muted-foreground">
                     <div className="flex items-center gap-1">
-                        <Bed className="size-4" />
+                        <ArrowLeftRight className="size-4" />
                         <span>{botAccount.swipes || 0}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                        <Bath className="size-4" />
+                        <ThumbsUp className="size-4" />
                         <span>{botAccount.likes || 0}</span>
                     </div>
                     <div className="flex items-center gap-1">
-                        <Maximize className="size-4" />
+                        <Heart className="size-4" />
                         <span>{botAccount.matches || 0}</span>
                     </div>
                 </div>
@@ -142,9 +144,11 @@ export function GridAccountCard({ botAccount, onFavorite, onViewDetails }: GridC
                 )}
             </CardContent>
             <CardFooter className="bg-muted/50 p-4">
-                <Button className="w-full" onClick={() => onViewDetails?.(botAccount.id)}>
-                    View Details
-                </Button>
+                <Link href={routes.dashboard.account.view(botAccount.id ?? "")} className="w-full">
+                    <Button className="w-full" >
+                        View Details
+                    </Button>
+                </Link>
             </CardFooter>
         </Card>
     )

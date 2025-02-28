@@ -58,3 +58,8 @@ export const setAccountBio = async (id: string, bio: string) => {
     const response = await axios.patch(`/set-tinder-bio/${id}/`, { bio });
     return response.data;
 }
+
+export const getAllAccountStats = async () => {
+    const response = await axios.get("/get-all-accounts-stats/");
+    return response.data;
+}

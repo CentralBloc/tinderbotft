@@ -3,6 +3,7 @@ import {
   createBotAccountCredentials,
   getAccountById,
   getAllAccounts,
+  getAllAccountStats,
   removeAccount,
   setAccountBio,
   startAccount,
@@ -20,6 +21,7 @@ export const botaccountQueryKeys = {
   startBotaccountKey: (id: string) => ["startBotaccount"],
   updateBotaccountContentKey: (id: string) => ["updateBotaccountContent"],
   setAccountBioKey: (id: string) => ["setAccountBio", id],
+  getAllAccountStatsKey: ["getAllAccountStats"],
 };
 
 export const useBotaccount = (id: string) => {
@@ -35,6 +37,13 @@ export const useBotaccounts = () => {
     queryFn: () => getAllAccounts(),
   });
 };
+
+export const useAllAccountStats = () => {
+    return useQuery({
+        queryKey: botaccountQueryKeys.getAllAccountStatsKey,
+        queryFn: () => getAllAccountStats(),
+    });
+}
 
 // --------------------------MUTATIONS HOOKS-------------------------- //
 

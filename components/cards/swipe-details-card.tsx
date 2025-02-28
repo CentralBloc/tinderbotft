@@ -1,5 +1,4 @@
 import {ArrowLeftRight, Bot, Heart, Shield, ThumbsUp, Wifi} from 'lucide-react'
-import {Button} from "@/components/ui/button"
 import {Card, CardContent, CardFooter} from "@/components/ui/card"
 import {Progress} from "@/components/ui/progress"
 import {BotAccountInterface, StrategyInterface, SwipesInterface} from "@/types"
@@ -97,12 +96,7 @@ export function SwipeCard({ swipe, onEdit, onDelete }: Readonly<GridCardProps>) 
                 </div>
             </CardContent>
             <CardFooter className="gap-3 p-6 pt-0">
-                <Button variant="outline" className="flex-1" onClick={() => onEdit?.(swipe.id)}>
-                    Edit
-                </Button>
-                <Button variant="destructive" className="flex-1" onClick={() => onDelete?.(swipe.id)}>
-                    Delete
-                </Button>
+
             </CardFooter>
         </Card>
     )

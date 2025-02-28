@@ -109,36 +109,51 @@ export function SingleAccountCard({ botAccount }: Readonly<{ botAccount: BotAcco
                 {/* Product Info */}
                 <div className="space-y-6">
                     <h1 className="text-3xl font-bold">{botAccount.title}</h1>
-                    <div className="flex items-end justify-between">
-                        <div className="flex items-center gap-4">
-                            <div className="flex items-center gap-1 text-emerald-600">
-                                <ThumbsUp className="size-5" />
-                                <span className="font-medium">{botAccount.likes}</span>
-                            </div>
-                            <div className="flex items-center gap-1 text-blue-600">
-                                <ArrowLeftRight className="size-5" />
-                                <span className="font-medium">{botAccount.swipes}</span>
-                            </div>
-                            <div className="flex items-center gap-1 text-red-600">
-                                <Heart className="size-5" />
-                                <span className="font-medium">{botAccount.matches}</span>
-                            </div>
-                        </div>
-                    </div>
+                    <h2 className="text-xl font-semibold text-muted-foreground">{strategyName}</h2>
 
-                    <div className="text-3xl font-bold text-blue-700">{strategyName}</div>
+
 
                     <p className="text-muted-foreground">{botAccount.tinder_bio}</p>
 
-                    <div className="flex flex-wrap gap-2">
+                    <div className="space-y-4">
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div className="rounded-lg bg-muted/30 p-4">
+                                <h4 className="mb-2 font-medium">Details</h4>
+                                <p className="text-sm text-muted-foreground">Age: {botAccount.min_age} ans - {botAccount.max_age} ans</p>
+                                <p className="text-sm text-muted-foreground">Distance: {botAccount.distance} Km</p>
+                            </div>
+                            <div className="rounded-lg bg-muted/30 p-4">
+                                <h4 className="mb-2 font-medium">Statistics</h4>
+                                <div className="flex items-end justify-between">
+                                    <div className="flex items-center gap-4">
+                                        <div className="flex items-center gap-1 text-emerald-600">
+                                            <ThumbsUp className="size-5" />
+                                            <span className="font-medium">{botAccount.likes}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1 text-blue-600">
+                                            <ArrowLeftRight className="size-5" />
+                                            <span className="font-medium">{botAccount.swipes}</span>
+                                        </div>
+                                        <div className="flex items-center gap-1 text-red-600">
+                                            <Heart className="size-5" />
+                                            <span className="font-medium">{botAccount.matches}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div className="flex w-full  flex-wrap gap-2">
                         <Link href={routes.dashboard.account.update(botAccount.id)}>
-                            <Button className="flex-1 gap-2" size="lg">
+                            <Button className="flex-1 gap-2" size="lg" >
                                 <PencilLine size={20} strokeWidth={1.25} />
                                 Edit Account
                             </Button>
                         </Link>
-                        <Link href={routes.dashboard.account.index}>
-                            <Button variant="outline" size="lg" className="gap-2">
+                        <Link href={routes.dashboard.account.index} >
+                            <Button variant="outline" size="lg"  className="gap-2">
                                 <Undo2 size={20}  strokeWidth={1.25} />
                                 Back to Accounts
                             </Button>
