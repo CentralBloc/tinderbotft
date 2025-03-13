@@ -4,7 +4,7 @@ import {useParams} from "next/navigation";
 import {useBotaccount} from "@/services/bot-account/hooks";
 import {routes} from "@/lib/routes";
 import {Breadcrumbs} from "@/components/pagers/breadcrumbs";
-import {SingleAccountCard} from "@/components/cards/single-account-card";
+import SingleAccountCard from "@/components/cards/single-account-card";
 
 
 export default function SingleAccountPage() {

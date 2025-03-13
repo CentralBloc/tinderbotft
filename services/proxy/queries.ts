@@ -1,5 +1,5 @@
 import axios from "@/lib/axios";
-import { ProxyInterface } from "@/types";
+import {ProxyInterface} from "@/types";
 
 export const getAllProxies = async (): Promise<ProxyInterface[]> => {
   const response = await axios.get("/get-all-proxy/").then((data) => data);
@@ -39,7 +39,11 @@ export const removeProxy = async (id: string) => {
   return response.data;
 };
 
-export const test_proxy = async (id: string) => {
-  const response = await axios.get(`/test_proxy/${id}/`);
+export const testProxy = async (id: string) => {
+  const response = await axios.get(`/test-proxy/${id}/`);
   return response.data;
 };
+
+export const rotateProxy = async (id: string) => {
+  const response = await axios.get(`/rotate-proxy/${id}/`)
+}

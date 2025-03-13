@@ -7,7 +7,9 @@ import {
     createProxyCredentials,
     getAllProxies,
     getProxyById,
-    removeProxy, test_proxy,
+    removeProxy,
+    rotateProxy,
+    testProxy,
     updateProxy
 } from "@/services/proxy/queries";
 
@@ -18,6 +20,7 @@ export const proxyQueryKeys = {
     updateProxyKey: (id: string) => ["update-proxy", id],
     removeProxyKey: (id: string) => ["remove-proxy", id],
     testProxy: (id: string) => ["test-proxy", id],
+    rotateProxy: (id: string) => ["rotate-proxy", id],
 }
 
 // --------------- QUERIES HOOKS --------------- //
@@ -34,6 +37,8 @@ export const useProxy = (id: string) => {
         queryFn: () => getProxyById(id),
     });
 };
+
+
 
 // --------------- MUTATIONS HOOKS --------------- //
 
@@ -83,7 +88,7 @@ export const useRemoveProxy = (id: string) => {
 export const useTestProxy = (id: string) => {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: () => test_proxy(id),
+        mutationFn: () => testProxy(id),
         onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: proxyQueryKeys.proxiesKey,
@@ -91,3 +96,15 @@ export const useTestProxy = (id: string) => {
         },
     });
 }
+
+export const useRotateProxy = (id: string) => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: () => rotateProxy(id),
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: proxyQueryKeys.proxiesKey,
+            });
+        },
+    });
+};

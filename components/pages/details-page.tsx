@@ -1,6 +1,6 @@
 "use client"
 
-import {useEffect, useRef, useState} from "react"
+import {useRef, useState} from "react"
 import Image from "next/image"
 import Link from "next/link"
 import {ArrowLeft, ArrowLeftRight, Clock, Edit, Heart, MapPin, ThumbsUp, Wifi} from "lucide-react"
@@ -12,64 +12,32 @@ import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
 import {ScrollArea} from "@/components/ui/scroll-area"
 import type {BotAccountInterface, ModelInterface, ProxyInterface, StrategyInterface} from "@/types"
 import {routes} from "@/lib/routes"
-import {useModel} from "@/services/models/hooks";
-import {useStrategy} from "@/services/strategy/hooks";
-import {useProxy} from "@/services/proxy/hooks";
-import {MapCard} from "@/components/cards/map-card";
-import {useSwipesAccount} from "@/services/swipes/hooks";
-import {SwipeCard} from "./swipe-details-card"
 
 interface AccountDetailViewProps {
     botAccount: BotAccountInterface
+    modelData?: ModelInterface | null
+    strategyData?: StrategyInterface | null
+    proxyData?: ProxyInterface | null
     recentSwipes?: BotAccountInterface[]
 }
 
-export default function SingleAccountCard({botAccount, recentSwipes = [],}: AccountDetailViewProps) {
+export default function AccountDetailView({
+                                              botAccount,
+                                              modelData,
+                                              strategyData,
+                                              proxyData,
+                                              recentSwipes = [],
+                                          }: AccountDetailViewProps) {
     const [activeTab, setActiveTab] = useState("details")
     const [showMap, setShowMap] = useState(false)
     const mapRef = useRef(null)
-    const [modelData, setModelData] = useState<ModelInterface | null>(null)
-    const [strategyData, setStrategyData] = useState<StrategyInterface | null>(null)
-    const [proxyData, setProxyData] = useState<ProxyInterface | null>(null)
 
-    const modelId = typeof botAccount?.modele === "string" ? botAccount.modele : ''
-    const strategyId = typeof botAccount?.strategy === "string" ? botAccount.strategy : ''
-    const proxyId = typeof botAccount?.proxy === "string" ? botAccount.proxy : ''
-
-    const { data: fetchedModel } = useModel(modelId)
-    const { data: fetchedStrategy } = useStrategy(strategyId)
-    const { data: fetchedProxy } = useProxy(proxyId)
-    const { data: swipes = [] } = useSwipesAccount(botAccount.id)
-
-    useEffect(() => {
-        if (botAccount) {
-            if (typeof botAccount.modele === "object" && botAccount.modele !== null) {
-                setModelData(botAccount.modele)
-            } else if (fetchedModel) {
-                setModelData(fetchedModel)
-            }
-
-            if (typeof botAccount.strategy === "object" && botAccount.strategy !== null) {
-                setStrategyData(botAccount.strategy)
-            } else if (fetchedStrategy) {
-                setStrategyData(fetchedStrategy)
-            }
-
-            if (typeof botAccount.proxy === "object" && botAccount.proxy !== null) {
-                setProxyData(botAccount.proxy)
-            } else if (fetchedProxy) {
-                setProxyData(fetchedProxy)
-            }
-        }
-    }, [botAccount, fetchedModel, fetchedStrategy, fetchedProxy])
-
-
+    if (!botAccount) return null
 
     // Calculate progress percentage safely
     const strategyDays = strategyData?.days_number ?? 1
-    const progressPercentage = botAccount.progress !== undefined && strategyDays > 0
-        ? (botAccount.progress / strategyDays) * 100
-        : 0
+    const progressPercentage =
+        botAccount.progress !== undefined && strategyDays > 0 ? (botAccount.progress / strategyDays) * 100 : 0
 
     // Get names safely
     const modelName = modelData?.name || "Unknown Model"
@@ -90,7 +58,7 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
                 return "bg-gray-700 text-gray-200"
             case "working":
                 return "bg-blue-700 text-white"
-            case "shadowban":
+            case "shadowbanned":
                 return "bg-orange-700 text-white"
             default:
                 return "bg-gray-800 text-gray-200"
@@ -112,7 +80,7 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
                     </Badge>
                 </div>
                 <Image
-                    src={botAccount.profile_url || "/placeholder.svg?height=800&width=600"}
+                    src={botAccount.profile_url ?? "/placeholder.svg?height=800&width=600"}
                     alt={botAccount.title || "Bot account"}
                     fill
                     className="object-cover"
@@ -148,8 +116,8 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-400">Age Range:</span>
                                 <span>
-                                    {botAccount.min_age || 18} - {botAccount.max_age || 35} years
-                                </span>
+                  {botAccount.min_age || 18} - {botAccount.max_age || 35} years
+                </span>
                             </div>
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-400">Location:</span>
@@ -162,10 +130,6 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
                             <div className="flex justify-between text-sm">
                                 <span className="text-gray-400">Strategy Days:</span>
                                 <span>{strategyDays} days</span>
-                            </div>
-                            <div className="flex justify-between text-sm">
-                                <span className="text-gray-400">Proxy:</span>
-                                <span>{proxyName}</span>
                             </div>
                         </TabsContent>
 
@@ -202,13 +166,10 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
                     )}
 
                     <div className="mt-6 grid grid-cols-2 gap-4">
-                        <Link href={routes.dashboard.account.update(botAccount.id || "/")}>
-                            <Button variant="outline" className="flex w-full items-center gap-2">
-                                <Edit className="size-4" />
-                                Edit Account
-                            </Button>
-                        </Link>
-
+                        <Button variant="outline" className="flex items-center gap-2">
+                            <Edit className="size-4" />
+                            Edit Account
+                        </Button>
                         <Link href={routes.dashboard.account.index || "/"}>
                             <Button variant="outline" className="flex w-full items-center gap-2">
                                 <ArrowLeft className="size-4" />
@@ -223,12 +184,43 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
                     <ScrollArea className="h-full">
                         <div className="p-6">
                             <h2 className="mb-4 text-xl font-bold">Recent Swipes</h2>
-                            {swipes.length > 0 ? (
-                                swipes.map((swipe) => (
-                                    <div key={swipe.id} className="w-full">
-                                        <SwipeCard swipe={swipe} />
-                                    </div>
-                                ))
+
+                            {recentSwipes.length > 0 ? (
+                                <div className="space-y-4">
+                                    {recentSwipes.map((swipe) => (
+                                        <Card key={swipe.id} className="border-gray-800 bg-gray-900">
+                                            <CardContent className="p-4">
+                                                <div className="flex items-start gap-3">
+                                                    <div className="relative size-16 shrink-0 overflow-hidden rounded-md">
+                                                        <Image
+                                                            src={swipe.profile_url || "/placeholder.svg?height=64&width=64"}
+                                                            alt={swipe.title || "Profile"}
+                                                            fill
+                                                            className="object-cover"
+                                                        />
+                                                    </div>
+                                                    <div className="flex-1">
+                                                        <div className="flex items-center justify-between">
+                                                            <h3 className="font-medium">{swipe.title || "Unknown"}</h3>
+                                                            <Badge className={getStatusColor(swipe.status)}>{swipe.status || "Unknown"}</Badge>
+                                                        </div>
+                                                        <p className="line-clamp-1 text-sm text-gray-400">{swipe.tinder_bio || "No bio"}</p>
+                                                        <div className="mt-2 flex items-center gap-4 text-sm">
+                                                            <div className="flex items-center gap-1">
+                                                                <ThumbsUp className="size-3.5 text-green-500" />
+                                                                <span>{swipe.likes || 0}</span>
+                                                            </div>
+                                                            <div className="flex items-center gap-1">
+                                                                <Heart className="size-3.5 text-rose-500" />
+                                                                <span>{swipe.matches || 0}</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </CardContent>
+                                        </Card>
+                                    ))}
+                                </div>
                             ) : (
                                 <Card className="border-gray-800 bg-gray-900">
                                     <CardContent className="p-6 text-center">
@@ -255,12 +247,12 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
                                             <p className="text-sm text-gray-400">Lng: {botAccount.longitude || "N/A"}</p>
                                         </div>
                                     </div>
-                                    <MapCard
-                                        latitude={botAccount.latitude || 0}
-                                        longitude={botAccount.longitude || 0}
-                                        title={botAccount.location || "Location"}
-                                        zoom={13}
-                                        className="absolute inset-0" />
+                                    <Image
+                                        src="/placeholder.svg?height=300&width=600"
+                                        alt="Map"
+                                        fill
+                                        className="object-cover opacity-50"
+                                    />
                                 </div>
                             )}
                         </div>
@@ -270,3 +262,4 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
         </div>
     )
 }
+

@@ -166,3 +166,35 @@ export interface SwipesInterface {
   strategy: string | StrategyInterface;
 
 }
+
+export interface InstaStratInterface {
+    id: string;
+    name: string;
+    description: string;
+    day_number: number;
+    modele: string | ModelInterface;
+}
+
+
+export interface Picture {
+  id: string
+  link: string
+  type_file: string
+  file?: File
+}
+
+export interface InstaAction {
+  id: string
+  action_type: "setup" | "post" | "story" | "reels"
+  insta_strat: string
+  profile_pictures?: Picture[]
+  stories?: Picture[]
+  posts?: Picture[]
+  following_username?: string
+  username?: string[] | null
+  bio_list?: string[] | null
+  time?: string
+  related_day?: string
+  created_at: string
+  updated_at: string
+}

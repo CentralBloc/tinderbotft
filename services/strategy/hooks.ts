@@ -6,7 +6,7 @@ import {
   removeStrategy,
   updateStrategy,
 } from "@/services/strategy/queries";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
 export const strategiesQueryKeys = {
   strategiesKey: ["strategies"],

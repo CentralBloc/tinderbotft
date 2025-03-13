@@ -54,7 +54,13 @@ export const routes = {
     insta: {
       index: "/dashboard/insta",
       connect: "/dashboard/insta/connect",
-      setup: "/dashboard/insta/setup",
+      strat: {
+        index: "/dashboard/insta/strat",
+        add: "/dashboard/insta/strat/add",
+        update: (id: string) => `/dashboard/insta/strat/update/${id}`,
+        config: (id: string) => `/dashboard/insta/strat/config/${id}`,
+      }
+
     }
   },
 };

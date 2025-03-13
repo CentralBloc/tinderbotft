@@ -10,8 +10,12 @@ export const instaListColumns: ColumnDef<any>[] = [
         header: "Username",
     },
     {
-        accessorKey: "password",
-        header: "Password",
+        accessorKey: "full_name",
+        header: "Full Name",
+    },
+    {
+        accessorKey:"status",
+        header: "Status",
     },
     {
         accessorKey: "actions",
@@ -19,7 +23,7 @@ export const instaListColumns: ColumnDef<any>[] = [
         cell: ({ row }) => {
             return (
                 <Link
-                    href={routes.dashboard.insta.setup}
+                    href={routes.dashboard.insta.strat.add}
                     className="btn btn-primary"
                 >
                     <PencilLine size={20} color="#2b00ff" strokeWidth={1.25} />

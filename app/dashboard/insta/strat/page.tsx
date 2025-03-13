@@ -4,29 +4,29 @@ import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import {routes} from "@/lib/routes";
 import {Suspense} from "react";
-import InstaList from "@/components/tables/instagram/insta-list";
+import InstaStratList from "@/components/tables/insta-strat/insta-strat-list";
 
 export const metadata: Metadata = {
-    title: "Dashboard - Insta",
-    description: "Dashboard insta page",
+    title: "Dashboard - Insta - Strategy",
+    description: "Dashboard insta strategy page",
 };
 
-export default function InstaPage() {
+export default function InstaStratPage() {
     return (
         <div className="space-y-5">
             <div className="flex items-center justify-between">
-                <Breadcrumbs segments={[{title: "Insta"}]}/>
+                <Breadcrumbs segments={[{title: "Insta - Strategy"}]}/>
                 <Button asChild className="w-fit font-heading">
-                    <Link href={routes.dashboard.insta.connect}>Connect Insta</Link>
+                    <Link href={routes.dashboard.insta.index}>Insta Account</Link>
                 </Button>
 
                 <Button asChild className="w-fit font-heading">
-                    <Link href={routes.dashboard.insta.strat.index}>Insta - Strategy</Link>
+                    <Link href={routes.dashboard.insta.strat.add}>Add Strategy</Link>
                 </Button>
             </div>
 
             <Suspense>
-                <InstaList />
+                <InstaStratList />
             </Suspense>
         </div>
     );

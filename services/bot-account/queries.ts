@@ -49,6 +49,10 @@ export const startAccount = async (id: string) => {
   return response.data;
 };
 
+export const stopAccount = async (id: string) => {
+    const response = await axios.delete(`/stop-process/${id}`);
+}
+
 export const updateAccountContent = async (id: string) => {
     const response = await axios.patch(`/update-account-content/${id}/`);
     return response.data;

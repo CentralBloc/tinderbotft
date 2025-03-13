@@ -1,9 +1,9 @@
 import {BotAccountInterface, ProxyInterface, StrategyInterface} from "@/types";
 import {useState} from "react";
-import {useProxies, useRemoveProxy} from "@/services/proxy/hooks";
+import {useProxies, useRemoveProxy, useRotateProxy, useTestProxy} from "@/services/proxy/hooks";
 import Link from "next/link";
 import {routes} from "@/lib/routes";
-import {Check, ChevronsUpDown, PencilLine, Trash2} from "lucide-react";
+import {Check, ChevronsUpDown, FlaskConical, PencilLine, Rotate3d, Trash2} from "lucide-react";
 import {
     Dialog,
     DialogContent,
@@ -20,6 +20,7 @@ import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
 import {Command, CommandEmpty, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
 import {cn} from "@/lib/utils";
 import {useUpdateBotaccount} from "@/services/bot-account/hooks";
+import {Badge} from "@/components/ui/badge";
 
 
 const ProxyCell = ({ proxyId }: { proxyId: string | undefined }) => {
@@ -89,6 +90,7 @@ export const EditableProxyCell = ({row, view}: Readonly<UdpdateStratOrAccountPro
         </Popover>
     );
 };
+
 const ProxyActionsCell = ({ row }: { row: { original: ProxyInterface } }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const deleteMutation = useRemoveProxy(row.original.id);
@@ -98,38 +100,49 @@ const ProxyActionsCell = ({ row }: { row: { original: ProxyInterface } }) => {
         setIsModalOpen(false);
     };
 
+    const testMutation = useTestProxy(row.original.id);
+    const handleTest = () => {
+        testMutation.mutate();
+    }
+    
+    const rotateMutation = useRotateProxy(row.original.id);
+    const handleRotate = () => {
+        rotateMutation.mutate();
+    }
+
+
     return (
         <div className="flex items-center gap-2">
-        <Link
-            href={routes.dashboard.proxy.update(row.original.id)}
-    className="btn btn-primary"
-    >
-    <PencilLine size={20} color="#2b00ff" strokeWidth={1.25} />
-    </Link>
-
-    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-    <DialogTrigger asChild>
-    <button className="btn btn-secondary">
-    <Trash2 size={20} color="#ff0000" strokeWidth={1.25} />
-    </button>
-    </DialogTrigger>
-    <DialogContent>
-    <VisuallyHidden>
-        <DialogTitle>Confirmation</DialogTitle>
-    </VisuallyHidden>
-    <DialogDescription>
-    Are you sure you want to delete this proxy?
-        </DialogDescription>
-        <DialogFooter>
-        <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
-    <Button onClick={handleDelete} variant="destructive">
-        Delete
-        </Button>
-        </DialogFooter>
-        </DialogContent>
-        </Dialog>
+            <Link href={routes.dashboard.proxy.update(row.original.id)} className="btn btn-primary">
+                <PencilLine size={20} color="#2b00ff" strokeWidth={1.25} />
+            </Link>
+            <button className="btn btn-primary" onClick={handleTest}>
+                <FlaskConical size={20} color="#ff6190" strokeWidth={1.25} />
+            </button>
+            <button className="btn btn-primary" onClick={handleRotate}>
+                <Rotate3d size={20} color="#40d8e2" strokeWidth={1.25} />
+            </button>
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                <DialogTrigger asChild>
+                    <button className="btn btn-secondary">
+                    <Trash2 size={20} color="#ff0000" strokeWidth={1.25} />
+                    </button>
+                </DialogTrigger>
+                <DialogContent>
+                    <VisuallyHidden>
+                        <DialogTitle>Confirmation</DialogTitle>
+                    </VisuallyHidden>
+                    <DialogDescription>
+                        Are you sure you want to delete this proxy?
+                    </DialogDescription>
+                    <DialogFooter>
+                        <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
+                        <Button onClick={handleDelete} variant="destructive">Delete</Button>
+                    </DialogFooter>
+                </DialogContent>
+            </Dialog>
         </div>
-);
+    );
 };
 
 export const proxyListColumns: ColumnDef<ProxyInterface>[] = [
@@ -144,6 +157,17 @@ export const proxyListColumns: ColumnDef<ProxyInterface>[] = [
     {
         accessorKey: "port",
         header: "Port",
+    },
+    {
+        accessorKey: "Status",
+        header: "Status",
+        cell: ({row}) => {
+            if(row.original.status === 'Active') {
+                return <Badge className="bg-green-800">Active</Badge>;
+            } else if (row.original.status === 'Inactive') {
+                return <Badge className="bg-red-800">Inactive</Badge>;
+            }
+        }
     },
     {
         accessorKey: "actions",

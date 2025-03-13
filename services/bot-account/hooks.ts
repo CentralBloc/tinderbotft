@@ -7,6 +7,7 @@ import {
   removeAccount,
   setAccountBio,
   startAccount,
+  stopAccount,
   updateAccount,
   updateAccountContent,
 } from "@/services/bot-account/queries";
@@ -105,6 +106,18 @@ export const useStartBotAccount = (id: string) => {
   });
 };
 
+export const useStopBotAccount = (id: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: () => stopAccount(id),
+    onSettled: () => {
+      queryClient.invalidateQueries({
+        queryKey: botaccountQueryKeys.botaccountsKey,
+      })
+    }
+  })
+}
+
 export const useUpdateBotAccountContent = (id: string) => {
   const queryClient = useQueryClient();
 
@@ -129,5 +142,4 @@ export const useSetAccountBio = (id: string) => {
         });
         },
     });
-
 }

@@ -18,13 +18,19 @@ export function ListAccountCard({ botAccount, onFavorite, onViewDetails, onConta
     const getStatusColor = (status = "") => {
         switch (status.toLowerCase()) {
             case "active":
-                return "bg-green-500/10 text-green-500"
+                return "bg-green-700"
             case "paused":
-                return "bg-yellow-500/10 text-yellow-500"
-            case "error":
-                return "bg-red-500/10 text-red-500"
-            default:
-                return "bg-gray-500/10 text-gray-500"
+                return "bg-purple-700"
+            case "banned":
+                return "bg-red-700"
+            case "inactive":
+                return "bg-black"
+            case "expired":
+                return "bg-gray-700"
+            case "working":
+                return "bg-blue-700"
+            case "shadowbanned":
+                return "bg-orange-700"
         }
     }
 

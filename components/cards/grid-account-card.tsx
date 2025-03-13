@@ -63,11 +63,17 @@ export function GridAccountCard({ botAccount, onFavorite, onViewDetails }: GridC
             case "active":
                 return "bg-green-700"
             case "paused":
-                return "bg-yellow-700"
-            case "error":
+                return "bg-purple-700"
+            case "banned":
                 return "bg-red-700"
-            default:
+            case "inactive":
+                return "bg-black"
+            case "expired":
                 return "bg-gray-700"
+            case "working":
+                return "bg-blue-700"
+            case "shadowbanned":
+                return "bg-orange-700"
         }
     }
 
@@ -115,7 +121,7 @@ export function GridAccountCard({ botAccount, onFavorite, onViewDetails }: GridC
                     </div>
                     <h3 className="truncate font-semibold">{botAccount.title || "Untitled"}</h3>
                     <div className="flex items-center text-sm text-muted-foreground">
-                        <MapPin className="mr-1 size-4" />
+                        <MapPin className="bg- mr-1 size-4" />
                         <span className="truncate">{botAccount.location || "No location"}</span>
                     </div>
                 </div>

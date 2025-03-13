@@ -4,6 +4,7 @@ import {
     useRemoveBotAccount,
     useSetAccountBio,
     useStartBotAccount,
+    useStopBotAccount,
     useUpdateBotaccount,
     useUpdateBotAccountContent
 } from "@/services/bot-account/hooks";
@@ -14,6 +15,7 @@ import {
     ChevronsUpDown,
     ExternalLink,
     Heart,
+    Pause,
     PencilLine,
     Play,
     RefreshCcwDot,
@@ -46,12 +48,14 @@ import {ModelCell} from "@/components/tables/modele/model-columns";
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip";
 import {Input} from "@/components/ui/input";
 import {EditableProxyCell} from "@/components/tables/proxy/proxy-columns";
+import {toast} from "@/components/ui/use-toast";
 
 interface TinderBioCellProps {
     row: {
         original: Partial<BotAccountInterface>
     }
 }
+
 const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const deleteMutation = useRemoveBotAccount(row.original.id);
@@ -63,8 +67,26 @@ const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; })
 
     const startMutation = useStartBotAccount(row.original.id);
     const handleStart = () => {
-        startMutation.mutate();
+        startMutation.mutate(undefined, {
+            onSuccess: () => {
+                toast({
+                    title: "Account started successfully",
+                });
+            },
+            onError: (error: any) => {
+                toast({
+                    variant: "destructive",
+                    title: "Failed to start account",
+                    description: error.response?.data || "An error occurred",
+                });
+            },
+        });
     };
+
+    const stopMutation = useStopBotAccount(row.original.id);
+    const handleStop = () => {
+        stopMutation.mutate();
+    }
 
     const updateContentMutation = useUpdateBotAccountContent(row.original.id);
     const handleUpdateContent = () => {
@@ -73,8 +95,15 @@ const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; })
 
     return (
         <div className="flex items-center gap-2">
-            <button className="btn btn-primary" onClick={handleStart}>
-                <Play size={20} color="#065c00" strokeWidth={1.25} />
+            <button
+                className="btn btn-primary"
+                onClick={row.original.status === 'active' ? handleStop : handleStart}
+            >
+                {row.original.status === 'active' ? (
+                    <Pause size={20} color="#ff0000" strokeWidth={1.25} />
+                ) : (
+                    <Play size={20} color="#065c00" strokeWidth={1.25} />
+                )}
             </button>
             <button className="btn btn-primary" onClick={handleUpdateContent}>
                 <RefreshCcwDot size={20} color="#ff6190" strokeWidth={1.25} />
@@ -263,16 +292,22 @@ export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
         cell: ({ row }) => {
             if (row.original.status === "active") {
                 return <Badge className="bg-green-800">Active</Badge>;
-            } else if (row.original.status === "failed") {
-                return <Badge className="bg-amber-800">Token Expired</Badge>;
-            } else if (row.original.status === "shadowBan" || row.original.status === "banned") {
-                return <Badge variant="destructive">Ban</Badge>;
-            } else if (row.original.status === "standby") {
-                return <Badge className="bg-blue-800">Inactive</Badge>;
-            } else if ( row.original.status === "working") {
-                return <Badge className="bg-purple-700">Working</Badge>;
+            } else if (row.original.status === "expired") {
+                return <Badge className="bg-gray-800">Expired</Badge>;
+            } else if (row.original.status === "working") {
+                return <Badge className="bg-blue-800">Working</Badge>;
+            } else if (row.original.status === "inactive") {
+                return <Badge className="bg-black">Inactive</Badge>;
+            } else if ( row.original.status === "banned") {
+                return <Badge className="bg-red-800">Ban</Badge>;
+            } else if ( row.original.status === "shadowban") {
+                return ( <Badge className="bg-orange-800">shadow-ban</Badge>)
+            } else if ( row.original.status === "paused") {
+                return <Badge className="bg-purple-800">Paused</Badge>;
+            } else if ( row.original.status === "completed" || row.original.status ==='standby') {
+                return <Badge className="bg-amber-500">{row.original.status}</Badge>;
             } else {
-                return <Badge className="bg-gray-800">{row.original.status}</Badge>;
+                return <Badge variant="destructive">{row.original.status}</Badge>;
             }
         },
     },
@@ -332,16 +367,22 @@ export const accountStatsColumns: ColumnDef<BotAccountInterface>[] = [
         cell: ({ row }) => {
             if (row.original.status === "active") {
                 return <Badge className="bg-green-800">Active</Badge>;
-            } else if (row.original.status === "failed") {
-                return <Badge className="bg-amber-800">Token Expired</Badge>;
-            } else if (row.original.status === "shadowBan" || row.original.status === "banned") {
-                return <Badge variant="destructive">Ban</Badge>;
-            } else if (row.original.status === "standby") {
-                return <Badge className="bg-blue-800">Inactive</Badge>;
-            } else if ( row.original.status === "working") {
-                return <Badge className="bg-purple-700">Working</Badge>;
+            } else if (row.original.status === "expired") {
+                return <Badge className="bg-gray-800">Expired</Badge>;
+            } else if (row.original.status === "working") {
+                return <Badge className="bg-blue-800">Working</Badge>;
+            } else if (row.original.status === "inactive") {
+                return <Badge className="bg-black">Inactive</Badge>;
+            } else if ( row.original.status === "banned") {
+                return <Badge className="bg-red-800">Ban</Badge>;
+            } else if ( row.original.status === "shadowban") {
+                return ( <Badge className="bg-orange-800">shadow-ban</Badge>)
+            } else if ( row.original.status === "paused") {
+                return <Badge className="bg-purple-800">Paused</Badge>;
+            } else if ( row.original.status === "completed" || row.original.status ==='standby') {
+                return <Badge className="bg-amber-500">{row.original.status}</Badge>;
             } else {
-                return <Badge className="bg-gray-800">{row.original.status}</Badge>;
+                return <Badge variant="destructive">{row.original.status}</Badge>;
             }
         },
     },

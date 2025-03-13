@@ -4,10 +4,8 @@ import {useEffect, useRef} from "react"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
-import {Badge} from "@/components/ui/badge"
 import {MapPin} from "lucide-react"
 
-// Fix for default marker icon in Leaflet
 const icon = L.icon({
     iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
     iconRetinaUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon-2x.png",
@@ -24,14 +22,13 @@ interface MapCardProps {
     className?: string
 }
 
-export function MapCard({ latitude, longitude, title = "Location", zoom = 13, className = "" }: MapCardProps) {
+export function MapCard({ latitude, longitude, title = "Location", zoom = 13, className = "" }: Readonly<MapCardProps>) {
     const mapRef = useRef<HTMLDivElement>(null)
     const mapInstanceRef = useRef<L.Map | null>(null)
 
     useEffect(() => {
         if (!mapRef.current) return
 
-        // Initialize map only if it doesn't exist yet
         if (!mapInstanceRef.current) {
             mapInstanceRef.current = L.map(mapRef.current).setView([latitude, longitude], zoom)
 
@@ -39,22 +36,28 @@ export function MapCard({ latitude, longitude, title = "Location", zoom = 13, cl
                 attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
             }).addTo(mapInstanceRef.current)
         } else {
-            // If map already exists, just update the view
             mapInstanceRef.current.setView([latitude, longitude], zoom)
         }
 
-        // Add marker
         const marker = L.marker([latitude, longitude], { icon }).addTo(mapInstanceRef.current)
-        marker.bindPopup(`<b>${title}</b><br>Lat: ${latitude.toFixed(6)}<br>Lng: ${longitude.toFixed(6)}`).openPopup()
+        const sanitizedTitle = title.replace(/[<>]/g, '')
+        marker.bindPopup(
+            L.Util.template(
+                '<b>{title}</b><br>Lat: {lat}<br>Lng: {lng}',
+                {
+                    title: sanitizedTitle,
+                    lat: Number(latitude).toFixed(6),
+                    lng: Number(longitude).toFixed(6)
+                }
+            )
+        ).openPopup()
 
-        // Trigger a resize event after the map is initialized to ensure it renders correctly
         setTimeout(() => {
             if (mapInstanceRef.current) {
                 mapInstanceRef.current.invalidateSize()
             }
         }, 100)
 
-        // Cleanup function
         return () => {
             if (mapInstanceRef.current) {
                 mapInstanceRef.current.remove()
@@ -71,9 +74,6 @@ export function MapCard({ latitude, longitude, title = "Location", zoom = 13, cl
                         <MapPin className="size-5 text-primary" />
                         {title}
                     </CardTitle>
-                    <Badge variant="outline" className="font-mono text-xs">
-                        {latitude.toFixed(6)}, {longitude.toFixed(6)}
-                    </Badge>
                 </div>
             </CardHeader>
             <CardContent>

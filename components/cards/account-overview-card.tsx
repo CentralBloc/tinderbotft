@@ -31,9 +31,12 @@ export default function AccountsOverview({ accounts }: Readonly<AccountsOverview
     // Define colors for each status
     const COLORS = {
         active: "#10b981", // green
-        inactive: "#ef4444", // red
+        inactive: "#0a010a", // black
         expired: "#6b7280", // gray
-        working : "#f59e0b", // yellow
+        working : "#0b2af5", // blue
+        banned: "#ef4444", // red
+        shadowban: "#f55d0b", // orange
+        paused: "#bb0bf5", // purple
 
     }
 
