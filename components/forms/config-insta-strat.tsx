@@ -20,7 +20,7 @@ import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/compon
 import {ImageUploader} from "../image-uploader"
 
 import {useEffect} from "react"
-import {useCreateInstaActions, useInstaActions} from "@/services/insta-action/hooks";
+import {useCreateInstaActions} from "@/services/insta-action/hooks";
 import {InstaAction} from "@/types";
 
 // Define the schema for each action type
@@ -82,7 +82,7 @@ export default function InstaActionForm({ daysNumber, instaStratId, existingActi
     const router = useRouter()
 
     // Fetch existing actions if not provided
-    const { data: fetchedActions, isLoading } = useInstaActions(instaStratId)
+    // const { data: fetchedActions, isLoading } = useInstaActions()
 
     // Mutation for creating/updating actions
     const createActionsMutation = useCreateInstaActions()
@@ -106,7 +106,7 @@ export default function InstaActionForm({ daysNumber, instaStratId, existingActi
 
     // Update form when existing actions are loaded
     useEffect(() => {
-        const actions = existingActions || fetchedActions
+        const actions = existingActions
 
         if (actions && actions.length > 0) {
             form.reset({
@@ -123,7 +123,7 @@ export default function InstaActionForm({ daysNumber, instaStratId, existingActi
                 })),
             })
         }
-    }, [existingActions, fetchedActions, form])
+    }, [existingActions, form])
 
     const { fields, append, remove } = useFieldArray({
         control: form.control,
@@ -235,7 +235,7 @@ export default function InstaActionForm({ daysNumber, instaStratId, existingActi
         }
     }
 
-    if (isLoading && !existingActions) {
+    if (!existingActions) {
         return <div className="flex justify-center p-8">Loading actions...</div>
     }
 
