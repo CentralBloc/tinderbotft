@@ -17,7 +17,8 @@ import {useStrategy} from "@/services/strategy/hooks";
 import {useProxy} from "@/services/proxy/hooks";
 import {MapCard} from "@/components/cards/map-card";
 import {useSwipesAccount} from "@/services/swipes/hooks";
-import {SwipeCard} from "./swipe-details-card"
+import {SwipesCarousel} from "@/components/cards/swipe-card-caroussel";
+
 
 interface AccountDetailViewProps {
     botAccount: BotAccountInterface
@@ -79,35 +80,35 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
     const getStatusColor = (status = "") => {
         switch (status.toLowerCase()) {
             case "active":
-                return "bg-green-700 text-white"
-            case "paused":
-                return "bg-purple-700 text-white"
-            case "banned":
-                return "bg-red-700 text-white"
-            case "inactive":
-                return "bg-gray-800 text-gray-200"
+                return "bg-green-800"
             case "expired":
-                return "bg-gray-700 text-gray-200"
+                return "bg-gray-800"
             case "working":
-                return "bg-blue-700 text-white"
+                return "bg-blue-800"
+            case "inactive":
+                return "bg-dark"
+            case "banned":
+                return "bg-red-800"
             case "shadowban":
-                return "bg-orange-700 text-white"
-            default:
-                return "bg-gray-800 text-gray-200"
+                return "bg-organge-800"
+            case "paused":
+                return "bg-purple-800"
+            case "completed":
+                return "bg-amber-800"
         }
     }
 
     return (
-        <div className="flex h-screen flex-col bg-black text-white md:flex-row">
+        <div className="flex h-screen flex-col md:flex-row">
             {/* Left side - Profile Image */}
             <div className="relative h-[40vh] w-full md:h-screen md:w-1/2">
                 <div className="absolute left-4 top-4 z-10">
-                    <Badge variant="outline" className="bg-black/50 text-white backdrop-blur-sm">
+                    <Badge className={`${getStatusColor(botAccount.status)} absolute left-4 top-4`}>
                         {botAccount.status || "Unknown"}
                     </Badge>
                 </div>
                 <div className="absolute right-4 top-4 z-10">
-                    <Badge variant="outline" className="bg-black/50 text-white backdrop-blur-sm">
+                    <Badge variant="default" className=" backdrop-blur-sm">
                         {modelName}
                     </Badge>
                 </div>
@@ -125,8 +126,8 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
             <div className="flex h-[60vh] w-full flex-col md:h-screen md:w-1/2">
                 <div className="flex-none p-6">
                     <h1 className="mb-2 text-3xl font-bold">{botAccount.title || "Untitled"}</h1>
-                    <div className="mb-4 flex items-center gap-2 text-gray-400">
-                        <Badge variant="secondary" className="bg-gray-800 text-gray-300">
+                    <div className="mb-4 flex items-center gap-2 ">
+                        <Badge variant="secondary" className="">
                             {strategyName}
                         </Badge>
                         <div className="flex-1"></div>
@@ -135,7 +136,7 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
                     </div>
 
                     <div className="mb-4">
-                        <p className="mb-1 text-gray-300">{botAccount.tinder_bio || "No bio available"}</p>
+                        <p className="mb-1 ">{botAccount.tinder_bio || "No bio available"}</p>
                     </div>
 
                     <Tabs defaultValue="details" className="w-full" onValueChange={setActiveTab}>
@@ -146,7 +147,7 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
 
                         <TabsContent value="details" className="space-y-2">
                             <div className="flex justify-between text-sm">
-                                <span className="text-gray-400">Age Range:</span>
+                                <span className="">Age Range:</span>
                                 <span>
                                     {botAccount.min_age || 18} - {botAccount.max_age || 35} years
                                 </span>
@@ -191,7 +192,7 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
                     {typeof botAccount.progress === "number" && (
                         <div className="mt-4 space-y-2">
                             <div className="flex justify-between text-sm">
-                                <div className="flex items-center text-gray-400">
+                                <div className="flex items-center">
                                     <Clock className="mr-1 size-3.5" />
                                     <span>Progress</span>
                                 </div>
@@ -224,15 +225,20 @@ export default function SingleAccountCard({botAccount, recentSwipes = [],}: Acco
                         <div className="p-6">
                             <h2 className="mb-4 text-xl font-bold">Recent Swipes</h2>
                             {swipes.length > 0 ? (
-                                swipes.map((swipe) => (
-                                    <div key={swipe.id} className="w-full">
-                                        <SwipeCard swipe={swipe} />
-                                    </div>
-                                ))
+                                <div className="w-full">
+                                    <SwipesCarousel
+                                        swipes={swipes}
+                                        className="mb-6"
+                                        onEdit={(id: string) => {
+                                            // You can implement navigation to the swipe details page here
+                                            console.log(`Edit swipe with ID: ${id}`)
+                                        }}
+                                    />
+                                </div>
                             ) : (
-                                <Card className="border-gray-800 bg-gray-900">
+                                <Card>
                                     <CardContent className="p-6 text-center">
-                                        <p className="text-gray-400">No recent swipes available</p>
+                                        <p>No recent swipes available</p>
                                     </CardContent>
                                 </Card>
                             )}

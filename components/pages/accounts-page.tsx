@@ -14,7 +14,7 @@ export default function BotAccountsPage() {
     return (
         <div className="container mx-auto space-y-6 p-4">
             <div className="flex flex-col items-start justify-between gap-4 sm:flex-row sm:items-center">
-                <h1 className="text-3xl font-bold">Bot Accounts</h1>
+                <h1 className="text-3xl font-bold">Tinder Accounts</h1>
                 <div className="flex w-full items-center gap-4 sm:w-auto">
                     <div className="flex gap-1 rounded-lg bg-muted p-1">
                         <Button

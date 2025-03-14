@@ -51,12 +51,12 @@ export function SwipeCard({ swipe, onEdit, onDelete, className }: Readonly<Swipe
             : 0
 
     return (
-        <Card className={`overflow-hidden border-0 bg-[#111827] text-white shadow-lg ${className}`}>
+        <Card className={`overflow-hidden border-0 shadow-lg ${className}`}>
             <CardContent className="p-6">
                 <div className="space-y-5">
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <div className="flex size-10 items-center justify-center rounded-full bg-[#1e293b]">
+                            <div className="flex size-10 items-center justify-center rounded-full">
                                 <Bot className="size-5 text-blue-400" />
                             </div>
                             <h3 className="text-lg font-semibold tracking-tight">{accountData?.title || "Unnamed Bot"}</h3>
@@ -64,7 +64,7 @@ export function SwipeCard({ swipe, onEdit, onDelete, className }: Readonly<Swipe
 
                         <DropdownMenu>
                             <DropdownMenuTrigger asChild>
-                                <Button variant="ghost" size="icon" className="size-8 text-gray-400 hover:text-white">
+                                <Button variant="ghost" size="icon" className="size-8 ">
                                     <MoreHorizontal className="size-4" />
                                     <span className="sr-only">Open menu</span>
                                 </Button>
@@ -82,45 +82,45 @@ export function SwipeCard({ swipe, onEdit, onDelete, className }: Readonly<Swipe
 
                     <div className="space-y-2">
                         <div className="flex justify-between text-sm">
-                            <span className="text-gray-400">Progress</span>
+                            <span>Progress</span>
                             <span className="font-medium">{progressPercentage.toFixed(0)}%</span>
                         </div>
                         <Progress value={progressPercentage} className="h-2 bg-[#1e293b]" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 text-sm">
-                        <div className="flex items-center gap-2 text-gray-400">
+                        <div className="flex items-center gap-2">
                             <Shield className="size-4 text-blue-400" />
                             <span className="truncate">{strategyData?.name || "Unknown Strategy"}</span>
                         </div>
-                        <div className="flex items-center gap-2 text-gray-400">
+                        <div className="flex items-center gap-2">
                             <Wifi className="size-4 text-blue-400" />
                             <span className="truncate">{accountData?.location || "Unknown Location"}</span>
                         </div>
                     </div>
 
                     <div className="grid grid-cols-3 gap-3">
-                        <div className="flex flex-col items-center rounded-lg bg-[#1e293b] p-3 transition-colors hover:bg-[#2d3748]">
+                        <div className="flex flex-col items-center rounded-lg p-3 transition-colors">
                             <ThumbsUp className="mb-2 size-5 text-blue-400" />
                             <span className="text-xl font-bold">{swipe.likes ?? 0}</span>
-                            <span className="text-xs text-gray-400">Likes</span>
+                            <span className="text-xs ">Likes</span>
                         </div>
-                        <div className="flex flex-col items-center rounded-lg bg-[#1e293b] p-3 transition-colors hover:bg-[#2d3748]">
+                        <div className="flex flex-col items-center rounded-lg p-3 transition-colors ">
                             <ArrowLeftRight className="mb-2 size-5 text-blue-400" />
                             <span className="text-xl font-bold">{swipe.swipe_number ?? 0}</span>
-                            <span className="text-xs text-gray-400">Swipes</span>
+                            <span className="text-xs ">Swipes</span>
                         </div>
-                        <div className="flex flex-col items-center rounded-lg bg-[#1e293b] p-3 transition-colors hover:bg-[#2d3748]">
+                        <div className=" flex flex-col items-center  rounded-lg p-3 transition-colors">
                             <Heart className="mb-2 size-5 text-blue-400" />
                             <span className="text-xl font-bold">{swipe.matches ?? 0}</span>
-                            <span className="text-xs text-gray-400">Matches</span>
+                            <span className="text-xs ">Matches</span>
                         </div>
                     </div>
                 </div>
             </CardContent>
-            <CardFooter className="border-t border-[#1e293b] bg-[#0f172a] p-4">
+            <CardFooter className="border-t  p-4">
                 <div className="flex w-full items-center justify-between">
-                    <div className="text-sm text-gray-400">
+                    <div className="text-sm ">
                         {swipe.days} / {strategyData?.days_number || 0} days
                     </div>
                     <div className="flex gap-2">
@@ -129,7 +129,7 @@ export function SwipeCard({ swipe, onEdit, onDelete, className }: Readonly<Swipe
                                 variant="outline"
                                 size="sm"
                                 onClick={() => onEdit(swipe.id)}
-                                className="border-[#1e293b] bg-transparent text-white hover:bg-[#1e293b]"
+                                className=" bg-transparent "
                             >
                                 View Details
                             </Button>
