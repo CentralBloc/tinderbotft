@@ -1,60 +1,49 @@
-"use client";
+"use client"
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
-import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import useAuth from "@/contexts/auth/hook";
-import { updateProfileSchema } from "@/lib/validations/user";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useEffect } from "react";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
+import {useEffect} from "react"
+import {useForm} from "react-hook-form"
+import {zodResolver} from "@hookform/resolvers/zod"
+import type {z} from "zod"
+import {Button} from "@/components/ui/button"
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form"
+import {Input} from "@/components/ui/input"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
+import {updateProfileSchema} from "@/lib/validations/user"
+import {UserInterface} from "@/types";
 
-type Credentials = z.infer<typeof updateProfileSchema>;
+type PersonalInfoProps = {
+	user: UserInterface,
+	onSubmit: (data: z.infer<typeof updateProfileSchema>) => Promise<void>
+}
 
-export default function ProfileForm() {
-	const { user, isLoading } = useAuth();
-
-	const form = useForm<Credentials>({
+export function ProfileForm({ user, onSubmit }: Readonly<PersonalInfoProps>) {
+	const form = useForm<z.infer<typeof updateProfileSchema>>({
 		resolver: zodResolver(updateProfileSchema),
 		defaultValues: {
 			username: user?.username ?? "",
 			email: user?.email ?? "",
 		},
 		mode: "all",
-	});
+	})
 
 	useEffect(() => {
-		const fetchData = async () => {
-			await form.reset({
-				username: user?.username ?? "",
-				email: user?.email ?? "",
-			});
-		};
-		fetchData();
-	}, [form, user]);
-
-	const onSubmit = async (data: Credentials) => {
-		console.log(data);
-	};
+		if (user) {
+			form.reset({
+				username: user.username ?? "",
+				email: user.email ?? "",
+			})
+		}
+	}, [form, user])
 
 	return (
-		<div className="space-y-10">
-			<div className="flex items-center gap-x-3">
-				<Avatar className="size-[5.5rem] border bg-slate-100/50">
-					<AvatarImage src={`https://api.dicebear.com/7.x/lorelei/svg?seed=${user?.email}`} alt={user?.username} />
-					<AvatarFallback>{user?.username.substring(0, 2).toUpperCase()}</AvatarFallback>
-				</Avatar>
-
-				<Button variant="ghost" className="rounded-full border">
-					Modifier
-				</Button>
-			</div>
-
-			<Form {...form}>
-				<form onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)} className="max-w-xl">
-					<div className="mb-5 space-y-2 md:space-y-3">
+		<Card>
+			<CardHeader>
+				<CardTitle>Personal Information</CardTitle>
+				<CardDescription >Update your account information</CardDescription>
+			</CardHeader>
+			<CardContent>
+				<Form {...form}>
+					<form onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)} className="space-y-4">
 						{/* Email field */}
 						<FormField
 							control={form.control}
@@ -63,37 +52,41 @@ export default function ProfileForm() {
 								<FormItem>
 									<FormLabel>Email</FormLabel>
 									<FormControl>
-										<Input placeholder="johndoe@gmail.com" {...field} readOnly />
+										<Input
+											placeholder="johndoe@gmail.com"
+											{...field}
+											readOnly
+											className="cursor-not-allowed "
+										/>
+									</FormControl>
+									<FormMessage />
+									<p className="mt-1 text-xs ">Email cannot be updated</p>
+								</FormItem>
+							)}
+						/>
+
+						{/* Username field */}
+						<FormField
+							control={form.control}
+							name="username"
+							render={({ field }) => (
+								<FormItem>
+									<FormLabel>Username</FormLabel>
+									<FormControl>
+										<Input placeholder="john52" {...field} />
 									</FormControl>
 									<FormMessage />
 								</FormItem>
 							)}
 						/>
 
-						<div className="grid gap-3 md:grid-cols-2">
-							{/* Username field */}
-							<FormField
-								control={form.control}
-								name="username"
-								render={({ field }) => (
-									<FormItem>
-										<FormLabel>Nom d&apos;utilisateur</FormLabel>
-										<FormControl>
-											<Input placeholder="john52" {...field} readOnly />
-										</FormControl>
-										<FormMessage />
-									</FormItem>
-								)}
-							/>
-							{/* PhoneNumber field */}
-						</div>
-					</div>
-
-					<Button type="submit" disabled>
-						Enregistrer
-					</Button>
-				</form>
-			</Form>
-		</div>
-	);
+						<Button type="submit" className="mt-2">
+							Save Changes
+						</Button>
+					</form>
+				</Form>
+			</CardContent>
+		</Card>
+	)
 }
+

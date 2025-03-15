@@ -1,6 +1,6 @@
-import { Breadcrumbs } from "@/components/pagers/breadcrumbs";
-import ProfileForm from "@/components/forms/profile-form";
-import { Metadata } from "next";
+import {Breadcrumbs} from "@/components/pagers/breadcrumbs";
+import {Metadata} from "next";
+import ProfilePager from "@/components/pages/profile-page";
 
 export const metadata: Metadata = {
 	title: "Dashboard - Profile",
@@ -11,7 +11,7 @@ export default function ProfilePage() {
 	return (
 		<div className="space-y-5">
 			<Breadcrumbs segments={[{ title: "Profile" }]} />
-			<ProfileForm />
+			<ProfilePager />
 		</div>
 	);
 }
