@@ -24,7 +24,7 @@ interface ColoredMapProps {
 
 export function ColoredMap({
                                title = "Location Map",
-                               zoom = 1,
+                               zoom = 5,
                                className = "",
                                locations = [],
                            }: Readonly<ColoredMapProps>) {
@@ -231,7 +231,7 @@ export function ColoredMap({
                         <MapPin className="size-3 text-primary" />
                         {title}
                     </CardTitle>
-                    <div className="text-sm text-muted-foreground">{locations?.length || 0} tinder accounts</div>
+                    <div className="text-sm text-muted-foreground">{locations?.length || 0} locations</div>
                 </div>
             </CardHeader>
             <CardContent>
@@ -240,3 +240,4 @@ export function ColoredMap({
         </Card>
     )
 }
+
