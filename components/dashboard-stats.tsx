@@ -5,6 +5,7 @@ import {ArrowLeftRight, Heart, ThumbsUp} from "lucide-react";
 import {Card} from "@/components/ui/card";
 import {useAllAccountStats, useBotaccounts} from "@/services/bot-account/hooks";
 import AccountsOverview from "@/components/cards/account-overview-card";
+import MapPage from "@/components/pages/map-page";
 
 
 export default function DashboardStats() {
@@ -32,8 +33,7 @@ export default function DashboardStats() {
 
 				<div className="grid gap-4 md:grid-cols-2">
 					<Card className="p-6">
-						<h3 className="mb-4 font-semibold">Accounts Locations</h3>
-						<div className="aspect-[16/9] rounded-lg bg-muted"></div>
+						<MapPage />
 					</Card>
 
 					<Card className="p-6">

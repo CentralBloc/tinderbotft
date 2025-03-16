@@ -51,6 +51,7 @@ export const startAccount = async (id: string) => {
 
 export const stopAccount = async (id: string) => {
     const response = await axios.delete(`/stop-process/${id}`);
+    return response.data;
 }
 
 export const updateAccountContent = async (id: string) => {
@@ -65,5 +66,10 @@ export const setAccountBio = async (id: string, bio: string) => {
 
 export const getAllAccountStats = async () => {
     const response = await axios.get("/get-all-accounts-stats/");
+    return response.data;
+}
+
+export const getAllAccountLocations = async () => {
+    const response = await axios.get("/get-account-location/");
     return response.data;
 }

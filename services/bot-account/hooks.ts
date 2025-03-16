@@ -2,6 +2,7 @@ import {
   addAccount,
   createBotAccountCredentials,
   getAccountById,
+  getAllAccountLocations,
   getAllAccounts,
   getAllAccountStats,
   removeAccount,
@@ -23,6 +24,7 @@ export const botaccountQueryKeys = {
   updateBotaccountContentKey: (id: string) => ["updateBotaccountContent"],
   setAccountBioKey: (id: string) => ["setAccountBio", id],
   getAllAccountStatsKey: ["getAllAccountStats"],
+  getAllAccountsLocationsKey: ["getAllAccountsLocations"],
 };
 
 export const useBotaccount = (id: string) => {
@@ -43,6 +45,13 @@ export const useAllAccountStats = () => {
     return useQuery({
         queryKey: botaccountQueryKeys.getAllAccountStatsKey,
         queryFn: () => getAllAccountStats(),
+    });
+}
+
+export const useAllAccountsLocations = () => {
+    return useQuery({
+        queryKey: botaccountQueryKeys.getAllAccountsLocationsKey,
+        queryFn: () => getAllAccountLocations(),
     });
 }
 

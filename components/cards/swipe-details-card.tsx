@@ -85,7 +85,7 @@ export function SwipeCard({ swipe, onEdit, onDelete, className }: Readonly<Swipe
                             <span>Progress</span>
                             <span className="font-medium">{progressPercentage.toFixed(0)}%</span>
                         </div>
-                        <Progress value={progressPercentage} className="h-2 bg-[#1e293b]" />
+                        <Progress value={progressPercentage} className="h-2" />
                     </div>
 
                     <div className="grid grid-cols-2 gap-4 text-sm">

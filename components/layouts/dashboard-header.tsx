@@ -1,7 +1,7 @@
 "use client";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Button } from "@/components/ui/button";
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar";
+import {Button} from "@/components/ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,12 +12,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import useAuth from "@/contexts/auth/hook";
-import { routes } from "@/lib/routes";
-import { User } from "lucide-react";
+import {routes} from "@/lib/routes";
+import {User} from "lucide-react";
 import Link from "next/link";
 import LogoutButton from "../logout-button";
 import MobileDashboardSidebar from "./mobile-dashboard-sidebar";
-import { Skeleton } from "../ui/skeleton";
+import {Skeleton} from "../ui/skeleton";
+import {ThemeToggle} from "@/components/theme-toogle";
 
 export default function DashboardHeader() {
   const { user, isLoading } = useAuth();
@@ -49,6 +50,7 @@ export default function DashboardHeader() {
         {/*		</div>*/}
         {/*	)*/}
         {/*)}*/}
+        <ThemeToggle />
         <Button asChild>
           <Link href={routes.dashboard.account.add}>Add new account</Link>
         </Button>
