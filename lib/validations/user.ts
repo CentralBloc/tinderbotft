@@ -1,4 +1,4 @@
-import { z } from "zod";
+import {z} from "zod";
 
 export const updateProfileSchema = z
 	.object({
@@ -8,16 +8,11 @@ export const updateProfileSchema = z
 		email: z.string().email({
 			message: "Veuillez entrer une adresse mail valide",
 		}),
-		phoneNo: z
-			.string()
-			.min(8, {
-				message: "Le numéro de téléphone doit contenir au moins 8 chiffres",
-			})
-			.max(15, {
-				message: "Le numéro de téléphone doit contenir au plus 15 chiffres",
-			})
-			.regex(/^[0-9]+$/, {
-				message: "Le numéro de téléphone doit contenir uniquement des chiffres",
-			}),
+		last_name: z.string().min(2, {
+			message: "Le nom doit contenir au moins 2 caractères",
+		}),
+		first_name: z.string().min(2, {
+			message: "Le prénom doit contenir au moins 2 caractères",
+		}),
 	})
 	.required();

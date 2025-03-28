@@ -2,7 +2,7 @@ import {
   allowUser,
   createAccount,
   createAccountCredentials,
-  editProfile,
+  editUserProfile,
   getAllUsers,
   getMe,
   getUserStats,
@@ -17,7 +17,7 @@ export const usersQueryKeys = {
   meKey: ["me"],
   userKey: (id: string) => ["user", id],
   createAccountKey: ["create-account"],
-  editProfileKey: (id: string) => ["edit-profile", id],
+  editProfileKey:  ["edit-profile"],
   deleteUserKey: (id: string) => ["delete-user", id],
   userStatsKey: ["user-stats"],
   allowAccessKey: ["allow-access"],
@@ -55,20 +55,6 @@ export const useCreateAccount = () => {
   });
 };
 
-export const useEditProfile = (userId: string) => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationKey: usersQueryKeys.editProfileKey(userId),
-    mutationFn: (credentials: createAccountCredentials) =>
-      editProfile(userId, credentials),
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: usersQueryKeys.meKey,
-      });
-    },
-  });
-};
 
 export const useAllowAccess = (id: string) => {
   const queryClient = useQueryClient();
@@ -95,5 +81,17 @@ export const useUpdateProfilePicture = () => {
             queryKey: usersQueryKeys.meKey,
         });
     }
+  });
+}
+
+export const useEditUserProfile = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: usersQueryKeys.editProfileKey,
+    mutationFn: (credentials: Partial<createAccountCredentials>) => editUserProfile(credentials),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: usersQueryKeys.meKey });
+    },
   });
 }

@@ -15,6 +15,8 @@ export interface createAccountCredentials {
   username: string;
   email: string;
   password: string;
+  last_name: string;
+  first_name: string;
 }
 
 /**
@@ -28,7 +30,7 @@ export const editProfile = async (
   credentials: createAccountCredentials,
 ): Promise<UserInterface> => {
   const response = await axios
-    .put(`/users${id}`, credentials)
+    .patch(`/update-profile`, credentials)
     .then((data) => data);
   return response.data;
 };
@@ -68,3 +70,13 @@ export const getAllUsers = async () => {
   const response = await axios.get("/get-all-users/");
   return response.data;
 };
+
+
+export const editUserProfile = async (
+    credentials: Partial<createAccountCredentials>,
+    ): Promise<UserInterface> => {
+    const response = await axios
+        .patch(`/update-profile/`, credentials)
+        .then((data) => data);
+    return response.data;
+}
