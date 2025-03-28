@@ -1,27 +1,20 @@
 "use client";
 
-import { PasswordInput } from "@/components/password-input";
-import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
-import { toast } from "@/components/ui/use-toast";
-import { registerSchema } from "@/lib/validations/auth";
-import { useCreateAccount } from "@/services/users/hooks";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { Loader2 } from "lucide-react";
+import {PasswordInput} from "@/components/password-input";
+import {Button} from "@/components/ui/button";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage,} from "@/components/ui/form";
+import {Input} from "@/components/ui/input";
+import {toast} from "@/components/ui/use-toast";
+import {registerSchema} from "@/lib/validations/auth";
+import {useCreateAccount} from "@/services/users/hooks";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {Loader2} from "lucide-react";
 import Link from "next/link";
-import { useForm } from "react-hook-form";
-import { z } from "zod";
-import { useRouter } from "next/navigation";
-import { routes } from "@/lib/routes";
+import {useForm} from "react-hook-form";
+import {z} from "zod";
+import {useRouter} from "next/navigation";
+import {routes} from "@/lib/routes";
 
 type Credentials = z.infer<typeof registerSchema>;
 
@@ -35,6 +28,8 @@ export default function RegisterForm() {
       username: "",
       email: "",
       password: "",
+        last_name: "",
+        first_name: "",
       acceptTerms: undefined,
     },
     mode: "all",

@@ -12,25 +12,31 @@ export const loginSchema = z.object({
 export const registerSchema = z
   .object({
     username: z.string().min(2, {
-      message: "Le nom d'utilisateur doit contenir au moins 2 caractères",
+      message: "Username must be at least 2 characters",
     }),
     email: z.string().email({
-      message: "Veuillez entrer une adresse mail valide",
+      message: "Enter a valid email address",
+    }),
+    last_name: z.string().min(2, {
+      message: "The last name must be at least 2 characters",
+    }),
+    first_name: z.string().min(2, {
+      message: "The first name must be at least 2 characters",
     }),
     password: z
       .string()
       .min(8, {
-        message: "Le mot de passe doit contenir au moins 8 caractères",
+        message: "Password must be at least 8 characters",
       })
       .max(50)
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?!@#$%^&*])(?=.{8,})/, {
         message:
-          "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
+          "The password must contain at least 8 characters, one upper case, one lower case, one number and one special character.",
       }),
     acceptTerms: z.literal(true, {
       errorMap: () => ({
         message:
-          "Vous devez accepter les conditions d'utilisation et la politique de confidentialité",
+          "You must accept the terms of use and privacy policy.",
       }),
     }),
   })
@@ -38,7 +44,7 @@ export const registerSchema = z
 
 export const forgotPasswordSchema = z.object({
   email: z.string().email({
-    message: "Veuillez entrer une adresse mail valide",
+    message: "Please enter a valid e-mail address",
   }),
 });
 
@@ -47,20 +53,20 @@ export const resetPasswordSchema = z
     newPassword: z
       .string()
       .min(8, {
-        message: "Le mot de passe doit contenir au moins 8 caractères",
+        message: "Password must contain at least 8 characters",
       })
       .max(50)
       .regex(/^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[?!@#$%^&*])(?=.{8,})/, {
         message:
-          "Le mot de passe doit contenir au moins 8 caractères, une majuscule, une minuscule, un chiffre et un caractère spécial",
+          "The password must contain at least 8 characters, one upper case, one lower case, one number and one special character.",
       }),
     confirmPassword: z.string().min(8, {
-      message: "Le mot de passe doit contenir au moins 8 caractères",
+      message: "Password must contain at least 8 characters",
     }),
     token: z.string(),
     uid: z.string(),
   })
   .refine((data) => data.newPassword === data.confirmPassword, {
-    message: "Les mots de passe ne correspondent pas",
+    message: "Passwords don't match",
     path: ["confirmPassword"],
   });
