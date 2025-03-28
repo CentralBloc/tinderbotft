@@ -1,12 +1,14 @@
 import axios from "axios";
-import { getSession, signOut } from "next-auth/react";
+import {getSession, signOut} from "next-auth/react";
 
 /**
  * axios request interceptors
  */
 axios.interceptors.request.use(async (config) => {
   config.baseURL = process.env.NEXT_PUBLIC_API_URL!;
-  config.headers["Content-Type"] = "application/json";
+  if (!config.headers["Content-Type"] && !(config.data instanceof FormData)) {
+      config.headers["Content-Type"] = "application/json";
+  }
   config.withCredentials = false;
 
   const session = await getSession();
@@ -28,5 +30,15 @@ axios.interceptors.response.use(
     return Promise.reject(error);
   },
 );
+
+/**
+ * axios form data interceptors
+ */
+axios.interceptors.request.use((config) => {
+  if (config.data instanceof FormData) {
+    config.headers["Content-Type"] = "multipart/form-data";
+  }
+  return config;
+});
 
 export default axios;

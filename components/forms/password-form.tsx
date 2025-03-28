@@ -9,36 +9,55 @@ import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/
 import {Input} from "@/components/ui/input"
 import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {Eye, EyeOff} from "lucide-react"
+import {useChangePassword} from "@/services/accounts/hooks";
+import {toast} from "@/components/ui/use-toast";
 
 const passwordSchema = z
     .object({
-        currentPassword: z.string().min(1, "Current password is required"),
-        newPassword: z.string().min(8, "Password must be at least 8 characters"),
-        confirmPassword: z.string().min(1, "Please confirm your password"),
+        old_password: z.string().min(1, "Current password is required"),
+        new_password: z.string().min(8, "Password must be at least 8 characters"),
+        confirm_password: z.string().min(1, "Please confirm your password"),
     })
-    .refine((data) => data.newPassword === data.confirmPassword, {
+    .refine((data) => data.new_password === data.confirm_password, {
         message: "Passwords do not match",
-        path: ["confirmPassword"],
+        path: ["confirm_password"],
     })
 
-type PasswordFormProps = {
-    onSubmit: (data: z.infer<typeof passwordSchema>) => Promise<void>
-}
 
-export function PasswordForm({ onSubmit }: PasswordFormProps) {
+export function PasswordForm() {
     const [showCurrentPassword, setShowCurrentPassword] = useState(false)
     const [showNewPassword, setShowNewPassword] = useState(false)
     const [showConfirmPassword, setShowConfirmPassword] = useState(false)
+    const changePasswordMutation = useChangePassword()
 
     const form = useForm<z.infer<typeof passwordSchema>>({
         resolver: zodResolver(passwordSchema),
         defaultValues: {
-            currentPassword: "",
-            newPassword: "",
-            confirmPassword: "",
+            old_password: "",
+            new_password: "",
+            confirm_password: "",
         },
         mode: "all",
     })
+
+    const onSubmit = async (data: z.infer<typeof passwordSchema>) => {
+        await changePasswordMutation.mutateAsync(data,
+            {
+                onSuccess: async () => {
+                    toast({
+                        title: "Password Updated Successfully",
+                    });
+                },
+                onError: (error: any) => {
+                    toast({
+                        variant: "destructive",
+                        title: "Une erreur s'est produite",
+                        description: error.response?.data?.error,
+                    });
+                },
+            },
+        )
+    }
 
     return (
         <Card >
@@ -48,11 +67,11 @@ export function PasswordForm({ onSubmit }: PasswordFormProps) {
             </CardHeader>
             <CardContent>
                 <Form {...form}>
-                    <form onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)} className="space-y-4">
+                    <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-4">
                         {/* Current Password field */}
                         <FormField
                             control={form.control}
-                            name="currentPassword"
+                            name="old_password"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Current Password</FormLabel>
@@ -82,7 +101,7 @@ export function PasswordForm({ onSubmit }: PasswordFormProps) {
                         {/* New Password field */}
                         <FormField
                             control={form.control}
-                            name="newPassword"
+                            name="new_password"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>New Password</FormLabel>
@@ -112,7 +131,7 @@ export function PasswordForm({ onSubmit }: PasswordFormProps) {
                         {/* Confirm Password field */}
                         <FormField
                             control={form.control}
-                            name="confirmPassword"
+                            name="confirm_password"
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel>Confirm New Password</FormLabel>

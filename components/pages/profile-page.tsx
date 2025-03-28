@@ -13,23 +13,11 @@ import useAuth from "@/contexts/auth/hook";
 import {ProfileForm} from "@/components/forms/profile-form";
 import {PasswordForm} from "@/components/forms/password-form";
 import {ProfileAvatar} from "@/components/pagers/profile-avatar";
-import {z} from "zod";
-import {updateProfileSchema} from "@/lib/validations/user";
 
 export default function ProfilePager() {
     const [isEditing, setIsEditing] = useState(false)
     const { user, isLoading } = useAuth();
 
-    const handleProfileUpdate = async (data: z.infer<typeof updateProfileSchema>) => {
-        console.log("Updating profile:", data)
-        // Implement your API call here
-    }
-
-    // Handle password update
-    const handlePasswordUpdate = async (data: any) => {
-        console.log("Updating password:", data)
-        // Implement your API call here
-    }
 
     return (
         <div>
@@ -48,10 +36,10 @@ export default function ProfilePager() {
 
                         <div className="space-y-6">
                             {/* Personal Information Form */}
-                            {user ? <ProfileForm user={user} onSubmit={handleProfileUpdate} /> : <div>Loading...</div>}
+                            {user ? <ProfileForm user={user}  /> : <div>Loading...</div>}
 
                             {/* Password Form */}
-                                <PasswordForm onSubmit={handlePasswordUpdate} />
+                                <PasswordForm  />
                         </div>
                     </div>
                 </TabsContent>

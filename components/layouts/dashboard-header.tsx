@@ -19,9 +19,21 @@ import LogoutButton from "../logout-button";
 import MobileDashboardSidebar from "./mobile-dashboard-sidebar";
 import {Skeleton} from "../ui/skeleton";
 import {ThemeToggle} from "@/components/theme-toogle";
+import {usePicture} from "@/services/pictures/hooks";
+import {useEffect, useState} from "react";
 
 export default function DashboardHeader() {
   const { user, isLoading } = useAuth();
+  const initialAvatar = user?.email ? `https://api.dicebear.com/7.x/lorelei/svg?seed=${user.email}` : "";
+  const [avatarSrc, setAvatarSrc] = useState<string>(initialAvatar);
+  const { data: pictureData, isPending: picturePending } = usePicture(
+    typeof user?.profile_picture === "string" ? user.profile_picture : ""
+  );
+  useEffect(() => {
+    if (pictureData?.link) {
+      setAvatarSrc(pictureData.link);
+    }
+  }, [pictureData]);
 
   return (
     <div className="z-50 mb-8 flex items-center justify-between border-b bg-background pb-3 max-lg:container max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:pt-3">
@@ -62,7 +74,7 @@ export default function DashboardHeader() {
             >
               <Avatar className="border">
                 <AvatarImage
-                  src={`https://api.dicebear.com/7.x/lorelei/svg?seed=${user?.email}`}
+                  src={avatarSrc}
                   alt={user?.username}
                 />
                 <AvatarFallback>

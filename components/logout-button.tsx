@@ -1,8 +1,8 @@
 "use client";
 
-import { routes } from "@/lib/routes";
-import { LogOut } from "lucide-react";
-import { signOut } from "next-auth/react";
+import {routes} from "@/lib/routes";
+import {LogOut} from "lucide-react";
+import {signOut} from "next-auth/react";
 
 export default function LogoutButton() {
 	return (
@@ -15,7 +15,7 @@ export default function LogoutButton() {
 			}
 		>
 			<LogOut className="mr-2 size-4" aria-hidden="true" />
-			<span>Se déconnecter</span>
+			<span>Logout</span>
 		</div>
 	);
 }

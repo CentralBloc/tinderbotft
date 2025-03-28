@@ -40,3 +40,18 @@ export const resetPassword = async (
   });
   return response.data;
 };
+
+
+export const changePassword = async (
+    old_password: string,
+    new_password: string,
+    confirm_password: string,
+    ) => {
+    const response = await axios.post(`/change-password/`, {
+        old_password,
+        new_password,
+        confirm_password,
+    });
+    return response.data;
+}
+

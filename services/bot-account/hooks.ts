@@ -1,16 +1,17 @@
 import {
-  addAccount,
-  createBotAccountCredentials,
-  getAccountById,
-  getAllAccountLocations,
-  getAllAccounts,
-  getAllAccountStats,
-  removeAccount,
-  setAccountBio,
-  startAccount,
-  stopAccount,
-  updateAccount,
-  updateAccountContent,
+    addAccount,
+    addAccountUserName,
+    createBotAccountCredentials,
+    getAccountById,
+    getAllAccountLocations,
+    getAllAccounts,
+    getAllAccountStats,
+    removeAccount,
+    setAccountBio,
+    startAccount,
+    stopAccount,
+    updateAccount,
+    updateAccountContent,
 } from "@/services/bot-account/queries";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
@@ -18,6 +19,7 @@ export const botaccountQueryKeys = {
   botaccountKey: (id: string) => ["botaccount", id],
   botaccountsKey: ["botaccounts"],
   addBotaccountKey: ["addBotaccount"],
+  addAccountUserNameKey: (id: string) => ["addAccountUserName"],
   updateBotaccountKey: (id: string) => ["updateBotaccount"],
   removeBotaccountKey: (id: string) => ["removeBotaccount"],
   startBotaccountKey: (id: string) => ["startBotaccount"],
@@ -145,6 +147,19 @@ export const useSetAccountBio = (id: string) => {
 
     return useMutation({
         mutationFn: (bio: string) => setAccountBio(id, bio),
+        onSettled: () => {
+        queryClient.invalidateQueries({
+            queryKey: botaccountQueryKeys.botaccountsKey,
+        });
+        },
+    });
+}
+
+export const useAddAccountUserName = (id: string) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: (username: string) => addAccountUserName(id, username),
         onSettled: () => {
         queryClient.invalidateQueries({
             queryKey: botaccountQueryKeys.botaccountsKey,

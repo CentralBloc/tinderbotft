@@ -1,15 +1,13 @@
-import {
-  confirmEmail,
-  forgotPassword,
-  resetPassword,
-} from "@/services/accounts/queries";
-import { useMutation, useQuery } from "@tanstack/react-query";
+import {changePassword, confirmEmail, forgotPassword, resetPassword,} from "@/services/accounts/queries";
+import {useMutation, useQuery} from "@tanstack/react-query";
 
 // --------------- QUERY & MUTATION KEYS --------------- //
 export const accountsQueryKeys = {
   confirmEmailKey: ["confirm-email"],
   forgotPasswordKey: ["forgot-password"],
   resetPasswordKey: ["reset-password"],
+  changePasswordKey: ["change-password"],
+    updateProfilePictureKey: ["update-profile-picture"],
 };
 
 // --------------- QUERIES HOOKS --------------- //
@@ -43,3 +41,18 @@ export const useResetPassword = (token: string, uid: string) => {
     }) => resetPassword(token, uid, newPassword, confirmPassword),
   });
 };
+
+export const useChangePassword = () => {
+  return useMutation({
+    mutationKey: accountsQueryKeys.changePasswordKey,
+    mutationFn: ({
+      old_password,
+      new_password,
+      confirm_password,
+    }: {
+      old_password: string;
+      new_password: string;
+      confirm_password: string;
+    }) => changePassword(old_password, new_password, confirm_password),
+  });
+}

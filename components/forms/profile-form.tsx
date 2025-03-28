@@ -13,10 +13,9 @@ import {UserInterface} from "@/types";
 
 type PersonalInfoProps = {
 	user: UserInterface,
-	onSubmit: (data: z.infer<typeof updateProfileSchema>) => Promise<void>
 }
 
-export function ProfileForm({ user, onSubmit }: Readonly<PersonalInfoProps>) {
+export function ProfileForm({ user }: Readonly<PersonalInfoProps>) {
 	const form = useForm<z.infer<typeof updateProfileSchema>>({
 		resolver: zodResolver(updateProfileSchema),
 		defaultValues: {

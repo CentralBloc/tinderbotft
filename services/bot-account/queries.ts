@@ -50,7 +50,7 @@ export const startAccount = async (id: string) => {
 };
 
 export const stopAccount = async (id: string) => {
-    const response = await axios.delete(`/stop-process/${id}`);
+    const response = await axios.patch(`/stop-process/${id}`);
     return response.data;
 }
 
@@ -71,5 +71,10 @@ export const getAllAccountStats = async () => {
 
 export const getAllAccountLocations = async () => {
     const response = await axios.get("/get-account-location/");
+    return response.data;
+}
+
+export const addAccountUserName = async (id: string, username: string) => {
+    const response = await axios.patch(`/add-account-username/${id}/`, { username });
     return response.data;
 }

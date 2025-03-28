@@ -18,7 +18,7 @@ export default function AddModelPage() {
                 ]}
             />
             <div className="w-full">
-                <AddOrUpdateModelForm mode={"add"}/>
+                <AddOrUpdateModelForm mode="add"/>
             </div>
         </div>
     );

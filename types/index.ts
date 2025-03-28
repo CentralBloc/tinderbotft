@@ -20,12 +20,22 @@ export type MainNavItem = NavItemWithOptionalChildren;
 
 export type SidebarNavItem = NavItemWithChildren;
 
+export interface ImageInterface {
+  name: string;
+  type_file: string;
+  link: string;
+}
+
 export interface UserInterface {
   is_superuser: boolean;
   is_active: boolean;
   id: string;
   username: string;
+  first_name: string;
+  last_name: string;
   email: string;
+  profile_picture: ImageInterface | null;
+  created_at: Date;
 }
 
 export interface MessagesList {
@@ -112,6 +122,7 @@ export interface ProxyInterface {
 export interface BotAccountInterface {
   id: string;
   title: string;
+  username: string | undefined;
   modele: ModelInterface | undefined | string;
   token: string;
   refresh_token: string | null;
@@ -146,6 +157,7 @@ export interface ModelInterface {
   id: string;
   name: string;
   description: string;
+  image?: string | ImageInterface;
 }
 
 export interface AllModelsInterface {

@@ -7,7 +7,9 @@ import {
   getMe,
   getUserStats,
 } from "@/services/users/queries";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
+import {accountsQueryKeys} from "@/services/accounts/hooks";
+import {updateProfilePicture} from "@/services/users/file-queries";
 
 // --------------- QUERY & MUTATION KEYS --------------- //
 export const usersQueryKeys = {
@@ -81,3 +83,17 @@ export const useAllowAccess = (id: string) => {
     },
   });
 };
+
+export const useUpdateProfilePicture = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationKey: accountsQueryKeys.updateProfilePictureKey,
+    mutationFn: (file: File) => updateProfilePicture(file),
+    onSuccess() {
+        queryClient.invalidateQueries({
+            queryKey: usersQueryKeys.meKey,
+        });
+    }
+  });
+}

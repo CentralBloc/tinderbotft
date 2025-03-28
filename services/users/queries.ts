@@ -1,5 +1,5 @@
 import axios from "@/lib/axios";
-import { StatsInterface, UserInterface } from "@/types";
+import {StatsInterface, UserInterface} from "@/types";
 
 /**
  * Query to get user profile information

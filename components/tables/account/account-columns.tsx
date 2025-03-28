@@ -1,6 +1,7 @@
 import {BotAccountInterface} from "@/types";
 import {useEffect, useState} from "react";
 import {
+    useAddAccountUserName,
     useRemoveBotAccount,
     useSetAccountBio,
     useStartBotAccount,
@@ -13,13 +14,14 @@ import {
     BookUser,
     Check,
     ChevronsUpDown,
+    Earth,
     ExternalLink,
     Heart,
+    IdCard,
     Pause,
     PencilLine,
     Play,
     RefreshCcwDot,
-    SquareTerminal,
     ThumbsUp,
     Trash2
 } from "lucide-react";
@@ -56,6 +58,11 @@ interface TinderBioCellProps {
     }
 }
 
+interface UserNamesCellProps {
+    row: {
+        original: Partial<BotAccountInterface>
+    }
+}
 const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const deleteMutation = useRemoveBotAccount(row.original.id);
@@ -103,6 +110,20 @@ const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; })
                     <Pause size={20} color="#ff0000" strokeWidth={1.25} />
                 ) : (
                     <Play size={20} color="#065c00" strokeWidth={1.25} />
+                )}
+            </button>
+
+            <button
+                className="btn btn-primary"
+            >
+                {row.original.username ? (
+                    <Link href={`https://tinder.com/@${row.original.username}`}>
+                        <Earth size={20} color="#e100ff" strokeWidth={1.25} />
+                    </Link>
+                ) : (
+                    <span className="btn btn-primary disabled">
+                        <Earth size={20}  strokeWidth={1.25} />
+                    </span>
                 )}
             </button>
             <button className="btn btn-primary" onClick={handleUpdateContent}>
@@ -221,12 +242,6 @@ export const TinderBioCell = ({ row }: TinderBioCellProps) => {
 
     return (
         <div className="flex items-center">
-            <Link href={routes.dashboard.account.view(row.original.id ?? "")}>
-                <Button variant="ghost" className="flex items-center gap-2 ">
-                    <ExternalLink color="#5c0783" />
-                </Button>
-            </Link>
-            <SquareTerminal color="#4053b5" />
             <TooltipProvider>
                 <Tooltip>
                     <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
@@ -264,6 +279,71 @@ export const TinderBioCell = ({ row }: TinderBioCellProps) => {
     )
 }
 
+export const AccountUserNameCell = ({ row }: UserNamesCellProps) => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
+    const [username, setUsername] = useState(row.original.username ?? "")
+    const updateMutation = useAddAccountUserName(row.original.id ?? "")
+
+    const handleSave = () => {
+        updateMutation.mutate(username)
+        setIsModalOpen(false)
+    }
+
+    const iconColor = row.original.username ? "text-blue-500" : "text-gray-500"
+
+    return (
+        <div className="flex items-center">
+            <TooltipProvider>
+                <Tooltip>
+                    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                        <TooltipTrigger asChild>
+                            <DialogTrigger asChild>
+                                <Button variant="ghost" className={`${iconColor} flex items-center gap-2`}>
+                                    <IdCard  />
+                                </Button>
+                            </DialogTrigger>
+                        </TooltipTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Edit Username</DialogTitle>
+                            </DialogHeader>
+                            <Input
+                                type="text"
+                                value={username}
+                                onChange={(e) => setUsername(e.target.value)}
+                                placeholder="Enter new username"
+                            />
+                            <DialogFooter>
+                                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                                    Cancel
+                                </Button>
+                                <Button onClick={handleSave}>Save</Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
+                    <TooltipContent>
+                        <p>{row.original.username ||  "No username set"}</p>
+                    </TooltipContent>
+                </Tooltip>
+            </TooltipProvider>
+        </div>
+    )
+}
+
+export const AccountInfoActionsCell = ({ row }: { row: { original: BotAccountInterface }; }) => {
+    return (
+        <div className="flex items-center gap-2">
+            <Link href={routes.dashboard.account.view(row.original.id ?? "")}>
+                <Button variant="ghost" className="flex items-center gap-2 ">
+                    <ExternalLink color="#5c0783" />
+                </Button>
+            </Link>
+            <AccountUserNameCell row={row} />
+            <TinderBioCell row={row} />
+        </div>
+    );
+}
+
 export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
     {
         accessorKey: "profile_url",
@@ -296,7 +376,7 @@ export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
                 return <Badge className="bg-gray-800">Expired</Badge>;
             } else if (row.original.status === "working") {
                 return <Badge className="bg-blue-800">Working</Badge>;
-            } else if (row.original.status === "inactive" || row.original.status === "standby") {
+            } else if (row.original.status === "inactive") {
                 return <Badge className="bg-black">Inactive</Badge>;
             } else if ( row.original.status === "banned") {
                 return <Badge className="bg-red-800">Ban</Badge>;
@@ -319,7 +399,7 @@ export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
     {
         accessorKey: "infos",
         header: "Account infos",
-        cell: ({ row }) => <TinderBioCell row={row} />,
+        cell: ({ row }) => <AccountInfoActionsCell row={row} />,
 
     },
     {
@@ -389,7 +469,7 @@ export const accountStatsColumns: ColumnDef<BotAccountInterface>[] = [
     {
         accessorKey: "infos",
         header: "Account infos",
-        cell: ({ row }) => <TinderBioCell row={row} />,
+        cell: ({ row }) => <AccountInfoActionsCell row={row} />,
 
     },
     {

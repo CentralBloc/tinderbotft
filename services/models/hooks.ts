@@ -1,12 +1,5 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {
-    addModel,
-    createModelCredentials,
-    getAllModels,
-    getModelById,
-    removeModel,
-    updateModel
-} from "@/services/models/queries";
+import {addModel, getAllModels, getModelById, removeModel, updateModel} from "@/services/models/queries";
 
 
 export const modelsQueryKeys = {
@@ -38,7 +31,7 @@ export const useAddModel = () => {
 
     return useMutation({
         mutationKey: modelsQueryKeys.addModelKey,
-        mutationFn: (credential: createModelCredentials) => addModel(credential),
+        mutationFn: (credential: FormData) => addModel(credential),
         onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: modelsQueryKeys.modelsKey,
@@ -51,7 +44,7 @@ export const useUpdateModel = (id: string) => {
     const queryClient = useQueryClient();
 
     return useMutation({
-        mutationFn: (credential: Partial<createModelCredentials>) => updateModel(id, credential),
+        mutationFn: (credential: FormData) => updateModel(id, credential),
         onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: modelsQueryKeys.modelsKey,
