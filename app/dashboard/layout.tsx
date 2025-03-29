@@ -1,11 +1,14 @@
 import DashboardHeader from "@/components/layouts/dashboard-header";
 import SideBar from "@/components/layouts/sidebar";
 import AuthProvider from "@/contexts/auth/provider";
+
 import React from "react";
+import {PageTransition} from "@/components/skeleton/page-transition";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
 	return (
 		<AuthProvider>
+			<PageTransition>
 			<div className="flex">
 				<SideBar />
 				<main className="dashboard-content h-screen w-full overflow-y-auto py-5">
@@ -15,6 +18,7 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 					</div>
 				</main>
 			</div>
+			</PageTransition>
 		</AuthProvider>
 	);
 }

@@ -23,7 +23,7 @@ export default function SingleAccountPage() {
                     },
                 ]}
             />
-            <div className="space-y-6">
+            <div className="space-y-4">
                 {account && (
                     <SingleAccountCard botAccount={account} />
                 )}

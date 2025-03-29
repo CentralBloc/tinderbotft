@@ -15,6 +15,7 @@ import {
     Check,
     ChevronsUpDown,
     Earth,
+    EarthLock,
     ExternalLink,
     Heart,
     IdCard,
@@ -122,7 +123,7 @@ const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; })
                     </Link>
                 ) : (
                     <span className="btn btn-primary disabled">
-                        <Earth size={20}  strokeWidth={1.25} />
+                        <EarthLock size={20}  strokeWidth={1.25} />
                     </span>
                 )}
             </button>

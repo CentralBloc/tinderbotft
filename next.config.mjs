@@ -6,6 +6,10 @@ const nextConfig = {
                 protocol: 'https',
                 hostname: 'images-ssl.gotinder.com',
             },
+            {
+                protocol: 'https',
+                hostname: 'flagsapi.com',
+            }
         ],
     }
 };

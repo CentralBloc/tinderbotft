@@ -9,7 +9,7 @@ import AccountTabs from "@/components/tabs/account-tabs"
 
 export default function BotAccountsPage() {
     const [viewType, setViewType] = useState<"grid" | "table">("table")
-    const { data: botAccounts = [] } = useBotaccounts()
+    const { data: botAccounts = [], isPending } = useBotaccounts()
 
     return (
         <div className="container mx-auto space-y-6 p-4">

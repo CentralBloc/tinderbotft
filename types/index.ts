@@ -143,6 +143,18 @@ export interface BotAccountInterface {
   latitude: number | undefined;
   location: string | undefined;
   timezone_field: string;
+  gender: string | undefined;
+  gender_interest: string | undefined;
+  birth_date: string | undefined;
+  school: string | undefined;
+  phone: string | undefined;
+  email: string | undefined;
+  interest: string[] | undefined;
+  looking_for: string[] | undefined;
+  zodiac: string | undefined;
+  education: string | undefined;
+  communication: string | undefined;
+
 }
 
 export interface StrategyInterface {
