@@ -385,8 +385,10 @@ export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
                 return ( <Badge className="bg-orange-800">shadow-ban</Badge>)
             } else if ( row.original.status === "paused") {
                 return <Badge className="bg-purple-800">Paused</Badge>;
-            } else if ( row.original.status === "completed" || row.original.status ==='standby') {
-                return <Badge className="bg-amber-500">{row.original.status}</Badge>;
+            } else if ( row.original.status === "completed" ) {
+                return <Badge className="bg-amber-500">Completed</Badge>;
+            } else if ( row.original.status === "standby") {
+                return <Badge className="bg-sky-600">StandBy</Badge>;
             } else {
                 return <Badge variant="destructive">{row.original.status}</Badge>;
             }
@@ -460,8 +462,10 @@ export const accountStatsColumns: ColumnDef<BotAccountInterface>[] = [
                 return ( <Badge className="bg-orange-800">shadow-ban</Badge>)
             } else if ( row.original.status === "paused") {
                 return <Badge className="bg-purple-800">Paused</Badge>;
-            } else if ( row.original.status === "completed" || row.original.status ==='standby') {
-                return <Badge className="bg-amber-500">{row.original.status}</Badge>;
+            } else if ( row.original.status === "completed" ) {
+                return <Badge className="bg-amber-500">Completed</Badge>;
+            } else if ( row.original.status === "standby") {
+                return <Badge className="bg-sky-600">StandBy</Badge>;
             } else {
                 return <Badge variant="destructive">{row.original.status}</Badge>;
             }

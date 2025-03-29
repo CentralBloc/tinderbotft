@@ -5,7 +5,7 @@ import {useBotaccount} from "@/services/bot-account/hooks";
 import {routes} from "@/lib/routes";
 import {Breadcrumbs} from "@/components/pagers/breadcrumbs";
 import SingleAccountCard from "@/components/cards/single-account-card";
-
+import ProfileCardSkeleton from "@/components/skeleton/card-skeleton";
 
 export default function SingleAccountPage() {
     const { id } = useParams();
@@ -24,8 +24,10 @@ export default function SingleAccountPage() {
                 ]}
             />
             <div className="space-y-4">
-                {account && (
-                    <SingleAccountCard botAccount={account} />
+                {isLoading ? (
+                    <ProfileCardSkeleton />
+                ) : (
+                    account && <SingleAccountCard botAccount={account} />
                 )}
             </div>
         </div>

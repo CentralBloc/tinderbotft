@@ -54,7 +54,7 @@ export function SwipesCarousel({ swipes, onEdit, onDelete, className }: SwipesCa
                 style={{ scrollbarWidth: "none", msOverflowStyle: "none" }}
             >
                 {swipes.map((swipe) => (
-                    <div key={swipe.id} className="w-[350px] flex-none snap-start">
+                    <div key={swipe.id} className="w-[300px] flex-none snap-start">
                         <SwipeCard
                             swipe={swipe}
                             onEdit={onEdit}

@@ -21,17 +21,16 @@ import {
 import {Card, CardContent} from "@/components/ui/card"
 import {Button} from "@/components/ui/button"
 import {Badge} from "@/components/ui/badge"
-import {Progress} from "@/components/ui/progress"
 import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs"
-import {ScrollArea} from "@/components/ui/scroll-area"
 import type {BotAccountInterface, ModelInterface, ProxyInterface, StrategyInterface} from "@/types"
 import {routes} from "@/lib/routes"
 import {useModel} from "@/services/models/hooks"
 import {useStrategy} from "@/services/strategy/hooks"
 import {useProxy} from "@/services/proxy/hooks"
-import {MapCard} from "@/components/cards/map-card"
 import {useSwipesAccount} from "@/services/swipes/hooks"
-import {SwipesCarousel} from "@/components/cards/swipe-card-caroussel"
+import {MapCard} from "@/components/cards/map-card";
+import {Progress} from "@/components/ui/progress";
+import {SwipesCarousel} from "@/components/cards/swipe-card-caroussel";
 
 interface AccountDetailViewProps {
     botAccount: BotAccountInterface
@@ -80,8 +79,9 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
     // Calculate progress percentage safely
     const strategyDays = strategyData?.days_number ?? 1
     const progressPercentage =
-        botAccount.progress !== undefined && strategyDays > 0 ? (botAccount.progress / strategyDays) * 100 : 0
-
+      botAccount.strategy && botAccount.progress !== undefined && strategyDays > 0
+        ? (botAccount.progress / strategyDays) * 100
+        : 0;
     // Get names safely
     const modelName = modelData?.name || "Unknown Model"
     const strategyName = strategyData?.name || "No Strategy"
@@ -98,23 +98,25 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
     const getStatusColor = (status = "") => {
         switch (status.toLowerCase()) {
             case "active":
-                return "bg-green-500 text-white"
+                return "bg-green-800 text-white"
             case "expired":
-                return "bg-gray-500 text-white"
+                return "bg-gray-800 text-white"
             case "working":
-                return "bg-blue-500 text-white"
+                return "bg-blue-800 text-white"
             case "inactive":
-                return "bg-slate-500 text-white"
+                return "bg-slate-800 text-white"
             case "banned":
-                return "bg-red-500 text-white"
+                return "bg-red-800 text-white"
             case "shadowban":
-                return "bg-orange-500 text-white"
+                return "bg-orange-800 text-white"
             case "paused":
-                return "bg-purple-500 text-white"
+                return "bg-purple-800 text-white"
             case "completed":
-                return "bg-amber-500 text-white"
+                return "bg-amber-800 text-white"
+            case "standby":
+                return "bg-sky-600 text-white"
             default:
-                return "bg-slate-500 text-white"
+                return "bg-slate-800 text-white"
         }
     }
 
@@ -151,9 +153,9 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
 
     return (
         <div >
-            <div className="flex  flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg md:flex-row">
+            <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg md:flex-row">
                 {/* Left side - Profile Image */}
-                <div className="relative h-[50vh] w-full md:h-screen md:w-2/5 lg:w-1/3">
+                <div className="relative h-auto w-full md:h-auto md:w-2/5 lg:w-1/3">
                     <div className="absolute left-4 top-4 z-10">
                         <Badge
                             className={`${getStatusColor(botAccount.status)} px-3 py-1 text-xs font-medium uppercase tracking-wider`}
@@ -225,7 +227,7 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
 
                 {/* Right side - Profile Details */}
                 <div className="flex h-[60vh] w-full flex-col bg-background md:h-screen md:w-3/5 lg:w-2/3">
-                    <div className="flex-none border-b p-6">
+                    <div className="flex-none border-b p-2">
                         <div className="mb-4 flex items-center justify-between">
                             <div className="flex items-center gap-3">
                                 <Badge variant="secondary" className="px-3 py-1">
@@ -277,7 +279,7 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                         <Tabs defaultValue="details" className="w-full" onValueChange={setActiveTab}>
                             <TabsList className="mb-4 grid w-full grid-cols-2">
                                 <TabsTrigger value="details">Account Details</TabsTrigger>
-                                <TabsTrigger value="interests">Swipes Details</TabsTrigger>
+                                <TabsTrigger value="interests">Map</TabsTrigger>
                             </TabsList>
 
                             <TabsContent value="details" className="space-y-3">
@@ -370,61 +372,49 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                                         <span className="text-muted-foreground">Phone Number</span>
                                         <span className="font-medium">{botAccount.phone}</span>
                                     </div>
+
+                                    {typeof botAccount.progress === "number" && (
+                                        <div className="mt-4 space-y-2">
+                                            <div className="flex justify-between text-sm">
+                                                <div className="flex items-center">
+                                                    <Clock className="mr-1 size-3.5 text-muted-foreground" />
+                                                    <span className="text-muted-foreground">Strategy Progress</span>
+                                                </div>
+                                                <span className="font-medium">{progressPercentage.toFixed(0)}%</span>
+                                            </div>
+                                            <Progress value={progressPercentage} className="h-2" />
+                                        </div>
+                                    )}
                                 </div>
                             </TabsContent>
 
                             <TabsContent value="interests" className="space-y-3">
-                                {typeof botAccount.progress === "number" && (
-                                    <div className="mt-4 space-y-2">
-                                        <div className="flex justify-between text-sm">
-                                            <div className="flex items-center">
-                                                <Clock className="mr-1 size-3.5 text-muted-foreground" />
-                                                <span className="text-muted-foreground">Strategy Progress</span>
+                                <Card className="m-6 overflow-hidden">
+                                    <div className="relative h-[350px]" ref={mapRef}>
+                                        <div className="absolute right-2 top-2 z-10 rounded bg-black/50 px-2 py-1 text-xs text-white backdrop-blur-sm">
+                                            <div className="flex items-center gap-1.5">
+                                                <Image
+                                                    src={flagUrl || "/placeholder.svg"}
+                                                    alt={`${countryCode} flag`}
+                                                    width={16}
+                                                    height={16}
+                                                    className="rounded-sm"
+                                                />
+                                                <span>{botAccount.location || "Location"}</span>
                                             </div>
-                                            <span className="font-medium">{progressPercentage.toFixed(0)}%</span>
+                                            <div className="mt-1 text-[10px] opacity-80">
+                                                Lat: {botAccount.latitude || "N/A"}, Lng: {botAccount.longitude || "N/A"}
+                                            </div>
                                         </div>
-                                        <Progress value={progressPercentage} className="h-2" />
+                                        <MapCard
+                                            latitude={botAccount.latitude ?? 0}
+                                            longitude={botAccount.longitude ?? 0}
+                                            title={botAccount.location || "Location"}
+                                            zoom={13}
+                                            className="size-full"
+                                        />
                                     </div>
-                                )}
-                                <div className="flex-1 overflow-hidden">
-                                    <ScrollArea className="h-full">
-                                        <div className="p-6">
-                                            <div className="mb-4 flex items-center justify-between">
-                                                <h2 className="text-xl font-bold">Recent Swipes</h2>
-                                                <Button
-                                                    variant="outline"
-                                                    size="sm"
-                                                    className="flex items-center gap-1"
-                                                    onClick={() => setShowMap(!showMap)}
-                                                >
-                                                    <MapPin className="size-3.5" />
-                                                    {showMap ? "Hide Map" : "Show Map"}
-                                                </Button>
-                                            </div>
-
-                                            {swipes.length > 0 ? (
-                                                <div className="w-full">
-                                                    <SwipesCarousel
-                                                        swipes={swipes}
-                                                        className="mb-6"
-                                                        onEdit={(id: string) => {
-                                                            console.log(`Edit swipe with ID: ${id}`)
-                                                        }}
-                                                    />
-                                                </div>
-                                            ) : (
-                                                <Card className="border-dashed">
-                                                    <CardContent className="flex flex-col items-center justify-center p-6 text-center">
-                                                        <div className="mb-2 rounded-full bg-muted p-3">
-                                                            <ArrowLeftRight className="size-6 text-muted-foreground" />
-                                                        </div>
-                                                        <p className="text-muted-foreground">No recent swipes available</p>
-                                                    </CardContent>
-                                                </Card>
-                                            )}
-                                        </div>
-                                    </ScrollArea>
-                                </div>
+                                </Card>
                             </TabsContent>
                         </Tabs>
 
@@ -435,34 +425,44 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
 
                 </div>
             </div>
-            {showMap && (
-                <Card className="m-6 overflow-hidden">
-                    <div className="relative h-[350px]" ref={mapRef}>
-                        <div className="absolute right-2 top-2 z-10 rounded bg-black/50 px-2 py-1 text-xs text-white backdrop-blur-sm">
-                            <div className="flex items-center gap-1.5">
-                                <Image
-                                    src={flagUrl || "/placeholder.svg"}
-                                    alt={`${countryCode} flag`}
-                                    width={16}
-                                    height={16}
-                                    className="rounded-sm"
-                                />
-                                <span>{botAccount.location || "Location"}</span>
-                            </div>
-                            <div className="mt-1 text-[10px] opacity-80">
-                                Lat: {botAccount.latitude || "N/A"}, Lng: {botAccount.longitude || "N/A"}
-                            </div>
-                        </div>
-                        <MapCard
-                            latitude={botAccount.latitude ?? 0}
-                            longitude={botAccount.longitude ?? 0}
-                            title={botAccount.location || "Location"}
-                            zoom={13}
-                            className="size-full"
-                        />
+            <div className="flex-1 overflow-hidden">
+
+                <div className="p-4">
+                    <div className="mb-4 flex items-center justify-between">
+                        <h2 className="text-xl font-bold">Recent Swipes</h2>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            className="flex items-center gap-1"
+                            onClick={() => setShowMap(!showMap)}
+                        >
+                            <MapPin className="size-3.5" />
+                            {showMap ? "Hide Map" : "Show Map"}
+                        </Button>
                     </div>
-                </Card>
-            )}
+
+                    {swipes.length > 0 ? (
+                        <div className="w-full">
+                            <SwipesCarousel
+                                swipes={swipes}
+                                className="mb-6"
+                                onEdit={(id: string) => {
+                                    console.log(`Edit swipe with ID: ${id}`)
+                                }}
+                            />
+                        </div>
+                    ) : (
+                        <Card className="border-dashed">
+                            <CardContent className="flex flex-col items-center justify-center p-6 text-center">
+                                <div className="mb-2 rounded-full bg-muted p-3">
+                                    <ArrowLeftRight className="size-6 text-muted-foreground" />
+                                </div>
+                                <p className="text-muted-foreground">No recent swipes available</p>
+                            </CardContent>
+                        </Card>
+                    )}
+                </div>
+            </div>
         </div>
     )
 }
