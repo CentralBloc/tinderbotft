@@ -1,5 +1,5 @@
-import { siteConfig } from "@/config/site";
-import { ThemeToggle } from "@/components/theme-toogle";
+import {siteConfig} from "@/config/site";
+import ThemeToggle from "@/components/theme-toogle";
 import Link from "next/link";
 
 export default function BottomNav() {
