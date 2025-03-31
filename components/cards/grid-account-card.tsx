@@ -71,23 +71,25 @@ export function GridAccountCard({ botAccount, onFavorite, onViewDetails, classNa
     const getStatusColor = (status = "") => {
         switch (status.toLowerCase()) {
             case "active":
-                return "bg-green-500 text-white"
+                return "bg-green-800 text-white"
             case "expired":
-                return "bg-gray-500 text-white"
+                return "bg-gray-800 text-white"
             case "working":
-                return "bg-blue-500 text-white"
+                return "bg-blue-800 text-white"
             case "inactive":
-                return "bg-slate-500 text-white"
+                return "bg-slate-800 text-white"
             case "banned":
-                return "bg-red-500 text-white"
+                return "bg-red-800 text-white"
             case "shadowban":
-                return "bg-orange-500 text-white"
+                return "bg-orange-800 text-white"
             case "paused":
-                return "bg-purple-500 text-white"
+                return "bg-purple-800 text-white"
             case "completed":
-                return "bg-amber-500 text-white"
+                return "bg-amber-800 text-white"
+            case "standby":
+                return "bg-sky-600 text-white"
             default:
-                return "bg-slate-500 text-white"
+                return "bg-slate-800 text-white"
         }
     }
 
