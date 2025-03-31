@@ -430,15 +430,6 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                 <div className="p-4">
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="text-xl font-bold">Recent Swipes</h2>
-                        <Button
-                            variant="outline"
-                            size="sm"
-                            className="flex items-center gap-1"
-                            onClick={() => setShowMap(!showMap)}
-                        >
-                            <MapPin className="size-3.5" />
-                            {showMap ? "Hide Map" : "Show Map"}
-                        </Button>
                     </div>
 
                     {swipes.length > 0 ? (

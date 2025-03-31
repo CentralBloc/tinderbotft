@@ -9,6 +9,10 @@ const nextConfig = {
             {
                 protocol: 'https',
                 hostname: 'flagsapi.com',
+            },
+            {
+                protocol: 'https',
+                hostname: 'userimagess.s3.eu-north-1.amazonaws.com'
             }
         ],
     }

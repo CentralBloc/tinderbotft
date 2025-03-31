@@ -1,6 +1,18 @@
 "use client"
 
-import {ArrowLeftRight, Heart, MapPin, ThumbsUp} from "lucide-react"
+import {
+    ArrowLeftRight,
+    Earth,
+    EarthLock,
+    Heart,
+    MapPin,
+    Pause,
+    PencilLine,
+    Play,
+    RefreshCcwDot,
+    ThumbsUp,
+    Trash2
+} from "lucide-react"
 import {Progress} from "@/components/ui/progress"
 import {Badge} from "@/components/ui/badge"
 import {Button} from "@/components/ui/button"
@@ -14,19 +26,51 @@ import {useProxy} from "@/services/proxy/hooks"
 import {routes} from "@/lib/routes"
 import Link from "next/link"
 import {cn} from "@/lib/utils"
+import {
+    useRemoveBotAccount,
+    useStartBotAccount,
+    useStopBotAccount,
+    useUpdateBotAccountContent
+} from "@/services/bot-account/hooks";
+import {toast} from "@/components/ui/use-toast";
+import {
+    Dialog,
+    DialogContent,
+    DialogDescription,
+    DialogFooter,
+    DialogHeader,
+    DialogTitle,
+    DialogTrigger
+} from "@/components/ui/dialog";
 
 interface GridCardProps {
     botAccount: BotAccountInterface
     onFavorite?: (id: string) => void
     onViewDetails?: (id: string) => void
     className?: string
+    onPlay?: (id: string) => void
+    onLocation?: (id: string) => void
+    onSync?: (id: string) => void
+    onEdit?: (id: string) => void
+    onDelete?: (id: string) => void
 }
 
-export function GridAccountCard({ botAccount, onFavorite, onViewDetails, className }: GridCardProps) {
+export function GridAccountCard({
+                                    botAccount,
+                                    onFavorite,
+                                    onViewDetails,
+                                    className,
+                                    onPlay,
+                                    onLocation,
+                                    onSync,
+                                    onEdit,
+                                    onDelete,
+                                }: GridCardProps) {
     const [modelData, setModelData] = useState<ModelInterface | null>(null)
     const [strategyData, setStrategyData] = useState<StrategyInterface | null>(null)
     const [proxyData, setProxyData] = useState<ProxyInterface | null>(null)
     const [isFavorite, setIsFavorite] = useState(false)
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const modelId = typeof botAccount?.modele === "string" ? botAccount.modele : ""
     const strategyId = typeof botAccount?.strategy === "string" ? botAccount.strategy : ""
@@ -35,6 +79,41 @@ export function GridAccountCard({ botAccount, onFavorite, onViewDetails, classNa
     const { data: fetchedModel } = useModel(modelId)
     const { data: fetchedStrategy } = useStrategy(strategyId)
     const { data: fetchedProxy } = useProxy(proxyId)
+
+    const deleteMutation = useRemoveBotAccount(botAccount.id);
+
+    const handleDelete = () => {
+        deleteMutation.mutate();
+        setIsModalOpen(false);
+    };
+
+    const startMutation = useStartBotAccount(botAccount.id);
+    const handleStart = () => {
+        startMutation.mutate(undefined, {
+            onSuccess: () => {
+                toast({
+                    title: "Account started successfully",
+                });
+            },
+            onError: (error: any) => {
+                toast({
+                    variant: "destructive",
+                    title: "Failed to start account",
+                    description: error.response?.data || "An error occurred",
+                });
+            },
+        });
+    };
+
+    const stopMutation = useStopBotAccount(botAccount.id);
+    const handleStop = () => {
+        stopMutation.mutate();
+    }
+
+    const updateContentMutation = useUpdateBotAccountContent(botAccount.id);
+    const handleUpdateContent = () => {
+        updateContentMutation.mutate();
+    }
 
     useEffect(() => {
         if (botAccount) {
@@ -96,8 +175,9 @@ export function GridAccountCard({ botAccount, onFavorite, onViewDetails, classNa
     // Calculate progress percentage safely
     const strategyDays = strategyData?.days_number ?? 1
     const progressPercentage =
-        botAccount.progress !== undefined && strategyDays > 0 ? (botAccount.progress / strategyDays) * 100 : 0
-
+        botAccount.strategy && botAccount.progress !== undefined && strategyDays > 0
+            ? (botAccount.progress / strategyDays) * 100
+            : 0;
     // Get names safely
     const modelName = modelData?.name || "Unknown Model"
     const strategyName = strategyData?.name || "No Strategy"
@@ -129,7 +209,6 @@ export function GridAccountCard({ botAccount, onFavorite, onViewDetails, classNa
                 </Badge>
 
                 {/* Favorite button */}
-                
 
                 {/* Interest badges */}
 
@@ -158,6 +237,80 @@ export function GridAccountCard({ botAccount, onFavorite, onViewDetails, classNa
                             />
                         </div>
                     </div>
+                </div>
+                <div className="absolute bottom-1 right-2 flex gap-1.5">
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        className="size-7 rounded-full"
+                        onClick={botAccount.status === 'active' ? handleStop : handleStart}
+                    >
+                        {botAccount.status === 'active' ? (
+                            <Pause size={20} color="#ff0000" strokeWidth={1.25} />
+                        ) : (
+                            <Play size={20} color="#065c00" strokeWidth={1.25} />
+                        )}
+                    </Button>
+
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        className="size-7 rounded-full"
+                    >
+                        {botAccount.username ? (
+                            <Link href={`https://tinder.com/@${botAccount.username}`}>
+                                <Earth size={20} color="#e100ff" strokeWidth={1.25} />
+                            </Link>
+                        ) : (
+                            <span className="btn btn-primary disabled">
+                        <EarthLock size={20}  strokeWidth={1.25} />
+                    </span>
+                        )}
+                    </Button>
+
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        className="size-6 rounded-full "
+                        onClick={handleUpdateContent}
+                    >
+                        <RefreshCcwDot size={20} color="#ff6190" strokeWidth={1.25} />
+                    </Button>
+
+                    <Button
+                        size="icon"
+                        variant="ghost"
+                        className="size-7 rounded-full"
+                    >
+                        <Link
+                            href={routes.dashboard.account.update(botAccount.id)}
+                            className="btn btn-primary"
+                        >
+                            <PencilLine size={20} color="#2b00ff" strokeWidth={1.25} />
+                        </Link>
+                    </Button>
+
+                    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                        <DialogTrigger asChild>
+                            <button className="btn btn-secondary">
+                                <Trash2 size={20} color="#ff0000" strokeWidth={1.25} />
+                            </button>
+                        </DialogTrigger>
+                        <DialogContent>
+                            <DialogHeader>
+                                <DialogTitle>Confirmation</DialogTitle>
+                                <DialogDescription>
+                                    Are you sure you want to delete this account?
+                                </DialogDescription>
+                            </DialogHeader>
+                            <DialogFooter>
+                                <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
+                                <Button onClick={handleDelete} variant="destructive">
+                                    Delete
+                                </Button>
+                            </DialogFooter>
+                        </DialogContent>
+                    </Dialog>
                 </div>
             </div>
 

@@ -64,7 +64,8 @@ interface UserNamesCellProps {
         original: Partial<BotAccountInterface>
     }
 }
-const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; }) => {
+
+export const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; }) => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const deleteMutation = useRemoveBotAccount(row.original.id);
 
