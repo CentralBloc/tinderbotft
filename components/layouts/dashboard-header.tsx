@@ -18,7 +18,7 @@ import Link from "next/link";
 import LogoutButton from "../logout-button";
 import MobileDashboardSidebar from "./mobile-dashboard-sidebar";
 import {Skeleton} from "../ui/skeleton";
-import {ThemeToggle} from "@/components/theme-toogle";
+import ThemeToggle from "@/components/theme-toogle";
 import {usePicture} from "@/services/pictures/hooks";
 import {useEffect, useState} from "react";
 
@@ -26,7 +26,7 @@ export default function DashboardHeader() {
   const { user, isLoading } = useAuth();
   const initialAvatar = user?.email ? `https://api.dicebear.com/7.x/lorelei/svg?seed=${user.email}` : "";
   const [avatarSrc, setAvatarSrc] = useState<string>(initialAvatar);
-  const { data: pictureData } = usePicture(
+  const { data: pictureData, isPending: picturePending } = usePicture(
     typeof user?.profile_picture === "string" ? user.profile_picture : ""
   );
   useEffect(() => {
@@ -36,12 +36,12 @@ export default function DashboardHeader() {
   }, [pictureData]);
 
   return (
-    <div className="fixed inset-x-0 top-0 z-50 mb-8 flex items-center justify-between border-b bg-background py-3">
+    <div className="z-50 mb-8 flex items-center justify-between border-b bg-background pb-3 max-lg:container max-lg:fixed max-lg:inset-x-0 max-lg:top-0 max-lg:pt-3">
       <div className="flex items-center gap-x-4">
         <div className="lg:hidden">
           <MobileDashboardSidebar />
         </div>
-        <h3 className="hidden text-xl font-medium text-gray-700 dark:text-foreground md:block">
+        <h3 className="text-xl font-medium text-gray-700 dark:text-foreground max-md:hidden">
           {!user || isLoading ? (
             <Skeleton className="h-10 w-48" />
           ) : (
@@ -49,27 +49,24 @@ export default function DashboardHeader() {
           )}
         </h3>
       </div>
-      {/*{!user || isLoading ? (*/}
-      {/*	<Skeleton className="hidden h-10 w-24 md:block" />*/}
-      {/*) : (*/}
-      {/*	user && (*/}
-      {/*		<div className="hidden h-10 items-center justify-center rounded-md border px-4 py-2 dark:border-foreground/50 md:block">*/}
-      {/*			<span className="text-gray-700 dark:text-foreground/90">{`${user?.credit} ${*/}
-      {/*				user?.credit > 1 ? "Credits" : "Credit"*/}
-      {/*			}`}</span>*/}
-      {/*		</div>*/}
-      {/*	)*/}
-      {/*)}*/}
+
       <div className="flex items-center gap-x-4">
+
         <ThemeToggle />
         <Button asChild>
           <Link href={routes.dashboard.account.add}>Add new account</Link>
         </Button>
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
-            <Button variant="secondary" className="relative size-11 rounded-full">
+            <Button
+              variant="secondary"
+              className="relative size-11 rounded-full"
+            >
               <Avatar className="border">
-                <AvatarImage src={avatarSrc} alt={user?.username} />
+                <AvatarImage
+                  src={avatarSrc}
+                  alt={user?.username}
+                />
                 <AvatarFallback>
                   {user?.username.substring(0, 2).toUpperCase()}
                 </AvatarFallback>

@@ -11,7 +11,7 @@ interface MarkerLocation {
     latitude: number
     longitude: number
     title: string
-    status: "active" | "expired" | "working" | "inactive" | "banned" | "shadowban" | "paused" | "completed"
+    status: "active" | "expired" | "working" | "inactive" | "banned" | "shadowban" | "paused" | "completed" | "standby"
     profile_url?: string // Optional image URL
 }
 
@@ -51,6 +51,8 @@ export function ColoredMap({
                 return "#6b21a8" // bg-purple-800
             case "completed":
                 return "#92400e" // bg-amber-800
+            case "standby":
+                return "#0284c7" // bg-sky-800
             default:
                 return "#1f2937" // bg-gray-800 as default
         }
@@ -105,10 +107,10 @@ export function ColoredMap({
                 // Create marker with image and colored border
                 markerIcon = L.divIcon({
                     html: `
-                        <div class="marker-container" style="border: 3px solid ${fillColor};">
-                          <img src="${location.profile_url}" alt="${location.title}" class="marker-image" />
-                        </div>
-                    `,
+      <div class="marker-container" style="border: 3px solid ${fillColor}; background-color: white;">
+        <img src="${location.profile_url}" alt="${location.title}" class="marker-image" />
+      </div>
+    `,
                     className: "image-marker",
                     iconSize: [40, 40],
                     iconAnchor: [20, 40],
@@ -176,31 +178,23 @@ export function ColoredMap({
                 background: transparent;
             }
             .marker-container {
-                width: 40px;
-                height: 40px;
-                border-radius: 50%;
-                overflow: hidden;
-                box-shadow: 0 2px 5px rgba(0,0,0,0.3);
-                background-color: white;
-                position: relative;
-            }
-            .marker-container::after {
-                content: '';
-                position: absolute;
-                bottom: -8px;
-                left: 50%;
-                transform: translateX(-50%);
-                width: 0;
-                height: 0;
-                border-left: 8px solid transparent;
-                border-right: 8px solid transparent;
-                border-top: 8px solid white;
-            }
-            .marker-image {
-                width: 100%;
-                height: 100%;
-                object-fit: cover;
-            }
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  overflow: hidden;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+  background-color: white;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.marker-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
             .marker-popup {
                 text-align: center;
             }
@@ -240,4 +234,3 @@ export function ColoredMap({
         </Card>
     )
 }
-
