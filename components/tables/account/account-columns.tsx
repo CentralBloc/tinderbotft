@@ -119,8 +119,8 @@ export const AccountActionsCell = ({row,}: { row: { original: BotAccountInterfac
                 className="btn btn-primary"
             >
                 {row.original.username ? (
-                    <Link href={`https://tinder.com/@${row.original.username}`}>
-                        <Earth size={20} color="#e100ff" strokeWidth={1.25} />
+                    <Link href={`https://tinder.com/@${row.original.username}`} target="_blank" rel="noopener noreferrer">
+                      <Earth size={20} color="#e100ff" strokeWidth={1.25} />
                     </Link>
                 ) : (
                     <span className="btn btn-primary disabled">
@@ -235,8 +235,21 @@ export const TinderBioCell = ({ row }: TinderBioCellProps) => {
     const [newBio, setNewBio] = useState(row.original.tinder_bio ?? "")
     const updateMutation = useSetAccountBio(row.original.id ?? "")
 
-    const handleSave = () => {
-        updateMutation.mutate(newBio)
+    const handleSave = async () => {
+        await updateMutation.mutateAsync(newBio, {
+            onSuccess: () => {
+                toast({
+                    title: "Tinder bio updated successfully",
+                });
+            },
+            onError: (error: any) => {
+                toast({
+                    variant: "destructive",
+                    title: "Failed to update Tinder bio",
+                    description: error.response?.data || "An error occurred",
+                });
+            },
+        })
         setIsModalOpen(false)
     }
 
@@ -286,8 +299,21 @@ export const AccountUserNameCell = ({ row }: UserNamesCellProps) => {
     const [username, setUsername] = useState(row.original.username ?? "")
     const updateMutation = useAddAccountUserName(row.original.id ?? "")
 
-    const handleSave = () => {
-        updateMutation.mutate(username)
+    const handleSave = async () => {
+        await updateMutation.mutateAsync(username, {
+            onSuccess: () => {
+                toast({
+                    title: "Username updated successfully",
+                });
+            },
+            onError: (error: any) => {
+                toast({
+                    variant: "destructive",
+                    title: "Failed to update username",
+                    description: error.response?.data || "An error occurred",
+                });
+            },
+        })
         setIsModalOpen(false)
     }
 
