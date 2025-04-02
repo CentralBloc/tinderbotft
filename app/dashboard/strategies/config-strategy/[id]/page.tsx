@@ -6,6 +6,7 @@ import {routes} from "@/lib/routes";
 import {useStrategy} from "@/services/strategy/hooks";
 import ConfigStrategyForm from "@/components/forms/config-strategy-form";
 import {useActionsByStrategy} from "@/services/actions/hooks";
+import {ConfigStratSkeletonLoader} from "@/components/skeleton/config-strat-loader";
 
 export default function ConfigStrategyPage() {
   const { id } = useParams();
@@ -20,7 +21,7 @@ export default function ConfigStrategyPage() {
   console.log("Bots Error:", botsError);
 
   if (strategyLoading || botsLoading) {
-    return <div>Loading...</div>;
+    return <div><ConfigStratSkeletonLoader count={strategy_actions?.length || 1} /></div>;
   }
 
   if (botsError) {
