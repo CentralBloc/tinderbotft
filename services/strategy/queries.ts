@@ -1,5 +1,5 @@
 import axios from "@/lib/axios";
-import { StrategyInterface } from "@/types";
+import {StrategyInterface} from "@/types";
 
 export const getAllStrategy = async (): Promise<StrategyInterface[]> => {
   const response = await axios.get("/get-strategy/").then((data) => data);
@@ -17,6 +17,8 @@ export interface createStrategyCredentials {
   name: string;
   description: string;
   days_number: number;
+  min_swipes_delay: number;
+    max_swipes_delay: number;
   proxy: string | null;
 }
 

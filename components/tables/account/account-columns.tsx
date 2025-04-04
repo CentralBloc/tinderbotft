@@ -23,6 +23,7 @@ import {
     PencilLine,
     Play,
     RefreshCcwDot,
+    SquareChevronRight,
     ThumbsUp,
     Trash2
 } from "lucide-react";
@@ -52,6 +53,8 @@ import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/compon
 import {Input} from "@/components/ui/input";
 import {EditableProxyCell} from "@/components/tables/proxy/proxy-columns";
 import {toast} from "@/components/ui/use-toast";
+import {Textarea} from "@/components/ui/textarea";
+import RealtimeSessionLog from "@/components/logs/realtime-session-log";
 
 interface TinderBioCellProps {
     row: {
@@ -271,8 +274,7 @@ export const TinderBioCell = ({ row }: TinderBioCellProps) => {
                             <DialogHeader>
                                 <DialogTitle>Edit Tinder Bio</DialogTitle>
                             </DialogHeader>
-                            <Input
-                                type="text"
+                            <Textarea
                                 value={newBio}
                                 onChange={(e) => setNewBio(e.target.value)}
                                 placeholder="Enter new bio"
@@ -358,11 +360,43 @@ export const AccountUserNameCell = ({ row }: UserNamesCellProps) => {
     )
 }
 
+export const AccountLogCell = ({ row }: UserNamesCellProps) => {
+    const [isModalOpen, setIsModalOpen] = useState(false)
+
+    let iconColor = ""
+    if (row.original.status == "working") {
+        iconColor = "text-blue-500"
+    }
+    else {
+        iconColor = "text-gray-500"
+    }
+
+
+    return (
+        <div className="flex items-center">
+            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+                    <DialogTrigger asChild>
+                        <Button variant="ghost" className={`${iconColor} flex items-center gap-2`}>
+                            <SquareChevronRight  />
+                        </Button>
+                    </DialogTrigger>
+                <DialogContent>
+                    <DialogHeader>
+                        <DialogTitle>Edit Username</DialogTitle>
+                    </DialogHeader>
+                    <RealtimeSessionLog accountId={row.original.id ?? ""} />
+                </DialogContent>
+            </Dialog>
+        </div>
+    )
+}
+
 export const AccountInfoActionsCell = ({ row }: { row: { original: BotAccountInterface }; }) => {
     return (
-        <div className="flex items-center gap-2">
+        <div className="flex items-center">
+            
             <Link href={routes.dashboard.account.view(row.original.id ?? "")}>
-                <Button variant="ghost" className="flex items-center gap-2 ">
+                <Button variant="ghost" className="flex items-center  ">
                     <ExternalLink color="#5c0783" />
                 </Button>
             </Link>

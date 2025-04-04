@@ -32,7 +32,7 @@ export default function ConfigStrategyPage() {
     <div className="space-y-5">
       <Breadcrumbs
         segments={[
-          { title: "Stratégie", href: routes.dashboard.strategy.index },
+          { title: "Strategy", href: routes.dashboard.strategy.index },
           {
             title: `Configuration - ${strategy?.name}`,
             href: routes.dashboard.strategy.config(strategyId),

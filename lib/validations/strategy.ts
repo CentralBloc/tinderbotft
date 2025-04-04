@@ -12,6 +12,12 @@ export const strategySchema = z.object({
   days_number: z.number({
     required_error: "Number of days is required",
   }),
+    min_swipes_delay: z.number({
+        required_error: "Minimum swipes delay is required",
+    }),
+    max_swipes_delay: z.number({
+        required_error: "Maximum swipes delay is required",
+    }),
 
   proxy: z.string().optional(),
 });

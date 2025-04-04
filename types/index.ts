@@ -162,6 +162,8 @@ export interface StrategyInterface {
   name: string;
   description: string;
   days_number: number;
+  min_swipes_delay: number;
+  max_swipes_delay: number;
   proxy: ProxyInterface | undefined;
 }
 
@@ -222,3 +224,43 @@ export interface InstaAction {
   created_at: string
   updated_at: string
 }
+
+export type LogType = 'error' | 'swipe' | 'match'
+
+// Base log interface
+export interface BaseLog {
+  id: string
+  account: string
+  session?: string
+  created_at: Date
+}
+
+// SwipeLog model
+export interface SwipeLog extends BaseLog {
+  type: 'swipe'
+  swipe_direction: 'like' | 'pass'
+  target_user_id: string
+  target_name?: string
+  success: boolean
+  response_data?: any
+}
+
+// MatchLog model
+export interface MatchLog extends BaseLog {
+  type: 'match'
+  match_id: string
+  target_name?: string
+  target_bio?: string
+  target_photos?: string[]
+}
+
+// ErrorLog model
+export interface ErrorLog extends BaseLog {
+  type: 'error'
+  error_type: string
+  error_message: string
+  stack_trace?: string
+}
+
+// Union type for all logs
+export type Log = SwipeLog | MatchLog | ErrorLog

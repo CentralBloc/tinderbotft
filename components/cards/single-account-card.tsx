@@ -13,6 +13,7 @@ import {
     Heart,
     MapPin,
     Orbit,
+    Radio,
     School,
     ThumbsUp,
     User,
@@ -52,7 +53,7 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
     const { data: fetchedModel } = useModel(modelId)
     const { data: fetchedStrategy } = useStrategy(strategyId)
     const { data: fetchedProxy } = useProxy(proxyId)
-    const { data: swipes = [] } = useSwipesAccount(botAccount.id)
+    const { data: swipes = [], refetch: refeshSwipes } = useSwipesAccount(botAccount.id)
 
     useEffect(() => {
         if (botAccount) {
@@ -73,8 +74,10 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
             } else if (fetchedProxy) {
                 setProxyData(fetchedProxy)
             }
+            refeshSwipes()
+
         }
-    }, [botAccount, fetchedModel, fetchedStrategy, fetchedProxy])
+    }, [botAccount, fetchedModel, fetchedStrategy, fetchedProxy, refeshSwipes])
 
     // Calculate progress percentage safely
     const strategyDays = strategyData?.days_number ?? 1
@@ -109,7 +112,7 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                 return "bg-red-800 text-white"
             case "shadowban":
                 return "bg-orange-800 text-white"
-            case "paused":
+            case "limited":
                 return "bg-purple-800 text-white"
             case "completed":
                 return "bg-amber-800 text-white"
@@ -239,6 +242,12 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                                 </div>
                             </div>
                             <div className="flex gap-2">
+                                <Link href={routes.dashboard.account.logs(botAccount.id || "/")}>
+                                    <Button size="sm" variant="outline" className="h-8">
+                                        <Radio className="mr-1 size-3.5" />
+                                        Logs
+                                    </Button>
+                                </Link>
                                 <Link href={routes.dashboard.account.update(botAccount.id || "/")}>
                                     <Button size="sm" variant="outline" className="h-8">
                                         <Edit className="mr-1 size-3.5" />

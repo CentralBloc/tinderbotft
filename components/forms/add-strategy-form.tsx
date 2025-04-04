@@ -19,6 +19,7 @@ import {Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandL
 import {Popover, PopoverContent, PopoverTrigger,} from "@/components/ui/popover";
 import {cn} from "@/lib/utils";
 import {useProxies} from "@/services/proxy/hooks";
+import {DualSlider} from "@/components/ui/dual-slider";
 
 type Credentials = z.infer<typeof strategySchema>;
 
@@ -46,6 +47,8 @@ export default function AddOrUpdateStrategyForm({
                 typeof initialData?.proxy === "object"
                     ? initialData?.proxy?.id
                     : initialData?.proxy ?? undefined,
+            min_swipes_delay: initialData?.min_swipes_delay ?? 2,
+            max_swipes_delay: initialData?.max_swipes_delay ?? 5,
         },
         mode: "all",
     });
@@ -98,7 +101,7 @@ export default function AddOrUpdateStrategyForm({
                         name="name"
                         render={({field}) => (
                             <FormItem>
-                                <FormLabel>Nom de la stratégie</FormLabel>
+                                <FormLabel>Strategy Name</FormLabel>
                                 <FormControl>
                                     <Input placeholder="Nom de la stratégie" {...field} />
                                 </FormControl>
@@ -127,11 +130,11 @@ export default function AddOrUpdateStrategyForm({
                         name="days_number"
                         render={({field}) => (
                             <FormItem>
-                                <FormLabel>Nombre de jours</FormLabel>
+                                <FormLabel>Days Number</FormLabel>
                                 <FormControl>
                                     <Input
                                         type="number"
-                                        placeholder="Nombre de jours"
+                                        placeholder="Days Number"
                                         value={field.value ?? ""}
                                         onChange={(e) => field.onChange(e.target.valueAsNumber)}
                                     />
@@ -200,6 +203,27 @@ export default function AddOrUpdateStrategyForm({
                         )}
                     />
                 </div>
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-1 md:gap-7">
+                    <FormField
+                        control={form.control}
+                        name="min_swipes_delay"
+                        render={({ field: minField }) => (
+                            <FormField
+                                control={form.control}
+                                name="max_swipes_delay"
+                                render={({ field: maxField }) => (
+                                    <DualSlider
+                                        minField={minField}
+                                        maxField={maxField}
+                                        label="Swipe Delay(s)"
+                                        min={0}
+                                        max={60}
+                                    />
+                                )}
+                            />
+                        )}
+                    />
+                </div>
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-7">
                     <Button
                         disabled={addMutation.isPending || updateMutation.isPending}
@@ -212,12 +236,12 @@ export default function AddOrUpdateStrategyForm({
                             />
                         )}
                         {mode === "add"
-                            ? "Ajouter une stratégie"
-                            : "Mettre à jour la stratégie"}
+                            ? "Add strategy"
+                            : "Update strategy"}
                         <span className="sr-only">
               {mode === "add"
-                  ? "Ajouter une stratégie"
-                  : "Mettre à jour la stratégie"}
+                  ? "Add strategy"
+                  : "Update strategy"}
             </span>
                     </Button>
                 </div>

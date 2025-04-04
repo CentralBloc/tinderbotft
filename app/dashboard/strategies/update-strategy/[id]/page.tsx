@@ -1,9 +1,9 @@
 "use client";
 
-import { useParams } from "next/navigation";
-import { Breadcrumbs } from "@/components/pagers/breadcrumbs";
-import { routes } from "@/lib/routes";
-import { useStrategy } from "@/services/strategy/hooks";
+import {useParams} from "next/navigation";
+import {Breadcrumbs} from "@/components/pagers/breadcrumbs";
+import {routes} from "@/lib/routes";
+import {useStrategy} from "@/services/strategy/hooks";
 import AddOrUpdateStrategyForm from "@/components/forms/add-strategy-form";
 
 export default function UpdateStrategyPage() {
@@ -17,9 +17,9 @@ export default function UpdateStrategyPage() {
     <div className="space-y-5">
       <Breadcrumbs
         segments={[
-          { title: "Stratégie", href: routes.dashboard.strategy.index },
+          { title: "Strategy", href: routes.dashboard.strategy.index },
           {
-            title: "Mise à jour de la stratégie",
+            title: `Update ${strategy?.name}`,
             href: routes.dashboard.strategy.update(strategyId),
           },
         ]}

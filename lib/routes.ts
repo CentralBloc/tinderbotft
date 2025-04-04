@@ -28,6 +28,7 @@ export const routes = {
       index: "/dashboard/accounts",
       view: (id: string) => `/dashboard/accounts/${id}`,
       update: (id: string) => `/dashboard/accounts/update-account/${id}`,
+      logs: (id: string) => `/dashboard/accounts/logs/${id}`,
       add: "/dashboard/accounts/add-account",
     },
     strategy: {
