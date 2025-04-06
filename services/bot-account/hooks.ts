@@ -138,6 +138,9 @@ export const useUpdateBotAccountContent = (id: string) => {
       queryClient.invalidateQueries({
         queryKey: botaccountQueryKeys.botaccountsKey,
       });
+        queryClient.invalidateQueries({
+            queryKey: botaccountQueryKeys.botaccountKey(id),
+        });
     },
   });
 };
@@ -148,9 +151,12 @@ export const useSetAccountBio = (id: string) => {
     return useMutation({
         mutationFn: (bio: string) => setAccountBio(id, bio),
         onSettled: () => {
-        queryClient.invalidateQueries({
-            queryKey: botaccountQueryKeys.botaccountsKey,
-        });
+            queryClient.invalidateQueries({
+                queryKey: botaccountQueryKeys.botaccountsKey,
+            });
+            queryClient.invalidateQueries({
+                queryKey: botaccountQueryKeys.botaccountKey(id),
+            })
         },
     });
 }
@@ -161,9 +167,12 @@ export const useAddAccountUserName = (id: string) => {
     return useMutation({
         mutationFn: (username: string) => addAccountUserName(id, username),
         onSettled: () => {
-        queryClient.invalidateQueries({
-            queryKey: botaccountQueryKeys.botaccountsKey,
-        });
+            queryClient.invalidateQueries({
+                queryKey: botaccountQueryKeys.botaccountsKey,
+            });
+            queryClient.invalidateQueries({
+                queryKey: botaccountQueryKeys.botaccountKey(id),
+            })
         },
     });
 }
