@@ -1,5 +1,5 @@
 import {useQuery} from "@tanstack/react-query";
-import {getSessionLogs} from "@/services/logs/queries";
+import {getAccountLogs, getSessionLogs} from "@/services/logs/queries";
 
 
 export const logHooksKey = {
@@ -18,7 +18,7 @@ export const useSessionLogsHooks =  (accountId: string, sessionId: string) => {
 export const useAccountLogsHooks = (accountId: string) => {
     return useQuery({
         queryKey: [logHooksKey.getAccountLogs, accountId],
-        queryFn: () => getSessionLogs(accountId, ""),
+        queryFn: () => getAccountLogs(accountId),
         enabled: !!accountId,
     });
 };

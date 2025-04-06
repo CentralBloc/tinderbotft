@@ -12,7 +12,7 @@ export const getAccountLogs = async (accountId: string) => {
 
 export const getSessionLogs = async (accountId: string, sessionId: string) => {
     try {
-        const response = await axios.get(`/get-log-swipe-session${sessionId}`);
+        const response = await axios.get(`/get-log-swipe-session/${sessionId}`);
         return response.data;
     } catch (error) {
         console.error("Error fetching session logs:", error);
