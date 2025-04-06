@@ -127,7 +127,7 @@ export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSession
       setError(null)
 
       try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/get-account-swipe-session/${accountId}`)
+        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/get-account-swipe-log/${accountId}`)
 
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`)
