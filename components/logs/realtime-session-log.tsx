@@ -6,19 +6,17 @@ import {Card, CardContent, CardFooter, CardHeader, CardTitle} from "@/components
 import {ScrollArea} from "@/components/ui/scroll-area"
 import {Button} from "@/components/ui/button"
 import {Skeleton} from "@/components/ui/skeleton"
-
+import {LogItem} from "@/components/logs/log-items"
 import type {Log, LogType} from "@/types"
 import {AlertCircle, Download, Pause, Play, RefreshCw, Wifi, WifiOff} from "lucide-react"
-import {useToast} from "@/components/ui/use-toast";
-import {LogItem} from "@/components/logs/log-items";
-import {useAccountLogsHooks} from "@/services/logs/hooks";
-
+import {useToast} from "@/components/ui/use-toast"
+import {useAccountLogsHooks} from "@/services/logs/hooks"
 
 interface RealtimeSessionLogProps {
     accountId: string
 }
 
-export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSessionLogProps>) {
+export default function RealtimeSessionLog({ accountId }: Readonly<RealtimeSessionLogProps>) {
     const [logs, setLogs] = useState<Log[]>([])
     const [isConnected, setIsConnected] = useState(false)
     const [isPaused, setIsPaused] = useState(false)
@@ -27,6 +25,17 @@ export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSession
     const wsRef = useRef<WebSocket | null>(null)
     const scrollAreaRef = useRef<HTMLDivElement>(null)
     const { toast } = useToast()
+
+    // Fetch logs using the custom hook
+    const { data: apiLogs, refetch: fetchLogs, isLoading, isError } = useAccountLogsHooks(accountId)
+
+    // Update logs state when API data changes
+    useEffect(() => {
+        if (apiLogs && Array.isArray(apiLogs)) {
+            console.log("API logs received:", apiLogs.length)
+            setLogs(apiLogs)
+        }
+    }, [apiLogs])
 
     // Stats
     const errorCount = logs.filter((log) => log.type === "error").length
@@ -44,10 +53,14 @@ export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSession
         }
 
         try {
-            const wsUrl = `${process.env.NEXT_PUBLIC_URL}/ws/swipes/${accountId}/`
+            // Make sure to use the correct environment variable
+            const wsUrl = `${process.env.NEXT_PUBLIC_WS_URL}/ws/swipes/${accountId}/`
+            console.log("Connecting to WebSocket:", wsUrl)
+
             wsRef.current = new WebSocket(wsUrl)
 
             wsRef.current.onopen = () => {
+                console.log("WebSocket connected")
                 setIsConnected(true)
                 setError(null)
                 toast({
@@ -60,6 +73,7 @@ export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSession
                 if (isPaused) return
 
                 try {
+                    console.log("WebSocket message received:", event.data)
                     const data = JSON.parse(event.data)
 
                     // Add the new log to the state
@@ -86,14 +100,15 @@ export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSession
                 }
             }
 
-            wsRef.current.onclose = () => {
+            wsRef.current.onclose = (event) => {
+                console.log("WebSocket closed:", event)
                 setIsConnected(false)
             }
 
             wsRef.current.onerror = (e) => {
+                console.error("WebSocket error:", e)
                 setError("WebSocket connection error")
                 setIsConnected(false)
-                console.error("WebSocket error:", e)
                 toast({
                     title: "Connection Error",
                     description: "Failed to connect to real-time updates",
@@ -101,9 +116,9 @@ export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSession
                 })
             }
         } catch (e) {
+            console.error("WebSocket connection error:", e)
             setError("Failed to establish WebSocket connection")
             setIsConnected(false)
-            console.error("WebSocket connection error:", e)
         }
     }
 
@@ -121,18 +136,16 @@ export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSession
         setIsPaused(!isPaused)
     }
 
-    // Fetch initial logs
-   const { refetch: fetchLogs, isLoading } = useAccountLogsHooks(accountId);
+    // Clear logs
+    const handleClearLogs = () => {
+        setLogs([])
+    }
 
-   // Clear logs
-   const handleClearLogs = () => {
-       setLogs([])
-   }
-
-   // Refresh logs
-   const handleRefreshLogs = () => {
-       fetchLogs()
-   }
+    // Refresh logs
+    const handleRefreshLogs = () => {
+        console.log("Refreshing logs...")
+        fetchLogs()
+    }
 
     // Toggle filter
     const toggleFilter = (type: LogType) => {
@@ -159,14 +172,23 @@ export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSession
 
     // Connect WebSocket and fetch logs on mount
     useEffect(() => {
-        fetchLogs()
-        connectWebSocket()
+        if (accountId) {
+            console.log("Component mounted with accountId:", accountId)
+            connectWebSocket()
+        }
 
         // Cleanup on unmount
         return () => {
             disconnectWebSocket()
         }
     }, [accountId])
+
+    // Show error if API request fails
+    useEffect(() => {
+        if (isError) {
+            setError("Failed to load initial logs")
+        }
+    }, [isError])
 
     return (
         <Card className="w-full border-none">

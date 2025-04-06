@@ -444,7 +444,7 @@ export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
                 return <Badge className="bg-red-800">Ban</Badge>;
             } else if ( row.original.status === "shadowban") {
                 return ( <Badge className="bg-orange-800">shadow-ban</Badge>)
-            } else if ( row.original.status === "paused") {
+            } else if ( row.original.status === "limited") {
                 return <Badge className="bg-purple-800">Paused</Badge>;
             } else if ( row.original.status === "completed" ) {
                 return <Badge className="bg-amber-500">Completed</Badge>;

@@ -161,7 +161,7 @@ export function GridAccountCard({
                 return "bg-red-800 text-white"
             case "shadowban":
                 return "bg-orange-800 text-white"
-            case "paused":
+            case "limited":
                 return "bg-purple-800 text-white"
             case "completed":
                 return "bg-amber-800 text-white"

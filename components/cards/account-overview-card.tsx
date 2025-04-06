@@ -36,7 +36,7 @@ export default function AccountsOverview({ accounts }: Readonly<AccountsOverview
         working : "#1e40af", // blue
         banned: "#991b1b", // red
         shadowban: "#9a3412", // orange
-        paused: "#6b21a8", // purple
+        limited: "#6b21a8", // purple
         completed: "#f59e0b", // yellow
         standby: "#0284c7", // sky blue
     }
