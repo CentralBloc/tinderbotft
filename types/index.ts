@@ -154,6 +154,7 @@ export interface BotAccountInterface {
   zodiac: string | undefined;
   education: string | undefined;
   communication: string | undefined;
+  photos: string[] | undefined;
 
 }
 

@@ -6,7 +6,7 @@ import Link from "next/link"
 import {
     ArrowLeft,
     ArrowLeftRight,
-    CircleSmall,
+    CircleIcon as CircleSmall,
     Clock,
     Edit,
     GraduationCap,
@@ -29,9 +29,10 @@ import {useModel} from "@/services/models/hooks"
 import {useStrategy} from "@/services/strategy/hooks"
 import {useProxy} from "@/services/proxy/hooks"
 import {useSwipesAccount} from "@/services/swipes/hooks"
-import {MapCard} from "@/components/cards/map-card";
-import {Progress} from "@/components/ui/progress";
-import {SwipesCarousel} from "@/components/cards/swipe-card-caroussel";
+import {MapCard} from "@/components/cards/map-card"
+import {Progress} from "@/components/ui/progress"
+import {SwipesCarousel} from "@/components/cards/swipe-card-caroussel"
+import {ProfileImageCarousel} from "@/components/cards/image-caroussel";
 
 interface AccountDetailViewProps {
     botAccount: BotAccountInterface
@@ -75,16 +76,15 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                 setProxyData(fetchedProxy)
             }
             refeshSwipes()
-
         }
     }, [botAccount, fetchedModel, fetchedStrategy, fetchedProxy, refeshSwipes])
 
     // Calculate progress percentage safely
     const strategyDays = strategyData?.days_number ?? 1
     const progressPercentage =
-      botAccount.strategy && botAccount.progress !== undefined && strategyDays > 0
-        ? (botAccount.progress / strategyDays) * 100
-        : 0;
+        botAccount.strategy && botAccount.progress !== undefined && strategyDays > 0
+            ? (botAccount.progress / strategyDays) * 100
+            : 0
     // Get names safely
     const modelName = modelData?.name || "Unknown Model"
     const strategyName = strategyData?.name || "No Strategy"
@@ -126,47 +126,47 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
     function getZodiacSymbol(zodiac: string): string {
         switch (zodiac.toLowerCase()) {
             case "aries":
-                return "♈";
+                return "♈"
             case "taurus":
-                return "♉";
+                return "♉"
             case "gemini":
-                return "♊";
+                return "♊"
             case "cancer":
-                return "♋";
+                return "♋"
             case "leo":
-                return "♌";
+                return "♌"
             case "virgo":
-                return "♍";
+                return "♍"
             case "libra":
-                return "♎";
+                return "♎"
             case "scorpio":
-                return "♏";
+                return "♏"
             case "sagittarius":
-                return "♐";
+                return "♐"
             case "capricorn":
-                return "♑";
+                return "♑"
             case "aquarius":
-                return "♒";
+                return "♒"
             case "pisces":
-                return "♓";
+                return "♓"
             default:
-                return "";
+                return ""
         }
     }
 
     return (
-        <div >
+        <div>
             <div className="flex flex-col overflow-hidden rounded-xl border border-border bg-card shadow-lg md:flex-row">
                 {/* Left side - Profile Image */}
                 <div className="relative h-auto w-full md:h-auto md:w-2/5 lg:w-1/3">
-                    <div className="absolute left-4 top-4 z-10">
+                    <div className="absolute left-4 top-4 z-30">
                         <Badge
                             className={`${getStatusColor(botAccount.status)} px-3 py-1 text-xs font-medium uppercase tracking-wider`}
                         >
                             {botAccount.status || "Unknown"}
                         </Badge>
                     </div>
-                    <div className="absolute right-4 top-4 z-10 flex flex-col gap-2">
+                    <div className="absolute right-4 top-4 z-30 flex flex-col gap-2">
                         <Badge variant="secondary" className="backdrop-blur-sm">
                             {modelName}
                         </Badge>
@@ -176,17 +176,18 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                             </Badge>
                         )}
                     </div>
-                    <Image
-                        src={botAccount.profile_url || "/placeholder.svg?height=800&width=600"}
-                        alt={botAccount.title || "Bot account"}
-                        fill
-                        className="object-cover"
-                        priority
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                    <div className="relative size-full">
+                        <ProfileImageCarousel
+                            images={botAccount.photos || [botAccount.profile_url || "/placeholder.svg?height=800&width=600"]}
+                            alt={botAccount.title || "Bot account"}
+                            showControls={true}
+                            showIndicators={true}
+                        />
+                        <div className="pointer-events-none absolute inset-0 z-20 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                    </div>
 
                     {/* Add interest badges overlay */}
-                    <div className="absolute inset-x-0 bottom-20 px-6">
+                    <div className="pointer-events-none absolute inset-x-0 bottom-20 z-30 px-6">
                         <div className="flex max-w-full flex-wrap gap-1.5">
                             {botAccount.interest && botAccount.interest.length > 0
                                 ? botAccount.interest.slice(0, 5).map((interest, index) => (
@@ -207,7 +208,7 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                         </div>
                     </div>
 
-                    <div className="absolute inset-x-0 bottom-0 p-6 text-white">
+                    <div className="absolute inset-x-0 bottom-0 z-30 p-6 text-white">
                         <div className="flex items-center gap-2">
                             <h1 className="text-3xl font-bold">{botAccount.title || "Untitled"}</h1>
                             <div className="size-6 overflow-hidden rounded-full">
@@ -349,7 +350,7 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                                 <div className="flex flex-wrap gap-2">
                                     {botAccount.interest && botAccount.interest.length > 0 ? (
                                         botAccount.interest.map((interest, index) => (
-                                            <Badge key={index}  className="px-3 py-1">
+                                            <Badge key={index} className="px-3 py-1">
                                                 {interest}
                                             </Badge>
                                         ))
@@ -362,8 +363,8 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Age Range:</span>
                                         <span className="font-medium">
-                                        {botAccount.min_age || 18} - {botAccount.max_age || 35} years
-                                    </span>
+                      {botAccount.min_age || 18} - {botAccount.max_age || 35} years
+                    </span>
                                     </div>
                                     <div className="flex justify-between text-sm">
                                         <span className="text-muted-foreground">Communication:</span>
@@ -426,16 +427,12 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                                 </Card>
                             </TabsContent>
                         </Tabs>
-
-
                     </div>
 
                     {/* Scrollable Recent Swipes Section */}
-
                 </div>
             </div>
             <div className="flex-1 overflow-hidden">
-
                 <div className="p-4">
                     <div className="mb-4 flex items-center justify-between">
                         <h2 className="text-xl font-bold">Recent Swipes</h2>
