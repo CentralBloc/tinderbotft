@@ -11,6 +11,7 @@ import type {Log, LogType} from "@/types"
 import {AlertCircle, Download, Pause, Play, RefreshCw, Wifi, WifiOff} from "lucide-react"
 import {useToast} from "@/components/ui/use-toast";
 import {LogItem} from "@/components/logs/log-items";
+import {useAccountLogsHooks} from "@/services/logs/hooks";
 
 
 interface RealtimeSessionLogProps {
@@ -122,41 +123,17 @@ export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSession
     }
 
     // Fetch initial logs
-    const fetchLogs = async () => {
-      setIsLoading(true)
-      setError(null)
+   const { refetch: fetchLogs } = useAccountLogsHooks(accountId);
 
-      try {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/get-account-swipe-log/${accountId}`)
+   // Clear logs
+   const handleClearLogs = () => {
+       setLogs([])
+   }
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`)
-        }
-
-        const data = await response.json()
-        setLogs(Array.isArray(data) ? data : [])
-      } catch (e) {
-        console.error("Error fetching logs:", e)
-        setError("Failed to load logs")
-        toast({
-          title: "Error",
-          description: "Failed to load session logs",
-          variant: "destructive",
-        })
-      } finally {
-        setIsLoading(false)
-      }
-    }
-
-    // Clear logs
-    const handleClearLogs = () => {
-        setLogs([])
-    }
-
-    // Refresh logs
-    const handleRefreshLogs = () => {
-        fetchLogs()
-    }
+   // Refresh logs
+   const handleRefreshLogs = () => {
+       fetchLogs()
+   }
 
     // Toggle filter
     const toggleFilter = (type: LogType) => {
