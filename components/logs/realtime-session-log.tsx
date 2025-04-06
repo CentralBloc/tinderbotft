@@ -20,7 +20,6 @@ interface RealtimeSessionLogProps {
 
 export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSessionLogProps>) {
     const [logs, setLogs] = useState<Log[]>([])
-    const [isLoading, setIsLoading] = useState(true)
     const [isConnected, setIsConnected] = useState(false)
     const [isPaused, setIsPaused] = useState(false)
     const [error, setError] = useState<string | null>(null)
@@ -123,7 +122,7 @@ export default function RealtimeSessionLog({accountId}: Readonly<RealtimeSession
     }
 
     // Fetch initial logs
-   const { refetch: fetchLogs } = useAccountLogsHooks(accountId);
+   const { refetch: fetchLogs, isLoading } = useAccountLogsHooks(accountId);
 
    // Clear logs
    const handleClearLogs = () => {
