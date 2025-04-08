@@ -63,9 +63,20 @@ export interface SmsInterface {
 
 export interface PlansInterface {
   id: string;
-  bot_name: number;
-  proxy: ProxyInterface | null;
-  status: string;
+  name: string;
+  price: number;
+  duration: number;
+  description: string;
+  account_number: number;
+}
+
+export interface SubscriptionInterface {
+  id: string;
+  user: UserInterface;
+  plan: PlansInterface | string | undefined;
+  status: "active" | "inactive" | "cancelled";
+  start_date: Date;
+  end_date: Date;
 }
 
 export interface PaymentHistoryInterface {

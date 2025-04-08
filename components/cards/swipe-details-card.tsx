@@ -1,6 +1,13 @@
 "use client"
 
-import {ArrowLeftRight, Bot, Heart, MoreHorizontal, Shield, ThumbsUp, Wifi} from "lucide-react"
+import {ArrowLeftRight, Bot, Heart, MoreHorizontal, Shield, ThumbsUp, Wifi, X} from "lucide-react"
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from "@/components/ui/alert-dialog"
 import {Card, CardContent, CardFooter} from "@/components/ui/card"
 import {Progress} from "@/components/ui/progress"
 import type {BotAccountInterface, StrategyInterface, SwipesInterface} from "@/types"
@@ -9,6 +16,8 @@ import {useStrategy} from "@/services/strategy/hooks"
 import {useBotaccount} from "@/services/bot-account/hooks"
 import {Button} from "@/components/ui/button"
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
+import LogConsole from "@/components/logs/log-console"
+import {VisuallyHidden} from "@/components/ui/visually-hidden"
 
 interface SwipeCardProps {
     swipe: SwipesInterface
@@ -123,21 +132,27 @@ export function SwipeCard({ swipe, onEdit, onDelete, className }: Readonly<Swipe
                     <div className="text-sm ">
                         {swipe.days} / {strategyData?.days_number || 0} days
                     </div>
-                    <div className="flex gap-2">
-                        {onEdit && (
-                            <Button
-                                variant="outline"
-                                size="sm"
-                                onClick={() => onEdit(swipe.id)}
-                                className=" bg-transparent "
-                            >
-                                View Details
-                            </Button>
-                        )}
+                    <div className="flex">
+                        <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                                <Button variant="outline">view details</Button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="max-w-4xl border-none bg-transparent p-0">
+                                    <div className="relative max-h-[90vh] overflow-hidden">
+                                        <AlertDialogCancel className="absolute right-2 top-2 z-10 size-8 rounded-full">
+                                            <X className="size-4" />
+                                            <span className="sr-only">Close</span>
+                                        </AlertDialogCancel>
+                                        <AlertDialogTitle>
+                                            <VisuallyHidden>Swipe Details</VisuallyHidden>
+                                        </AlertDialogTitle>
+                                        <LogConsole sessionId={swipe.id} accountId={botAccountId} session={swipe.days} strategy={strategyData?.name || "Unknown Strategy"}/>
+                                    </div>
+                            </AlertDialogContent>
+                        </AlertDialog>
                     </div>
                 </div>
             </CardFooter>
         </Card>
     )
 }
-

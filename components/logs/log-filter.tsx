@@ -2,8 +2,7 @@
 
 import {CheckIcon} from "lucide-react"
 import {Badge} from "@/components/ui/badge"
-import {LogType} from "@/types";
-
+import type {LogType} from "@/types"
 
 interface LogFilterProps {
     activeFilters: LogType[]
