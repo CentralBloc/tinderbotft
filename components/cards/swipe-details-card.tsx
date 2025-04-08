@@ -6,18 +6,19 @@ import {
     AlertDialogCancel,
     AlertDialogContent,
     AlertDialogTitle,
-    AlertDialogTrigger
+    AlertDialogTrigger,
 } from "@/components/ui/alert-dialog"
 import {Card, CardContent, CardFooter} from "@/components/ui/card"
 import {Progress} from "@/components/ui/progress"
 import type {BotAccountInterface, StrategyInterface, SwipesInterface} from "@/types"
 import {useEffect, useState} from "react"
-import {useStrategy} from "@/services/strategy/hooks"
-import {useBotaccount} from "@/services/bot-account/hooks"
 import {Button} from "@/components/ui/button"
 import {DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger} from "@/components/ui/dropdown-menu"
 import LogConsole from "@/components/logs/log-console"
 import {VisuallyHidden} from "@/components/ui/visually-hidden"
+import {useSessionLogsHooks} from "@/services/logs/hooks"
+import {useBotaccount} from "@/services/bot-account/hooks";
+import {useStrategy} from "@/services/strategy/hooks";
 
 interface SwipeCardProps {
     swipe: SwipesInterface
@@ -30,11 +31,21 @@ export function SwipeCard({ swipe, onEdit, onDelete, className }: Readonly<Swipe
     const [strategyData, setStrategyData] = useState<StrategyInterface | null>(null)
     const [accountData, setAccountData] = useState<BotAccountInterface | null>(null)
 
+
     const botAccountId = typeof swipe?.account === "object" ? swipe.account.id : swipe?.account || ""
     const strategyId = typeof swipe?.strategy === "string" ? swipe.strategy : ""
 
+
     const { data: fetchedStrategy } = useStrategy(strategyId)
     const { data: fetchedAccount } = useBotaccount(botAccountId)
+
+    const {
+        data: logsData = { swipes: [], matches: [], errors: [] },
+        isLoading,
+        isError,
+        error,
+        refetch,
+    } = useSessionLogsHooks(fetchedAccount?.id ?? "", swipe.id)
 
     useEffect(() => {
         if (swipe) {
@@ -133,21 +144,37 @@ export function SwipeCard({ swipe, onEdit, onDelete, className }: Readonly<Swipe
                         {swipe.days} / {strategyData?.days_number || 0} days
                     </div>
                     <div className="flex">
-                        <AlertDialog>
+                        <AlertDialog
+                            onOpenChange={(open) => {
+                                if (open) {
+                                    console.log("Dialog opened, fetching logs...")
+                                    refetch()
+                                }
+                            }}
+                        >
                             <AlertDialogTrigger asChild>
                                 <Button variant="outline">view details</Button>
                             </AlertDialogTrigger>
                             <AlertDialogContent className="max-w-4xl border-none bg-transparent p-0">
-                                    <div className="relative max-h-[90vh] overflow-hidden">
-                                        <AlertDialogCancel className="absolute right-2 top-2 z-10 size-8 rounded-full">
-                                            <X className="size-4" />
-                                            <span className="sr-only">Close</span>
-                                        </AlertDialogCancel>
-                                        <AlertDialogTitle>
-                                            <VisuallyHidden>Swipe Details</VisuallyHidden>
-                                        </AlertDialogTitle>
-                                        <LogConsole sessionId={swipe.id} accountId={botAccountId} session={swipe.days} strategy={strategyData?.name || "Unknown Strategy"}/>
-                                    </div>
+                                <div className="relative max-h-[90vh] overflow-hidden">
+                                    <AlertDialogCancel className="absolute right-2 top-2 z-10 size-8 rounded-full">
+                                        <X className="size-4" />
+                                        <span className="sr-only">Close</span>
+                                    </AlertDialogCancel>
+                                    <AlertDialogTitle>
+                                        <VisuallyHidden>Swipe Details</VisuallyHidden>
+                                    </AlertDialogTitle>
+                                    <LogConsole
+                                        key={swipe.id}
+                                        logsData={logsData}
+                                        refetch={refetch}
+                                        sessionId={swipe.id}
+                                        isLoading={isLoading}
+                                        isError={isError}
+                                        session={swipe.days}
+                                        strategy={strategyData?.name || "Unknown Strategy"}
+                                    />
+                                </div>
                             </AlertDialogContent>
                         </AlertDialog>
                     </div>

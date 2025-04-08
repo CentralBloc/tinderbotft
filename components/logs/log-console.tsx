@@ -12,19 +12,21 @@ import {Skeleton} from "@/components/ui/skeleton"
 import {LogFilter} from "./log-filter"
 import type {ErrorLog, Log, LogType, MatchLog, SwipeLog} from "@/types"
 import {LogItem} from "./log-items"
-import {useSessionLogsHooks} from "@/services/logs/hooks"
 
 interface SessionLogsProps {
+    logsData: { swipes: string[]; matches: string[]; errors: string[] }
+    refetch: () => void
+    isLoading: boolean
+    isError: boolean
     sessionId: string
-    accountId: string
     session: number
     strategy: string
 }
 
 // Helper function to process logs outside of component
 function processLogsData(logsData: any): Log[] {
-    if (!logsData) return [];
-    const logs: Log[] = [];
+    if (!logsData) return []
+    const logs: Log[] = []
 
     if (logsData.swipes && Array.isArray(logsData.swipes)) {
         logsData.swipes.forEach((swipe: any) => {
@@ -39,9 +41,9 @@ function processLogsData(logsData: any): Log[] {
                 success: swipe.success,
                 response_data: swipe.response_data,
                 created_at: new Date(swipe.created_at),
-            };
-            logs.push(swipeLog);
-        });
+            }
+            logs.push(swipeLog)
+        })
     }
 
     if (logsData.matches && Array.isArray(logsData.matches)) {
@@ -56,9 +58,9 @@ function processLogsData(logsData: any): Log[] {
                 target_bio: match.target_bio,
                 target_photos: match.target_photos,
                 created_at: new Date(match.created_at),
-            };
-            logs.push(matchLog);
-        });
+            }
+            logs.push(matchLog)
+        })
     }
 
     if (logsData.errors && Array.isArray(logsData.errors)) {
@@ -72,15 +74,23 @@ function processLogsData(logsData: any): Log[] {
                 error_message: err.error_message,
                 stack_trace: err.stack_trace,
                 created_at: new Date(err.created_at),
-            };
-            logs.push(errorLog);
-        });
+            }
+            logs.push(errorLog)
+        })
     }
 
-    return logs;
+    return logs
 }
 
-export default function LogConsole({ accountId, sessionId, session, strategy }: Readonly<SessionLogsProps>) {
+export default function LogConsole({
+                                       logsData,
+                                       refetch,
+                                       sessionId,
+                                       isLoading,
+                                       isError,
+                                       session,
+                                       strategy,
+                                   }: Readonly<SessionLogsProps>) {
     const [activeTab, setActiveTab] = useState<string>("all")
     const [activeFilters, setActiveFilters] = useState<LogType[]>(["error", "swipe", "match"])
     const [selectedSession, setSelectedSession] = useState<string | null>(null)
@@ -89,33 +99,33 @@ export default function LogConsole({ accountId, sessionId, session, strategy }: 
     const scrollAreaRef = useRef<HTMLDivElement>(null)
     const dataProcessedRef = useRef<string | null>(null)
 
-    const {
-        data: logsData = { swipes: [], matches: [], errors: [] },
-        isLoading,
-        isError,
-        error,
-        refetch,
-    } = useSessionLogsHooks(accountId, sessionId)
-
     // Process the logs data into the format expected by the component
     useEffect(() => {
-        // Skip processing if we've already processed this data
-        const dataString = JSON.stringify(logsData)
-        if (dataProcessedRef.current && dataString === dataProcessedRef.current) {
+        // Skip processing if data is not available yet
+        if (!logsData) {
+            console.log("No logs data available yet")
             return
         }
 
-        dataProcessedRef.current = dataString
+        console.log("Processing logs data:", logsData)
 
-        console.log("Processing logs data")
+        // Reset logs to avoid showing stale data
+        setProcessedLogs([])
+
         const logs = processLogsData(logsData)
         console.log("Processed logs:", logs)
 
         setProcessedLogs(logs)
 
         // Store the stringified data to avoid reprocessing the same data
-        dataProcessedRef.current = dataString
+        dataProcessedRef.current = JSON.stringify(logsData)
     }, [logsData])
+
+    // Fetch logs when component mounts
+    useEffect(() => {
+        console.log("LogConsole mounted, fetching logs...")
+        refetch()
+    }, [refetch])
 
     // Apply all filters
     const filteredLogs = processedLogs.filter((log) => {
@@ -156,7 +166,6 @@ export default function LogConsole({ accountId, sessionId, session, strategy }: 
         }
     }
 
-
     const handleRefreshLogs = () => {
         console.log("Refreshing logs...")
         // Reset the data processed flag to force reprocessing
@@ -186,7 +195,7 @@ export default function LogConsole({ accountId, sessionId, session, strategy }: 
     return (
         <Card className="w-full border-none shadow-md">
             <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-                <CardTitle className="text-xl font-bold">Activity Log Console</CardTitle>
+                <CardTitle className="text-xl font-bold">Swipes Log Console</CardTitle>
                 <div className="flex items-center gap-2">
                     <Button
                         variant="outline"
@@ -257,7 +266,6 @@ export default function LogConsole({ accountId, sessionId, session, strategy }: 
 
                         <div className="flex flex-wrap gap-2">
                             {activeTab === "all" && <LogFilter activeFilters={activeFilters} onFilterChange={handleFilterChange} />}
-
                         </div>
                     </div>
 
@@ -265,19 +273,19 @@ export default function LogConsole({ accountId, sessionId, session, strategy }: 
                         <div className="mb-4 rounded-md border border-red-800 bg-red-900/20 p-3 text-red-400">
                             <div className="flex items-center gap-2">
                                 <AlertCircle className="size-4" />
-                                <span>{error instanceof Error ? error.message : "Failed to load logs"}</span>
+                                <span>{"Failed to load logs"}</span>
                             </div>
                         </div>
                     )}
 
-                    {!isLoading && !isError && logsData && Object.keys(logsData).length > 0 && processedLogs.length === 0 && (
-                        <div className="mb-4 rounded-md border border-yellow-800 bg-yellow-900/20 p-3 text-yellow-400">
-                            <div className="flex items-center gap-2">
-                                <AlertCircle className="size-4" />
-                                <span>Data received but no logs could be processed. Check data format.</span>
-                            </div>
-                        </div>
-                    )}
+                    {/*{!isLoading && !isError && logsData && Object.keys(logsData).length > 0 && processedLogs.length === 0 && (*/}
+                    {/*    <div className="mb-4 rounded-md border border-yellow-800 bg-yellow-900/20 p-3 text-yellow-400">*/}
+                    {/*        <div className="flex items-center gap-2">*/}
+                    {/*            <AlertCircle className="size-4" />*/}
+                    {/*            <span>Data received but no logs could be processed. Check data format.</span>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*)}*/}
 
                     <TabsContent value="all" className="m-0">
                         <LogList logs={sortedLogs} isLoading={isLoading} />
@@ -297,7 +305,6 @@ export default function LogConsole({ accountId, sessionId, session, strategy }: 
                 <div className="flex w-full justify-between">
                     <div>Session Progress: {session}</div>
                     <div>Strategy: {strategy}</div>
-
                 </div>
             </CardFooter>
         </Card>

@@ -1,10 +1,11 @@
 "use client"
 
 import {useState} from "react"
-import {AlertCircle, ChevronDown, ChevronUp, Heart, ImageIcon, X} from "lucide-react"
+import {AlertCircle, ChevronDown, ChevronUp, Heart, X} from "lucide-react"
 import {Badge} from "@/components/ui/badge"
 import {Button} from "@/components/ui/button"
-import type {ErrorLog, Log, SwipeLog} from "@/types"
+import type {Log} from "@/types"
+import Image from "next/image"
 
 export function LogItem({ log }: Readonly<{ log: Log }>) {
   const [expanded, setExpanded] = useState(false)
@@ -147,12 +148,18 @@ export function LogItem({ log }: Readonly<{ log: Log }>) {
                       <div className="flex gap-2 overflow-x-auto pb-2">
                         {matchLog.target_photos.map((photo, index) => (
                             <div key={index} className="relative h-[80px] min-w-[80px] overflow-hidden rounded bg-muted">
-                              <div className="absolute inset-0 flex items-center justify-center">
-                                <ImageIcon className="size-6 text-muted-foreground" />
-                              </div>
-                              <div className="absolute bottom-0 right-0 rounded-tl bg-background/80 px-1 text-xs text-foreground">
-                                {index + 1}
-                              </div>
+                                <div className="absolute inset-0 flex items-center justify-center">
+                                    <Image
+                                        src={photo || "/placeholder.svg"}
+                                        alt={`Match photo ${index + 1}`}
+                                        width={80}
+                                        height={80}
+                                        className="object-cover"
+                                    />
+                                </div>
+                                <div className="absolute bottom-0 right-0 rounded-tl bg-background/80 px-1 text-xs text-foreground">
+                                    {index + 1}
+                                </div>
                             </div>
                         ))}
                       </div>
@@ -199,18 +206,18 @@ export function LogItem({ log }: Readonly<{ log: Log }>) {
                         className={`
                   px-1.5 py-0 text-xs
                   ${
-                            (log as SwipeLog).swipe_direction === "like"
+                            (log).swipe_direction === "like"
                                 ? "border-blue-800 bg-blue-900/20 text-blue-300"
                                 : "border-purple-800 bg-purple-900/20 text-purple-300"
                         }
                 `}
                     >
-                      {(log as SwipeLog).swipe_direction.toUpperCase()}
+                      {(log).swipe_direction.toUpperCase()}
                     </Badge>
                 )}
                 {log.type === "error" && (
                     <Badge variant="outline" className="border-red-800 bg-red-900/20 px-1.5 py-0 text-xs text-red-300">
-                      {(log as ErrorLog).error_type}
+                      {(log).error_type}
                     </Badge>
                 )}
               </div>

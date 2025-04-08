@@ -23,9 +23,9 @@ import {
     PencilLine,
     Play,
     RefreshCcwDot,
-    SquareChevronRight,
     ThumbsUp,
-    Trash2
+    Trash2,
+    X
 } from "lucide-react";
 import Link from "next/link";
 import {routes} from "@/lib/routes";
@@ -54,7 +54,16 @@ import {Input} from "@/components/ui/input";
 import {EditableProxyCell} from "@/components/tables/proxy/proxy-columns";
 import {toast} from "@/components/ui/use-toast";
 import {Textarea} from "@/components/ui/textarea";
+import {
+    AlertDialog,
+    AlertDialogCancel,
+    AlertDialogContent,
+    AlertDialogTitle,
+    AlertDialogTrigger
+} from "@/components/ui/alert-dialog";
+import {VisuallyHidden} from "@/components/ui/visually-hidden";
 import RealtimeSessionLog from "@/components/logs/realtime-session-log";
+import {WebSocketProvider} from "@/lib/providers/websocket.provider";
 
 interface TinderBioCellProps {
     row: {
@@ -361,32 +370,38 @@ export const AccountUserNameCell = ({ row }: UserNamesCellProps) => {
 }
 
 export const AccountLogCell = ({ row }: UserNamesCellProps) => {
-    const [isModalOpen, setIsModalOpen] = useState(false)
-
-    let iconColor = ""
-    if (row.original.status == "working") {
-        iconColor = "text-blue-500"
-    }
-    else {
-        iconColor = "text-gray-500"
-    }
-
 
     return (
-        <div className="flex items-center">
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                    <DialogTrigger asChild>
-                        <Button variant="ghost" className={`${iconColor} flex items-center gap-2`}>
-                            <SquareChevronRight  />
+        <div className="flex w-full items-center justify-between">
+            <div className="flex">
+                <AlertDialog>
+                    <AlertDialogTrigger asChild>
+                        <Button
+                            variant="ghost"
+                            className="relative hover:bg-transparent hover:opacity-100"
+                        >
+                            <Badge className="bg-blue-800">Working</Badge>
                         </Button>
-                    </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Edit Username</DialogTitle>
-                    </DialogHeader>
-                    <RealtimeSessionLog accountId={row.original.id ?? ""} />
-                </DialogContent>
-            </Dialog>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent className="max-w-4xl border-none bg-transparent p-0">
+                        <div className="relative max-h-[90vh] overflow-hidden">
+                            <AlertDialogCancel className="absolute right-2 top-2 z-10 size-8 rounded-full">
+                                <X className="size-4" />
+                                <span className="sr-only">Close</span>
+                            </AlertDialogCancel>
+                            <AlertDialogTitle>
+                                <VisuallyHidden>Swipe Details</VisuallyHidden>
+                            </AlertDialogTitle>
+                            <WebSocketProvider>
+                                <div className="container mx-auto max-w-5xl p-4">
+                                    <h1 className="mb-6 text-2xl font-bold">Live Swipe Session</h1>
+                                    <RealtimeSessionLog accountId={row.original.id ?? ""} />
+                                </div>
+                            </WebSocketProvider>
+                        </div>
+                    </AlertDialogContent>
+                </AlertDialog>
+            </div>
         </div>
     )
 }
@@ -437,7 +452,7 @@ export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
             } else if (row.original.status === "expired") {
                 return <Badge className="bg-gray-800">Expired</Badge>;
             } else if (row.original.status === "working") {
-                return <Badge className="bg-blue-800">Working</Badge>;
+                return <AccountLogCell  row={row}/>;
             } else if (row.original.status === "inactive") {
                 return <Badge className="bg-black">Inactive</Badge>;
             } else if ( row.original.status === "banned") {
@@ -445,7 +460,7 @@ export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
             } else if ( row.original.status === "shadowban") {
                 return ( <Badge className="bg-orange-800">shadow-ban</Badge>)
             } else if ( row.original.status === "limited") {
-                return <Badge className="bg-purple-800">Paused</Badge>;
+                return <Badge className="bg-purple-800">Limited</Badge>;
             } else if ( row.original.status === "completed" ) {
                 return <Badge className="bg-amber-500">Completed</Badge>;
             } else if ( row.original.status === "standby") {
@@ -514,15 +529,15 @@ export const accountStatsColumns: ColumnDef<BotAccountInterface>[] = [
             } else if (row.original.status === "expired") {
                 return <Badge className="bg-gray-800">Expired</Badge>;
             } else if (row.original.status === "working") {
-                return <Badge className="bg-blue-800">Working</Badge>;
+                return <AccountLogCell  row={row}/>;
             } else if (row.original.status === "inactive") {
                 return <Badge className="bg-black">Inactive</Badge>;
             } else if ( row.original.status === "banned") {
                 return <Badge className="bg-red-800">Ban</Badge>;
             } else if ( row.original.status === "shadowban") {
                 return ( <Badge className="bg-orange-800">shadow-ban</Badge>)
-            } else if ( row.original.status === "paused") {
-                return <Badge className="bg-purple-800">Paused</Badge>;
+            } else if ( row.original.status === "limited") {
+                return <Badge className="bg-purple-800">Limited</Badge>;
             } else if ( row.original.status === "completed" ) {
                 return <Badge className="bg-amber-500">Completed</Badge>;
             } else if ( row.original.status === "standby") {

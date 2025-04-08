@@ -14,5 +14,6 @@ export const usePicture = (id: string) => {
     return useQuery({
         queryKey: pituresQueryKeys.pictureKey(id),
         queryFn: () => getPicture(id),
+        enabled: !!id,
     })
 }
