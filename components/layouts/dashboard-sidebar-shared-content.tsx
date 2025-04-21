@@ -1,9 +1,9 @@
 "use client";
 
 import Logo from "@/components/logo";
-import { routes } from "@/lib/routes";
-import { cn } from "@/lib/utils";
-import { MainNavItem } from "@/types";
+import {routes} from "@/lib/routes";
+import {cn} from "@/lib/utils";
+import {MainNavItem} from "@/types";
 import Link from "next/link";
 
 type DashboardSidebarSharedContentProps = {
@@ -16,7 +16,7 @@ export default function DashboardSidebarSharedContent({
 	sidebarNavItems,
 	pathname,
 	setIsOpen,
-}: DashboardSidebarSharedContentProps) {
+}: Readonly<DashboardSidebarSharedContentProps>) {
 	return (
 		<div className="space-y-12">
 			<Logo href={routes.dashboard.home} onClick={() => setIsOpen?.(false)} />
@@ -45,7 +45,7 @@ export default function DashboardSidebarSharedContent({
 
 							{hasSubmenu && (
 								<ul className="ml-6 mt-1 flex flex-col gap-y-1 border-l border-primary/20 pl-2">
-									{item.items.map((subItem) => {
+									{item.items?.map((subItem) => {
 										const isSubItemActive = (pathname.includes(subItem.href) && subItem.href.length > 1) || pathname === subItem.href;
 
 										return (

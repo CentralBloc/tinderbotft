@@ -1,14 +1,14 @@
 "use client";
 
-import { MainNavItem } from "@/types";
-import { usePathname } from "next/navigation";
+import {MainNavItem} from "@/types";
+import {usePathname} from "next/navigation";
 import DashboardSidebarSharedContent from "./dashboard-sidebar-shared-content";
 
 type DesktopSidebarProps = {
 	sidebarNavItems: MainNavItem[];
 };
 
-export default function DesktopSidebar({ sidebarNavItems }: DesktopSidebarProps) {
+export default function DesktopSidebar({ sidebarNavItems }: Readonly<DesktopSidebarProps>) {
 	const pathname = usePathname();
 
 	return (
