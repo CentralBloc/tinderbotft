@@ -24,6 +24,9 @@
 		--input: 214.3 31.8% 91.4%;
 		--ring: 222.2 84% 4.9%;
 		--radius: 0.65rem;
+		--gradient-from: #FFBAC5;
+		--gradient-to: #FF5A6E;
+		--gradient: linear-gradient(135deg, #FFBAC5 0%, #FF5A6E 100%);
 	}
 
 	.dark {
@@ -46,6 +49,9 @@
 		--border: 217.2 32.6% 17.5%;
 		--input: 217.2 32.6% 17.5%;
 		--ring: 212.7 26.8% 83.9;
+		--gradient-from: #FFBAC5;
+		--gradient-to: #FF5A6E;
+		--gradient: linear-gradient(135deg, #FFBAC5 0%, #FF5A6E 100%);
 	}
 }
 
@@ -84,13 +90,3 @@
 	}
 }
 
-
-
-@layer base {
-  * {
-    @apply border-border outline-ring/50;
-	}
-  body {
-    @apply bg-background text-foreground;
-	}
-}

@@ -1,7 +1,7 @@
-import { Metadata } from "next";
-import { Breadcrumbs } from "@/components/pagers/breadcrumbs";
-import { Suspense } from "react";
-import UsersList from "@/components/tables/user-list";
+import {Metadata} from "next";
+import {Breadcrumbs} from "@/components/pagers/breadcrumbs";
+import {Suspense} from "react";
+import UsersList from "@/components/tables/super-admin/user-list";
 
 export const metadata: Metadata = {
   title: "Dashboard - Admin",

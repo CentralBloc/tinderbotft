@@ -458,7 +458,7 @@ export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
             } else if ( row.original.status === "banned") {
                 return <Badge className="bg-red-800">Ban</Badge>;
             } else if ( row.original.status === "shadowban") {
-                return ( <Badge className="bg-orange-800">shadow-ban</Badge>)
+                return ( <Badge className="bg-orange-800">shadow</Badge>)
             } else if ( row.original.status === "limited") {
                 return <Badge className="bg-purple-800">Limited</Badge>;
             } else if ( row.original.status === "completed" ) {
@@ -535,7 +535,7 @@ export const accountStatsColumns: ColumnDef<BotAccountInterface>[] = [
             } else if ( row.original.status === "banned") {
                 return <Badge className="bg-red-800">Ban</Badge>;
             } else if ( row.original.status === "shadowban") {
-                return ( <Badge className="bg-orange-800">shadow-ban</Badge>)
+                return ( <Badge className="bg-orange-800">shadow</Badge>)
             } else if ( row.original.status === "limited") {
                 return <Badge className="bg-purple-800">Limited</Badge>;
             } else if ( row.original.status === "completed" ) {

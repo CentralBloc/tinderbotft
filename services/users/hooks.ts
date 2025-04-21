@@ -3,6 +3,7 @@ import {
   createAccount,
   createAccountCredentials,
   editUserProfile,
+  getAccountSwipes,
   getAllUsers,
   getMe,
   getUserStats,
@@ -21,6 +22,7 @@ export const usersQueryKeys = {
   deleteUserKey: (id: string) => ["delete-user", id],
   userStatsKey: ["user-stats"],
   allowAccessKey: ["allow-access"],
+  userAccountSwipesKey: ["user-account-swipes"],
 };
 
 // --------------- QUERIES HOOKS --------------- //
@@ -45,6 +47,13 @@ export const useStats = () => {
     queryFn: getUserStats,
   });
 };
+
+export const useUserAccountSwipes = () => {
+    return useQuery({
+        queryKey: usersQueryKeys.userAccountSwipesKey,
+        queryFn: getAccountSwipes,
+    });
+}
 
 // --------------- MUTATIONS HOOKS --------------- //
 export const useCreateAccount = () => {

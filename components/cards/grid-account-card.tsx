@@ -25,7 +25,7 @@ import {useStrategy} from "@/services/strategy/hooks"
 import {useProxy} from "@/services/proxy/hooks"
 import {routes} from "@/lib/routes"
 import Link from "next/link"
-import {cn} from "@/lib/utils"
+import {cn, getStatusColor} from "@/lib/utils"
 import {
     useRemoveBotAccount,
     useStartBotAccount,
@@ -146,31 +146,6 @@ export function GridAccountCard({
     // Format birth date
     const birthDate = botAccount.birth_date ? new Date(botAccount.birth_date) : null
     const age = birthDate ? new Date().getFullYear() - birthDate.getFullYear() : null
-
-    const getStatusColor = (status = "") => {
-        switch (status.toLowerCase()) {
-            case "active":
-                return "bg-green-800 text-white"
-            case "expired":
-                return "bg-gray-800 text-white"
-            case "working":
-                return "bg-blue-800 text-white"
-            case "inactive":
-                return "bg-slate-800 text-white"
-            case "banned":
-                return "bg-red-800 text-white"
-            case "shadowban":
-                return "bg-orange-800 text-white"
-            case "limited":
-                return "bg-purple-800 text-white"
-            case "completed":
-                return "bg-amber-800 text-white"
-            case "standby":
-                return "bg-sky-600 text-white"
-            default:
-                return "bg-slate-800 text-white"
-        }
-    }
 
     // Calculate progress percentage safely
     const strategyDays = strategyData?.days_number ?? 1

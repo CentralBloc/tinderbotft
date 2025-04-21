@@ -12,7 +12,7 @@ export default function DesktopSidebar({ sidebarNavItems }: DesktopSidebarProps)
 	const pathname = usePathname();
 
 	return (
-		<div className="hidden h-screen w-56 flex-col justify-between border-r bg-gray-100/70 px-4 py-7 dark:bg-gray-900/70 lg:flex xl:w-64">
+		<div className="hidden h-screen w-56 flex-col justify-between border-r bg-background/70 px-4 py-7 lg:flex xl:w-64">
 			<DashboardSidebarSharedContent sidebarNavItems={sidebarNavItems} pathname={pathname} />
 		</div>
 	);

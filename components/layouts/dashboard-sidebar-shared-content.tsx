@@ -32,10 +32,10 @@ export default function DashboardSidebarSharedContent({
 							key={`${item.href}`}
 							onClick={() => setIsOpen?.(false)}
 							className={cn(
-								"text-gray-800 dark:text-foreground/85 flex items-center gap-x-2 py-[14px] px-4 rounded-md relative",
+								"text-foreground flex items-center gap-x-2 py-[14px] px-4 rounded-md relative",
 								isActive
-									? "font-medium bg-foreground/5 dark:bg-gray-700/40 border border-foreground/30 dark:border-foreground/30 text-foreground dark:text-foreground"
-									: "hover:bg-foreground/5 dark:hover:bg-foreground/15"
+									? "font-medium bg-primary/10 border border-primary/30 text-primary"
+									: "hover:bg-foreground/5 hover:text-primary"
 							)}
 						>
 							<Icon className="size-5" />

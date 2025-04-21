@@ -78,3 +78,9 @@ export const addAccountUserName = async (id: string, username: string) => {
     const response = await axios.patch(`/add-account-username/${id}/`, { username });
     return response.data;
 }
+
+
+export const updateToken = async (id: string) => {
+    const response = await axios.patch(`/generate-new-token/${id}/`);
+    return response.data;
+}

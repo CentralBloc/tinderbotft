@@ -12,6 +12,7 @@ import {
     stopAccount,
     updateAccount,
     updateAccountContent,
+    updateToken,
 } from "@/services/bot-account/queries";
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 
@@ -166,6 +167,22 @@ export const useAddAccountUserName = (id: string) => {
 
     return useMutation({
         mutationFn: (username: string) => addAccountUserName(id, username),
+        onSettled: () => {
+            queryClient.invalidateQueries({
+                queryKey: botaccountQueryKeys.botaccountsKey,
+            });
+            queryClient.invalidateQueries({
+                queryKey: botaccountQueryKeys.botaccountKey(id),
+            })
+        },
+    });
+}
+
+export const useUpdateToken = (id: string) => {
+    const queryClient = useQueryClient();
+
+    return useMutation({
+        mutationFn: () => updateToken(id),
         onSettled: () => {
             queryClient.invalidateQueries({
                 queryKey: botaccountQueryKeys.botaccountsKey,

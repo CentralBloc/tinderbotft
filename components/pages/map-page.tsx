@@ -14,7 +14,7 @@ export default function MapPage() {
     const { data: locations, isLoading } = useAllAccountsLocations()
 
     return (
-        <div className="mx-auto max-w-6xl p-4">
+        <div className="mx-auto ">
             {!isLoading && (
                 <ColoredMap title="" locations={locations || []} className="w-full" />
             )}

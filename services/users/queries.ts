@@ -80,3 +80,9 @@ export const editUserProfile = async (
         .then((data) => data);
     return response.data;
 }
+
+
+export const getAccountSwipes = async() => {
+    const response = await axios.get("/get-account-swipe-actions");
+    return response.data;
+}

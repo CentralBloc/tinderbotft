@@ -4,7 +4,6 @@ import {useEffect, useRef} from "react"
 import L from "leaflet"
 import "leaflet/dist/leaflet.css"
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
-import {MapPin} from "lucide-react"
 
 // Define marker locations with status and image
 interface MarkerLocation {
@@ -222,10 +221,8 @@ export function ColoredMap({
             <CardHeader className="pb-2">
                 <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
-                        <MapPin className="size-3 text-primary" />
                         {title}
                     </CardTitle>
-                    <div className="text-sm text-muted-foreground">{locations?.length || 0} locations</div>
                 </div>
             </CardHeader>
             <CardContent>

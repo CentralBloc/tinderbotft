@@ -276,3 +276,15 @@ export interface ErrorLog extends BaseLog {
 
 // Union type for all logs
 export type Log = SwipeLog | MatchLog | ErrorLog
+
+export interface SwipeAction {
+  id: string
+  type: string
+  scheduled_time: string
+  scheduled_time_2?: string
+  min_swipe_times: number
+  max_swipe_times: number
+  min_right_swipe_percentage: number
+  max_right_swipe_percentage: number
+  related_day: number
+}
