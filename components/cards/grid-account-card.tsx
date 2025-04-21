@@ -2,16 +2,10 @@
 
 import {
     ArrowLeftRight,
-    Earth,
-    EarthLock,
     Heart,
     MapPin,
-    Pause,
-    PencilLine,
-    Play,
-    RefreshCcwDot,
-    ThumbsUp,
-    Trash2
+    MoreVertical,
+    ThumbsUp
 } from "lucide-react"
 import {Progress} from "@/components/ui/progress"
 import {Badge} from "@/components/ui/badge"
@@ -26,22 +20,7 @@ import {useProxy} from "@/services/proxy/hooks"
 import {routes} from "@/lib/routes"
 import Link from "next/link"
 import {cn, getStatusColor} from "@/lib/utils"
-import {
-    useRemoveBotAccount,
-    useStartBotAccount,
-    useStopBotAccount,
-    useUpdateBotAccountContent
-} from "@/services/bot-account/hooks";
-import {toast} from "@/components/ui/use-toast";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
-} from "@/components/ui/dialog";
+import {AccountContextMenu} from "@/components/ui/account-context-menu";
 
 interface GridCardProps {
     botAccount: BotAccountInterface
@@ -70,7 +49,6 @@ export function GridAccountCard({
     const [strategyData, setStrategyData] = useState<StrategyInterface | null>(null)
     const [proxyData, setProxyData] = useState<ProxyInterface | null>(null)
     const [isFavorite, setIsFavorite] = useState(false)
-    const [isModalOpen, setIsModalOpen] = useState(false);
 
     const modelId = typeof botAccount?.modele === "string" ? botAccount.modele : ""
     const strategyId = typeof botAccount?.strategy === "string" ? botAccount.strategy : ""
@@ -79,41 +57,6 @@ export function GridAccountCard({
     const { data: fetchedModel } = useModel(modelId)
     const { data: fetchedStrategy } = useStrategy(strategyId)
     const { data: fetchedProxy } = useProxy(proxyId)
-
-    const deleteMutation = useRemoveBotAccount(botAccount.id);
-
-    const handleDelete = () => {
-        deleteMutation.mutate();
-        setIsModalOpen(false);
-    };
-
-    const startMutation = useStartBotAccount(botAccount.id);
-    const handleStart = () => {
-        startMutation.mutate(undefined, {
-            onSuccess: () => {
-                toast({
-                    title: "Account started successfully",
-                });
-            },
-            onError: (error: any) => {
-                toast({
-                    variant: "destructive",
-                    title: "Failed to start account",
-                    description: error.response?.data || "An error occurred",
-                });
-            },
-        });
-    };
-
-    const stopMutation = useStopBotAccount(botAccount.id);
-    const handleStop = () => {
-        stopMutation.mutate();
-    }
-
-    const updateContentMutation = useUpdateBotAccountContent(botAccount.id);
-    const handleUpdateContent = () => {
-        updateContentMutation.mutate();
-    }
 
     useEffect(() => {
         if (botAccount) {
@@ -166,7 +109,7 @@ export function GridAccountCard({
         <Card className={cn("group overflow-hidden transition-all hover:shadow-md", className)}>
             <div className="relative">
                 {/* Image with gradient overlay */}
-                <div className="relative h-48 w-full overflow-hidden">
+                <div className="relative h-48 w-full overflow-hidden sm:h-40 md:h-48 lg:h-52">
                     <Image
                         src={botAccount.profile_url || "/placeholder.svg?height=192&width=384"}
                         alt={botAccount.title || "Bot account"}
@@ -213,126 +156,70 @@ export function GridAccountCard({
                         </div>
                     </div>
                 </div>
-                <div className="absolute bottom-1 right-2 flex gap-1.5">
-                    <Button
-                        size="icon"
-                        variant="ghost"
-                        className="size-7 rounded-full"
-                        onClick={botAccount.status === 'active' ? handleStop : handleStart}
-                    >
-                        {botAccount.status === 'active' ? (
-                            <Pause size={20} color="#ff0000" strokeWidth={1.25} />
-                        ) : (
-                            <Play size={20} color="#065c00" strokeWidth={1.25} />
-                        )}
-                    </Button>
-
-                    <Button
-                        size="icon"
-                        variant="ghost"
-                        className="size-7 rounded-full"
-                    >
-                        {botAccount.username ? (
-                            <Link href={`https://tinder.com/@${botAccount.username}`}>
-                                <Earth size={20} color="#e100ff" strokeWidth={1.25} />
-                            </Link>
-                        ) : (
-                            <span className="btn btn-primary disabled">
-                        <EarthLock size={20}  strokeWidth={1.25} />
-                    </span>
-                        )}
-                    </Button>
-
-                    <Button
-                        size="icon"
-                        variant="ghost"
-                        className="size-6 rounded-full "
-                        onClick={handleUpdateContent}
-                    >
-                        <RefreshCcwDot size={20} color="#ff6190" strokeWidth={1.25} />
-                    </Button>
-
-                    <Button
-                        size="icon"
-                        variant="ghost"
-                        className="size-7 rounded-full"
-                    >
-                        <Link
-                            href={routes.dashboard.account.update(botAccount.id)}
-                            className="btn btn-primary"
-                        >
-                            <PencilLine size={20} color="#2b00ff" strokeWidth={1.25} />
-                        </Link>
-                    </Button>
-
-                    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                        <DialogTrigger asChild>
-                            <button className="btn btn-secondary">
-                                <Trash2 size={20} color="#ff0000" strokeWidth={1.25} />
-                            </button>
-                        </DialogTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Confirmation</DialogTitle>
-                                <DialogDescription>
-                                    Are you sure you want to delete this account?
-                                </DialogDescription>
-                            </DialogHeader>
-                            <DialogFooter>
-                                <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                                <Button onClick={handleDelete} variant="destructive">
-                                    Delete
-                                </Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
+                <div className="absolute bottom-1 right-2">
+                    <AccountContextMenu 
+                        account={botAccount}
+                        trigger={
+                            <Button
+                                size="icon"
+                                variant="ghost"
+                                className="size-7 rounded-full bg-black/30 backdrop-blur-sm hover:bg-black/50"
+                            >
+                                <MoreVertical size={18} className="text-white" />
+                            </Button>
+                        }
+                    />
                 </div>
             </div>
 
-            <CardContent className="p-4">
-                <div className="mb-3 flex items-center justify-between">
-                    <Badge variant="outline" className="bg-primary/5 text-primary">
+            <CardContent className="p-3 sm:p-4">
+                <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
+                    <Badge variant="outline" className="bg-primary/5 text-primary text-xs sm:text-sm">
                         {modelName}
                     </Badge>
-                    <Badge variant="secondary" className="bg-muted">
+                    <Badge variant="secondary" className="bg-muted text-xs sm:text-sm">
                         {strategyName}
                     </Badge>
                 </div>
 
                 {/* Stats */}
-                <div className="grid grid-cols-3 gap-2">
-                    <div className="flex flex-col items-center rounded-md bg-muted/50 p-2">
-                        <ArrowLeftRight className="mb-1 size-4 text-blue-500" />
-                        <span className="text-sm font-medium">{botAccount.swipes || 0}</span>
-                        <span className="text-xs text-muted-foreground">Swipes</span>
+                <div className="grid grid-cols-3 gap-1 sm:gap-2">
+                    <div className="flex flex-col items-center rounded-md bg-muted/50 p-1 sm:p-2">
+                        <ArrowLeftRight className="mb-1 size-3 sm:size-4 text-blue-500" />
+                        <span className="text-xs sm:text-sm font-medium">{botAccount.swipes || 0}</span>
+                        <span className="text-[10px] sm:text-xs text-muted-foreground">Swipes</span>
                     </div>
-                    <div className="flex flex-col items-center rounded-md bg-muted/50 p-2">
-                        <ThumbsUp className="mb-1 size-4 text-primary" />
-                        <span className="text-sm font-medium">{botAccount.likes || 0}</span>
-                        <span className="text-xs text-muted-foreground">Likes</span>
+                    <div className="flex flex-col items-center rounded-md bg-muted/50 p-1 sm:p-2">
+                        <ThumbsUp className="mb-1 size-3 sm:size-4 text-primary" />
+                        <span className="text-xs sm:text-sm font-medium">{botAccount.likes || 0}</span>
+                        <span className="text-[10px] sm:text-xs text-muted-foreground">Likes</span>
                     </div>
-                    <div className="flex flex-col items-center rounded-md bg-muted/50 p-2">
-                        <Heart className="mb-1 size-4 text-rose-500" />
-                        <span className="text-sm font-medium">{botAccount.matches || 0}</span>
-                        <span className="text-xs text-muted-foreground">Matches</span>
+                    <div className="flex flex-col items-center rounded-md bg-muted/50 p-1 sm:p-2">
+                        <Heart className="mb-1 size-3 sm:size-4 text-rose-500" />
+                        <span className="text-xs sm:text-sm font-medium">{botAccount.matches || 0}</span>
+                        <span className="text-[10px] sm:text-xs text-muted-foreground">Matches</span>
                     </div>
                 </div>
 
                 {/* Progress bar */}
                 {typeof botAccount.progress === "number" && (
-                    <div className="mt-4 space-y-1.5">
-                        <div className="flex justify-between text-xs">
+                    <div className="mt-3 sm:mt-4 space-y-1">
+                        <div className="flex justify-between text-[10px] sm:text-xs">
                             <span className="text-muted-foreground">Strategy Progress</span>
                             <span className="font-medium">{progressPercentage.toFixed(0)}%</span>
                         </div>
-                        <Progress value={progressPercentage} className="h-1.5" />
+                        <Progress value={progressPercentage} className="h-1 sm:h-1.5" />
                     </div>
                 )}
             </CardContent>
 
-            <CardFooter className="border-t bg-card p-3">
+            <CardFooter className="border-t bg-card p-2 sm:p-3">
                 <Link href={routes.dashboard.account.view(botAccount.id ?? "")} className="w-full">
-                    <Button variant="default" className="w-full" onClick={() => onViewDetails?.(botAccount.id)}>
+                    <Button 
+                        variant="default" 
+                        className="w-full text-xs sm:text-sm h-8 sm:h-10" 
+                        onClick={() => onViewDetails?.(botAccount.id)}
+                    >
                         View Profile
                     </Button>
                 </Link>
@@ -340,4 +227,3 @@ export function GridAccountCard({
         </Card>
     )
 }
-

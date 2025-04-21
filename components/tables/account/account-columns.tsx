@@ -1,43 +1,22 @@
 import {BotAccountInterface} from "@/types";
 import {useEffect, useState} from "react";
-import {
-    useAddAccountUserName,
-    useRemoveBotAccount,
-    useSetAccountBio,
-    useStartBotAccount,
-    useStopBotAccount,
-    useUpdateBotaccount,
-    useUpdateBotAccountContent
-} from "@/services/bot-account/hooks";
+import {useAddAccountUserName, useSetAccountBio, useUpdateBotaccount} from "@/services/bot-account/hooks";
+import {AccountContextMenu} from "@/components/ui/account-context-menu";
 import {
     ArrowLeftRight,
     BookUser,
     Check,
     ChevronsUpDown,
-    Earth,
-    EarthLock,
     ExternalLink,
     Heart,
     IdCard,
-    Pause,
-    PencilLine,
-    Play,
-    RefreshCcwDot,
+    MoreVertical,
     ThumbsUp,
-    Trash2,
     X
 } from "lucide-react";
 import Link from "next/link";
 import {routes} from "@/lib/routes";
-import {
-    Dialog,
-    DialogContent,
-    DialogDescription,
-    DialogFooter,
-    DialogHeader,
-    DialogTitle,
-    DialogTrigger
-} from "@/components/ui/dialog";
+import {Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger} from "@/components/ui/dialog";
 import {Button} from "@/components/ui/button";
 import {ColumnDef} from "@tanstack/react-table";
 import Image from "next/image";
@@ -78,99 +57,16 @@ interface UserNamesCellProps {
 }
 
 export const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; }) => {
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const deleteMutation = useRemoveBotAccount(row.original.id);
-
-    const handleDelete = () => {
-        deleteMutation.mutate();
-        setIsModalOpen(false);
-    };
-
-    const startMutation = useStartBotAccount(row.original.id);
-    const handleStart = () => {
-        startMutation.mutate(undefined, {
-            onSuccess: () => {
-                toast({
-                    title: "Account started successfully",
-                });
-            },
-            onError: (error: any) => {
-                toast({
-                    variant: "destructive",
-                    title: "Failed to start account",
-                    description: error.response?.data || "An error occurred",
-                });
-            },
-        });
-    };
-
-    const stopMutation = useStopBotAccount(row.original.id);
-    const handleStop = () => {
-        stopMutation.mutate();
-    }
-
-    const updateContentMutation = useUpdateBotAccountContent(row.original.id);
-    const handleUpdateContent = () => {
-        updateContentMutation.mutate();
-    }
-
     return (
         <div className="flex items-center gap-2">
-            <button
-                className="btn btn-primary"
-                onClick={row.original.status === 'active' ? handleStop : handleStart}
-            >
-                {row.original.status === 'active' ? (
-                    <Pause size={20} color="#ff0000" strokeWidth={1.25} />
-                ) : (
-                    <Play size={20} color="#065c00" strokeWidth={1.25} />
-                )}
-            </button>
-
-            <button
-                className="btn btn-primary"
-            >
-                {row.original.username ? (
-                    <Link href={`https://tinder.com/@${row.original.username}`} target="_blank" rel="noopener noreferrer">
-                      <Earth size={20} color="#e100ff" strokeWidth={1.25} />
-                    </Link>
-                ) : (
-                    <span className="btn btn-primary disabled">
-                        <EarthLock size={20}  strokeWidth={1.25} />
-                    </span>
-                )}
-            </button>
-            <button className="btn btn-primary" onClick={handleUpdateContent}>
-                <RefreshCcwDot size={20} color="#ff6190" strokeWidth={1.25} />
-            </button>
-            <Link
-                href={routes.dashboard.account.update(row.original.id)}
-                className="btn btn-primary"
-            >
-                <PencilLine size={20} color="#2b00ff" strokeWidth={1.25} />
-            </Link>
-
-            <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                <DialogTrigger asChild>
-                    <button className="btn btn-secondary">
-                        <Trash2 size={20} color="#ff0000" strokeWidth={1.25} />
-                    </button>
-                </DialogTrigger>
-                <DialogContent>
-                    <DialogHeader>
-                        <DialogTitle>Confirmation</DialogTitle>
-                        <DialogDescription>
-                            Are you sure you want to delete this account?
-                        </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                        <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
-                        <Button onClick={handleDelete} variant="destructive">
-                            Delete
-                        </Button>
-                    </DialogFooter>
-                </DialogContent>
-            </Dialog>
+            <AccountContextMenu 
+                account={row.original}
+                trigger={
+                    <Button variant="ghost" size="icon" className="p-0">
+                        <MoreVertical size={20} />
+                    </Button>
+                }
+            />
         </div>
     );
 };
@@ -409,7 +305,7 @@ export const AccountLogCell = ({ row }: UserNamesCellProps) => {
 export const AccountInfoActionsCell = ({ row }: { row: { original: BotAccountInterface }; }) => {
     return (
         <div className="flex items-center">
-            
+
             <Link href={routes.dashboard.account.view(row.original.id ?? "")}>
                 <Button variant="ghost" className="flex items-center  ">
                     <ExternalLink color="#5c0783" />

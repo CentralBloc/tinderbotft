@@ -1,6 +1,17 @@
 import {routes} from "@/lib/routes";
 import {MainNavItem} from "@/types";
-import {GitBranch, Instagram, LayoutGrid, Network, NotebookTabs, Settings, UserRound,} from "lucide-react";
+import {
+  CreditCard,
+  GitBranch,
+  Instagram,
+  LayoutGrid,
+  Network,
+  NotebookTabs,
+  Package,
+  Settings,
+  UserRound,
+  Users,
+} from "lucide-react";
 
 // Function to generate the dashboard configuration based on user info
 export const dashboardConfig = (user: { super_user: boolean }) => ({
@@ -42,6 +53,23 @@ export const dashboardConfig = (user: { super_user: boolean }) => ({
             title: "Admin",
             href: routes.dashboard.admin.index,
             icon: Settings,
+            items: [
+              {
+                title: "Users",
+                href: routes.dashboard.admin.index,
+                icon: Users,
+              },
+              {
+                title: "Plans",
+                href: "/dashboard/plans",
+                icon: Package,
+              },
+              {
+                title: "Subscriptions",
+                href: "/dashboard/subscriptions",
+                icon: CreditCard,
+              },
+            ],
           },
         ]
       : []),

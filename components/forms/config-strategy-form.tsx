@@ -1,5 +1,5 @@
 "use client"
-import {useFieldArray, useForm,} from "react-hook-form"
+import {useFieldArray, useForm} from "react-hook-form"
 import {zodResolver} from "@hookform/resolvers/zod"
 import {Button} from "@/components/ui/button"
 import {Textarea} from "@/components/ui/textarea"
@@ -20,8 +20,8 @@ import {routes} from "@/lib/routes"
 import {Input} from "@/components/ui/input"
 import {Card, CardContent, CardHeader, CardTitle} from "@/components/ui/card"
 import {Tooltip, TooltipContent, TooltipProvider, TooltipTrigger} from "@/components/ui/tooltip"
-import {ConfigStratSkeletonLoader} from "@/components/skeleton/config-strat-loader";
-import {useEffect, useState} from "react";
+import {ConfigStratSkeletonLoader} from "@/components/skeleton/config-strat-loader"
+import {useEffect, useState} from "react"
 
 const fieldSchema = (daysNumber: number) =>
     z.object({
@@ -195,15 +195,18 @@ export default function ConfigStrategyForm({
 
     return (
         <Form {...form}>
-            <form onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)} className="grid max-w-3xl gap-6">
+            <form
+                onSubmit={(...args) => void form.handleSubmit(onSubmit)(...args)}
+                className="flex h-full max-w-3xl flex-col gap-6"
+            >
                 {isLoading ? (
                     <ConfigStratSkeletonLoader count={strategyActions?.length || 1} />
                 ) : (
                     <>
-                        <div className="space-y-4">
+                        <div className="flex-1 space-y-4">
                             {fields.map((field, index) => (
-                                <Card key={field.id} className="overflow-hidden border shadow-sm transition-all hover:shadow-md">
-                                    <CardHeader className="flex flex-row items-center justify-between space-y-0 bg-muted/30 pb-2">
+                                <Card key={field.id} className=" border shadow-sm transition-all hover:shadow-md">
+                                    <CardHeader className="flex  flex-row items-center justify-between space-y-0 bg-muted/30 pb-2">
                                         <div className="flex items-center gap-3">
                                             <CardTitle className="text-lg font-medium">Action {index + 1}</CardTitle>
                                             <Badge
@@ -314,7 +317,7 @@ export default function ConfigStrategyForm({
                                                                 <FormControl>
                                                                     <Textarea
                                                                         placeholder="Enter Instagram usernames (one per line)"
-                                                                        className="min-h-[120px] resize-y"
+                                                                        className="min-h-[120px] resize-none"
                                                                         {...field}
                                                                     />
                                                                 </FormControl>
@@ -331,7 +334,7 @@ export default function ConfigStrategyForm({
                                                                 <FormControl>
                                                                     <Textarea
                                                                         placeholder="Enter bios (one per line)"
-                                                                        className="min-h-[120px] resize-y"
+                                                                        className="min-h-[120px] resize-none"
                                                                         {...field}
                                                                     />
                                                                 </FormControl>
@@ -362,7 +365,7 @@ export default function ConfigStrategyForm({
                                                 name={`actions.${index}.scheduled_time_2`}
                                                 render={({ field }) => (
                                                     <FormItem>
-                                                        <FormLabel >
+                                                        <FormLabel>
                                                             Schedule time 2<span className="text-xs text-muted-foreground">(Optional)</span>
                                                         </FormLabel>
                                                         <FormControl>

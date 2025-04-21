@@ -9,10 +9,10 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
 	return (
 		<AuthProvider>
 			<PageTransition>
-			<div className="flex">
+			<div className="flex max-h-screen overflow-hidden">
 				<SideBar />
-				<main className="dashboard-content h-screen w-full overflow-y-auto py-5">
-					<div className="p-6 lg:p-8 2xl:p-10">
+				<main className="dashboard-content w-full">
+					<div className="h-full overflow-y-auto p-6 lg:p-8 2xl:p-10">
 						<DashboardHeader />
 						<div className="pb-5 font-sans max-lg:pt-16">{children}</div>
 					</div>

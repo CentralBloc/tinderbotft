@@ -230,7 +230,7 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
                 </div>
 
                 {/* Right side - Profile Details */}
-                <div className="flex h-[60vh] w-full flex-col bg-background md:h-screen md:w-3/5 lg:w-2/3">
+                <div className="flex w-full flex-col bg-background overflow-y-auto min-h-[400px] md:min-h-[500px] md:w-3/5 lg:w-2/3">
                     <div className="flex-none border-b p-2">
                         <div className="mb-4 flex items-center justify-between">
                             <div className="flex items-center gap-3">
@@ -463,4 +463,3 @@ export default function SingleAccountCard({ botAccount, recentSwipes = [] }: Acc
         </div>
     )
 }
-

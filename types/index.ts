@@ -8,12 +8,16 @@ export interface NavItem {
   description?: string;
 }
 
+export interface NavItemWithoutChildren extends NavItem {
+  // No items property
+}
+
 export interface NavItemWithChildren extends NavItem {
   items: NavItemWithChildren[];
 }
 
 export interface NavItemWithOptionalChildren extends NavItem {
-  items?: NavItemWithChildren[];
+  items?: (NavItemWithChildren | NavItemWithoutChildren)[];
 }
 
 export type MainNavItem = NavItemWithOptionalChildren;
