@@ -96,6 +96,36 @@ export default function RegisterForm() {
             )}
           />
 
+          {/* First Name field */}
+          <FormField
+            control={form.control}
+            name="first_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Prénom</FormLabel>
+                <FormControl>
+                  <Input placeholder="John" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          {/* Last Name field */}
+          <FormField
+            control={form.control}
+            name="last_name"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Nom</FormLabel>
+                <FormControl>
+                  <Input placeholder="Doe" {...field} />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
           {/* Password field */}
           <FormField
             control={form.control}
@@ -143,7 +173,7 @@ export default function RegisterForm() {
 
         <Button
           disabled={
-            isPending || !form.formState.isDirty || !form.formState.isValid
+            isPending || !form.formState.isValid
           }
           size="lg"
         >

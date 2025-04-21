@@ -52,10 +52,10 @@ export default function DashboardHeader() {
 
       <div className="flex items-center gap-x-4">
 
-        <ThemeToggle />
         <Button asChild>
           <Link href={routes.dashboard.account.add}>Add new account</Link>
         </Button>
+        <ThemeToggle />
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button
