@@ -34,7 +34,7 @@ export default function MatchRateBarCard({ className }: Readonly<MatchRateBarCar
     if (active && payload && payload.length) {
       const data = payload[0].payload
       return (
-        <div className="rounded-md border p-2 sm:p-3 shadow-md bg-background text-xs sm:text-sm">
+        <div className="rounded-md border bg-background p-2 text-xs shadow-md sm:p-3 sm:text-sm">
           <p className="font-bold">{data.name}</p>
           <p>Match Rate: {data.matchRate.toFixed(2)}%</p>
           <p>Swipes: {data.swipes}</p>
@@ -55,7 +55,7 @@ export default function MatchRateBarCard({ className }: Readonly<MatchRateBarCar
       </CardHeader>
       <CardContent className="p-2 sm:p-4 md:p-6">
         {isLoading ? (
-          <div className="flex h-[200px] sm:h-[300px] md:h-[400px] items-center justify-center">
+          <div className="flex h-[200px] items-center justify-center sm:h-[300px] md:h-[400px]">
             <p>Loading data...</p>
           </div>
         ) : (

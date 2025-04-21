@@ -174,10 +174,10 @@ export function GridAccountCard({
 
             <CardContent className="p-3 sm:p-4">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                    <Badge variant="outline" className="bg-primary/5 text-primary text-xs sm:text-sm">
+                    <Badge variant="outline" className="text-xs text-primary bg-primary/5 sm:text-sm">
                         {modelName}
                     </Badge>
-                    <Badge variant="secondary" className="bg-muted text-xs sm:text-sm">
+                    <Badge variant="secondary" className="text-xs bg-muted sm:text-sm">
                         {strategyName}
                     </Badge>
                 </div>
@@ -185,25 +185,25 @@ export function GridAccountCard({
                 {/* Stats */}
                 <div className="grid grid-cols-3 gap-1 sm:gap-2">
                     <div className="flex flex-col items-center rounded-md bg-muted/50 p-1 sm:p-2">
-                        <ArrowLeftRight className="mb-1 size-3 sm:size-4 text-blue-500" />
-                        <span className="text-xs sm:text-sm font-medium">{botAccount.swipes || 0}</span>
-                        <span className="text-[10px] sm:text-xs text-muted-foreground">Swipes</span>
+                        <ArrowLeftRight className="mb-1 size-3 text-blue-500 sm:size-4" />
+                        <span className="text-xs font-medium sm:text-sm">{botAccount.swipes || 0}</span>
+                        <span className="text-[10px] text-muted-foreground sm:text-xs">Swipes</span>
                     </div>
                     <div className="flex flex-col items-center rounded-md bg-muted/50 p-1 sm:p-2">
-                        <ThumbsUp className="mb-1 size-3 sm:size-4 text-primary" />
-                        <span className="text-xs sm:text-sm font-medium">{botAccount.likes || 0}</span>
-                        <span className="text-[10px] sm:text-xs text-muted-foreground">Likes</span>
+                        <ThumbsUp className="mb-1 size-3 text-primary sm:size-4" />
+                        <span className="text-xs font-medium sm:text-sm">{botAccount.likes || 0}</span>
+                        <span className="text-[10px] text-muted-foreground sm:text-xs">Likes</span>
                     </div>
                     <div className="flex flex-col items-center rounded-md bg-muted/50 p-1 sm:p-2">
-                        <Heart className="mb-1 size-3 sm:size-4 text-rose-500" />
-                        <span className="text-xs sm:text-sm font-medium">{botAccount.matches || 0}</span>
-                        <span className="text-[10px] sm:text-xs text-muted-foreground">Matches</span>
+                        <Heart className="mb-1 size-3 text-rose-500 sm:size-4" />
+                        <span className="text-xs font-medium sm:text-sm">{botAccount.matches || 0}</span>
+                        <span className="text-[10px] text-muted-foreground sm:text-xs">Matches</span>
                     </div>
                 </div>
 
                 {/* Progress bar */}
                 {typeof botAccount.progress === "number" && (
-                    <div className="mt-3 sm:mt-4 space-y-1">
+                    <div className="space-y-1 mt-3 sm:mt-4">
                         <div className="flex justify-between text-[10px] sm:text-xs">
                             <span className="text-muted-foreground">Strategy Progress</span>
                             <span className="font-medium">{progressPercentage.toFixed(0)}%</span>
@@ -217,7 +217,7 @@ export function GridAccountCard({
                 <Link href={routes.dashboard.account.view(botAccount.id ?? "")} className="w-full">
                     <Button 
                         variant="default" 
-                        className="w-full text-xs sm:text-sm h-8 sm:h-10" 
+                        className="h-8 w-full text-xs sm:h-10 sm:text-sm" 
                         onClick={() => onViewDetails?.(botAccount.id)}
                     >
                         View Profile

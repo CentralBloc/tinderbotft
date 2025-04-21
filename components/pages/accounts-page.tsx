@@ -24,7 +24,7 @@ const STATUS_OPTIONS = ["Active", "Inactive", "Expired", "Working", "Completed",
 
 export default function BotAccountsPage() {
     const [viewType, setViewType] = useState<"grid" | "table">("table")
-    const { data: botAccounts = [], isPending } = useBotaccounts()
+    const { data: botAccounts = []} = useBotaccounts()
     const { data: models = [] } = useModels()
 
     // Filters
@@ -36,11 +36,11 @@ export default function BotAccountsPage() {
         setAccountFilter(e.target.value)
     }
 
-    const handleModelFilterChange = (value: string) => {
+    const handleModelFilterChange = (value: string | null) => {
         setModelFilter(value === "all" ? null : value)
     }
 
-    const handleStatusFilterChange = (value: string) => {
+    const handleStatusFilterChange = (value: string | null) => {
         setStatusFilter(value === "all" ? null : value)
     }
 
@@ -114,7 +114,7 @@ export default function BotAccountsPage() {
                 </div>
 
                 <div className="w-full md:w-1/3">
-                    <Select value={modelFilter || "all"} onValueChange={handleModelFilterChange}>
+                    <Select value={modelFilter ?? "all"} onValueChange={handleModelFilterChange}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="Select a model" />
                         </SelectTrigger>
@@ -133,7 +133,7 @@ export default function BotAccountsPage() {
                 </div>
 
                 <div className="w-full md:w-1/3">
-                    <Select value={statusFilter || "all"} onValueChange={handleStatusFilterChange}>
+                    <Select value={statusFilter ?? "all"} onValueChange={handleStatusFilterChange}>
                         <SelectTrigger className="w-full">
                             <SelectValue placeholder="All Statuses" />
                         </SelectTrigger>

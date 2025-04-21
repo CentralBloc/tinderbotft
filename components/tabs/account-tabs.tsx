@@ -12,8 +12,8 @@ type AccountTabsProps = {
         modelFilter: string | null
         statusFilter: string | null
         setAccountFilter: (value: string) => void
-        setModelFilter: (value: string) => void
-        setStatusFilter: (value: string) => void
+        setModelFilter: (value: string | null) => void
+        setStatusFilter: (value: string | null) => void
     }
 }
 

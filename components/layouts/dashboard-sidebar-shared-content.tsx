@@ -18,7 +18,7 @@ export default function DashboardSidebarSharedContent({
 	setIsOpen,
 }: Readonly<DashboardSidebarSharedContentProps>) {
 	return (
-		<div className="space-y-12">
+		<div className="space-y-8">
 			<Logo href={routes.dashboard.home} onClick={() => setIsOpen?.(false)} />
 
 			<ul className="flex flex-col gap-y-2">

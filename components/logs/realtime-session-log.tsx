@@ -320,7 +320,7 @@ export default function RealtimeSessionLog({ accountId }: Readonly<RealtimeSessi
         return () => {
             disconnectWebSocket()
         }
-    }, [accountId])
+    }, [accountId, connectWebSocket])
 
     return (
         <Card className="w-full border-none shadow-md">

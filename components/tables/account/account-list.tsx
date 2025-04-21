@@ -34,8 +34,8 @@ export default function AccountList({
         modelFilter: string | null
         statusFilter: string | null
         setAccountFilter: (value: string) => void
-        setModelFilter: (value: string) => void
-        setStatusFilter: (value: string) => void
+        setModelFilter: (value: string | null) => void
+        setStatusFilter: (value: string | null) => void
     }
 }>) {
     const { data = [], isPending } = useBotaccounts()
@@ -142,7 +142,7 @@ export default function AccountList({
         if (onSelectionChange) {
             onSelectionChange(ids)
         }
-    }, [table, onSelectionChange])
+    }, [table.getFilteredSelectedRowModel().rows, onSelectionChange])
 
     const { pageSize, pageIndex } = table.getState().pagination
     const totalItems = filteredData.length
@@ -162,10 +162,10 @@ export default function AccountList({
                                 placeholder="Search account"
                                 value={accountFilter}
                                 onChange={handleAccountFilterChange}
-                                className="input md:w-1/3"
+                                className="md:w-1/3"
                             />
                             <select
-                                value={modelFilter}
+                                value={modelFilter || ""}
                                 onChange={handleModelFilterChange}
                                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:w-1/4"
                             >
@@ -177,7 +177,7 @@ export default function AccountList({
                                 ))}
                             </select>
                             <select
-                                value={statusFilter}
+                                value={statusFilter || ""}
                                 onChange={handleStatusFilterChange}
                                 className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background file:border-0 file:bg-transparent file:text-sm file:font-medium placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:cursor-not-allowed disabled:opacity-50 md:w-1/4"
                             >

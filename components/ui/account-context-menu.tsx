@@ -100,7 +100,7 @@ export function AccountContextMenu({
         <DropdownMenuTrigger asChild>
           {trigger || (
             <Button variant="ghost" size="icon" className={className}>
-              <MoreVertical className="h-4 w-4" />
+              <MoreVertical className="size-4" />
               <span className="sr-only">Open menu</span>
             </Button>
           )}
@@ -108,24 +108,24 @@ export function AccountContextMenu({
         <DropdownMenuContent align={align} side={side} className="w-56">
           <DropdownMenuLabel>Account Actions</DropdownMenuLabel>
           <DropdownMenuSeparator />
-          
+
           <DropdownMenuItem
             onClick={account.status === "active" ? handleStop : handleStart}
             disabled={isStarting || isStopping}
           >
             {account.status === "active" ? (
               <>
-                <Pause className="mr-2 h-4 w-4 text-red-500" />
+                <Pause className="mr-2 size-4 text-red-500" />
                 <span>Stop Account</span>
               </>
             ) : (
               <>
-                <Play className="mr-2 h-4 w-4 text-green-700" />
+                <Play className="mr-2 size-4 text-green-700" />
                 <span>Start Account</span>
               </>
             )}
           </DropdownMenuItem>
-          
+
           <DropdownMenuItem asChild>
             {account.username ? (
               <Link
@@ -134,59 +134,59 @@ export function AccountContextMenu({
                 rel="noopener noreferrer"
                 className="flex items-center"
               >
-                <Earth className="mr-2 h-4 w-4 text-purple-500" />
+                <Earth className="mr-2 size-4 text-purple-500" />
                 <span>View on Tinder</span>
               </Link>
             ) : (
               <div className="flex items-center opacity-50 cursor-not-allowed">
-                <EarthLock className="mr-2 h-4 w-4" />
+                <EarthLock className="mr-2 size-4" />
                 <span>View on Tinder</span>
               </div>
             )}
           </DropdownMenuItem>
-          
+
           <DropdownMenuItem
             onClick={handleUpdateContent}
             disabled={isUpdatingContent}
           >
-            <RefreshCcwDot className="mr-2 h-4 w-4 text-pink-500" />
+            <RefreshCcwDot className="mr-2 size-4 text-pink-500" />
             <span>Update Content</span>
           </DropdownMenuItem>
-          
+
           <DropdownMenuItem asChild>
             <Link
               href={routes.dashboard.account.update(account.id)}
               className="flex items-center"
             >
-              <PencilLine className="mr-2 h-4 w-4 text-blue-700" />
+              <PencilLine className="mr-2 size-4 text-blue-700" />
               <span>Edit Account</span>
             </Link>
           </DropdownMenuItem>
-          
+
           <DropdownMenuSeparator />
-          
+
           <DropdownMenuItem
             onSelect={(e) => {
               e.preventDefault();
               setIsUsernameDialogOpen(true);
             }}
           >
-            <IdCard className="mr-2 h-4 w-4 text-blue-500" />
+            <IdCard className="mr-2 size-4 text-blue-500" />
             <span>Set Username</span>
           </DropdownMenuItem>
-          
+
           <DropdownMenuItem
             onSelect={(e) => {
               e.preventDefault();
               setIsBioDialogOpen(true);
             }}
           >
-            <BookUser className="mr-2 h-4 w-4 text-blue-500" />
+            <BookUser className="mr-2 size-4 text-blue-500" />
             <span>Edit Bio</span>
           </DropdownMenuItem>
-          
+
           <DropdownMenuSeparator />
-          
+
           <DropdownMenuItem
             onSelect={(e) => {
               e.preventDefault();
@@ -194,23 +194,23 @@ export function AccountContextMenu({
             }}
             className="text-red-600"
           >
-            <Trash2 className="mr-2 h-4 w-4" />
+            <Trash2 className="mr-2 size-4" />
             <span>Delete Account</span>
           </DropdownMenuItem>
-          
+
           <DropdownMenuSeparator />
-          
+
           <div className="px-2 py-1.5 text-xs text-muted-foreground">
             <div className="flex items-center gap-1 mb-1">
-              <ArrowLeftRight className="h-3 w-3 text-blue-500" />
+              <ArrowLeftRight className="size-3 text-blue-500" />
               <span>Swipes: {account.swipes || 0}</span>
             </div>
             <div className="flex items-center gap-1 mb-1">
-              <ThumbsUp className="h-3 w-3 text-primary" />
+              <ThumbsUp className="size-3 text-primary" />
               <span>Likes: {account.likes || 0}</span>
             </div>
             <div className="flex items-center gap-1">
-              <Heart className="h-3 w-3 text-rose-500" />
+              <Heart className="size-3 text-rose-500" />
               <span>Matches: {account.matches || 0}</span>
             </div>
           </div>

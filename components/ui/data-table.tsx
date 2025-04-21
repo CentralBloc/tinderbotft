@@ -10,11 +10,15 @@ interface DataTableProps<TData, TValue> {
 }
 
 export function DataTable<TData, TValue>({ columns, data, table: externalTable }: DataTableProps<TData, TValue>) {
-	const table = externalTable || useReactTable({
-		data,
-		columns,
+	// Always call useReactTable to avoid conditional hook error, but use empty options if external table is provided
+	const internalTable = useReactTable({
+		data: externalTable ? [] : data,
+		columns: externalTable ? [] : columns,
 		getCoreRowModel: getCoreRowModel(),
 	});
+
+	// Use the external table if provided, otherwise use the internal table
+	const table = externalTable || internalTable;
 
 	return (
 		<div className="rounded-md border">
