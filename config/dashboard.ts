@@ -61,12 +61,12 @@ export const dashboardConfig = (user: { super_user: boolean }) => ({
               },
               {
                 title: "Plans",
-                href: "/dashboard/plans",
+                href: routes.dashboard.admin.plans,
                 icon: Package,
               },
               {
                 title: "Subscriptions",
-                href: "/dashboard/subscriptions",
+                href: routes.dashboard.admin.subscriptions,
                 icon: CreditCard,
               },
             ],

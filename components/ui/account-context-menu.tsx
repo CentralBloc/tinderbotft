@@ -1,7 +1,7 @@
 "use client"
 
-import { BotAccountInterface } from "@/types";
-import { useAccountActions } from "@/services/bot-account/use-account-actions";
+import {BotAccountInterface} from "@/types";
+import {useAccountActions} from "@/services/bot-account/use-account-actions";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -17,14 +17,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-  DialogTrigger,
 } from "@/components/ui/dialog";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { useState } from "react";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
+import {Textarea} from "@/components/ui/textarea";
+import {useState} from "react";
 import Link from "next/link";
-import { routes } from "@/lib/routes";
+import {routes} from "@/lib/routes";
 import {
   ArrowLeftRight,
   BookUser,
@@ -55,7 +54,7 @@ export function AccountContextMenu({
   align = "end",
   side = "bottom",
   className,
-}: AccountContextMenuProps) {
+}: Readonly<AccountContextMenuProps>) {
   const {
     handleDelete,
     handleStart,
@@ -76,6 +75,7 @@ export function AccountContextMenu({
   const [isDeleteDialogOpen, setIsDeleteDialogOpen] = useState(false);
   const [isUsernameDialogOpen, setIsUsernameDialogOpen] = useState(false);
   const [isBioDialogOpen, setIsBioDialogOpen] = useState(false);
+  const [isTokenDialogOpen, setIsTokenDialogOpen] = useState(false);
   const [username, setUsername] = useState(account.username || "");
   const [bio, setBio] = useState(account.tinder_bio || "");
 
@@ -93,6 +93,11 @@ export function AccountContextMenu({
     await handleSetBio(bio);
     setIsBioDialogOpen(false);
   };
+
+  const onUpdateToken = async () => {
+    await handleUpdateToken();
+    setIsTokenDialogOpen(false);
+  }
 
   return (
     <>
@@ -138,7 +143,7 @@ export function AccountContextMenu({
                 <span>View on Tinder</span>
               </Link>
             ) : (
-              <div className="flex items-center opacity-50 cursor-not-allowed">
+              <div className="flex cursor-not-allowed items-center opacity-50">
                 <EarthLock className="mr-2 size-4" />
                 <span>View on Tinder</span>
               </div>
@@ -185,6 +190,16 @@ export function AccountContextMenu({
             <span>Edit Bio</span>
           </DropdownMenuItem>
 
+          <DropdownMenuItem
+            onSelect={(e) => {
+              e.preventDefault();
+              setIsTokenDialogOpen(true);
+            }}
+          >
+            <RefreshCcwDot className="mr-2 size-4 text-yellow-500" />
+            <span>Update Token</span>
+          </DropdownMenuItem>
+
           <DropdownMenuSeparator />
 
           <DropdownMenuItem
@@ -201,11 +216,11 @@ export function AccountContextMenu({
           <DropdownMenuSeparator />
 
           <div className="px-2 py-1.5 text-xs text-muted-foreground">
-            <div className="flex items-center gap-1 mb-1">
+            <div className="mb-1 flex items-center gap-1">
               <ArrowLeftRight className="size-3 text-blue-500" />
               <span>Swipes: {account.swipes || 0}</span>
             </div>
-            <div className="flex items-center gap-1 mb-1">
+            <div className="mb-1 flex items-center gap-1">
               <ThumbsUp className="size-3 text-primary" />
               <span>Likes: {account.likes || 0}</span>
             </div>
@@ -304,6 +319,32 @@ export function AccountContextMenu({
               disabled={isSettingBio}
             >
               {isSettingBio ? "Saving..." : "Save"}
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+
+      {/* Token Update Dialog */}
+      <Dialog open={isTokenDialogOpen} onOpenChange={setIsTokenDialogOpen}>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Update Token</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to update the token for this account? This will refresh the authentication token used to connect to Tinder.
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button
+              variant="outline"
+              onClick={() => setIsTokenDialogOpen(false)}
+            >
+              Cancel
+            </Button>
+            <Button
+              onClick={onUpdateToken}
+              disabled={isUpdatingToken}
+            >
+              {isUpdatingToken ? "Updating..." : "Update Token"}
             </Button>
           </DialogFooter>
         </DialogContent>

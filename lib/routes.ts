@@ -51,6 +51,8 @@ export const routes = {
       index: "/dashboard/admin",
       update: (id: string) => `/dashboard/admin/update-admin/${id}`,
       add: "/dashboard/admin/add-admin",
+      plans: "/dashboard/admin/plans",
+      subscriptions: "/dashboard/admin/subscriptions",
     },
     insta: {
       index: "/dashboard/insta",

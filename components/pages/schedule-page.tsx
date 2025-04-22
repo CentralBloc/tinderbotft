@@ -18,7 +18,7 @@ export default function SwipeActionSchedule() {
         return (
             <div className="flex min-h-screen items-center justify-center p-4 md:p-8">
                 <div className="text-center">
-                    <h2 className="mb-2 text-xl font-semibold">No Swipe Schedule Available</h2>
+                    <h2 className="text-xl font-semibold">No Swipe Schedule Available</h2>
                     <p className="text-gray-500">There are no scheduled swipe actions at this time.</p>
                 </div>
             </div>
@@ -69,7 +69,7 @@ export default function SwipeActionSchedule() {
                                 </CarouselItem>
                             ))}
                         </CarouselContent>
-                        <div className="absolute inset-x-0 -bottom-12 flex justify-center gap-2">
+                        <div className="absolute inset-x-0 -bottom-8 flex justify-center gap-2">
                             <CarouselPrevious className="relative left-0 top-0 translate-y-0" />
                             <CarouselNext className="relative right-0 top-0 translate-y-0" />
                         </div>

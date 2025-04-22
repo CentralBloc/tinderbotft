@@ -24,7 +24,7 @@ export default function ProfilePager() {
             <Tabs defaultValue="profile" className="w-full">
                 <TabsList className="border">
                     <TabsTrigger value="profile">Profile</TabsTrigger>
-                    {/*<TabsTrigger value="subscription">Subscription</TabsTrigger>*/}
+                    <TabsTrigger value="subscription">Subscription</TabsTrigger>
                     {/*<TabsTrigger value="organization">Organization</TabsTrigger>*/}
                 </TabsList>
 

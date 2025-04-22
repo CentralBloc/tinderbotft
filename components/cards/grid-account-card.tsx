@@ -1,12 +1,6 @@
 "use client"
 
-import {
-    ArrowLeftRight,
-    Heart,
-    MapPin,
-    MoreVertical,
-    ThumbsUp
-} from "lucide-react"
+import {ArrowLeftRight, Heart, MapPin, MoreVertical, ThumbsUp} from "lucide-react"
 import {Progress} from "@/components/ui/progress"
 import {Badge} from "@/components/ui/badge"
 import {Button} from "@/components/ui/button"
@@ -100,11 +94,6 @@ export function GridAccountCard({
     const modelName = modelData?.name || "Unknown Model"
     const strategyName = strategyData?.name || "No Strategy"
 
-    const handleFavorite = () => {
-        setIsFavorite(!isFavorite)
-        if (onFavorite) onFavorite(botAccount.id)
-    }
-
     return (
         <Card className={cn("group overflow-hidden transition-all hover:shadow-md", className)}>
             <div className="relative">
@@ -174,10 +163,10 @@ export function GridAccountCard({
 
             <CardContent className="p-3 sm:p-4">
                 <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
-                    <Badge variant="outline" className="text-xs text-primary bg-primary/5 sm:text-sm">
+                    <Badge variant="outline" className="bg-primary/5 text-xs text-primary sm:text-sm">
                         {modelName}
                     </Badge>
-                    <Badge variant="secondary" className="text-xs bg-muted sm:text-sm">
+                    <Badge variant="secondary" className="bg-muted text-xs sm:text-sm">
                         {strategyName}
                     </Badge>
                 </div>
@@ -203,7 +192,7 @@ export function GridAccountCard({
 
                 {/* Progress bar */}
                 {typeof botAccount.progress === "number" && (
-                    <div className="space-y-1 mt-3 sm:mt-4">
+                    <div className="mt-3 space-y-1 sm:mt-4">
                         <div className="flex justify-between text-[10px] sm:text-xs">
                             <span className="text-muted-foreground">Strategy Progress</span>
                             <span className="font-medium">{progressPercentage.toFixed(0)}%</span>

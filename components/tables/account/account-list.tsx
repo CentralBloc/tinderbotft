@@ -19,8 +19,8 @@ import {Button} from "@/components/ui/button"
 import {Checkbox} from "@/components/ui/checkbox"
 import {DataTableSkeleton} from "@/components/skeleton/table-skeleton"
 
-// Placeholder for status options. Replace with actual statuses if available.
-const STATUS_OPTIONS = ["Active", "Inactive", "Expired", "Working", "Completed", "Paused", "ShadowBan", "Banned"]
+// Placeholder for status options. Replace it with actual statuses if available.
+const STATUS_OPTIONS = ["Active", "StandBy", "Expired", "Working", "Completed", "Limited", "ShadowBan", "Banned"]
 
 export default function AccountList({
                                         customColumns,
