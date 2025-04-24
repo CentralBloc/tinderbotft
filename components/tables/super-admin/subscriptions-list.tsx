@@ -1,10 +1,10 @@
 "use client"
 
-import { useState, useEffect, useMemo } from "react"
-import { Edit, MoreHorizontal, RefreshCw, Trash, XCircle, Search } from "lucide-react"
+import {useEffect, useMemo, useState} from "react"
+import {Edit, MoreHorizontal, Plus, RefreshCw, Search, Trash, XCircle} from "lucide-react"
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
+import {Button} from "@/components/ui/button"
+import {Card, CardContent, CardDescription, CardHeader, CardTitle} from "@/components/ui/card"
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -13,15 +13,17 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table"
-import { Badge } from "@/components/ui/badge"
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-import { Input } from "@/components/ui/input"
-import { useSubscriptions } from "@/services/subscriptions/hooks"
-import { SubscriptionInterface } from "@/types"
+import {Table, TableBody, TableCell, TableHead, TableHeader, TableRow} from "@/components/ui/table"
+import {Badge} from "@/components/ui/badge"
+import {Avatar, AvatarFallback, AvatarImage} from "@/components/ui/avatar"
+import {Input} from "@/components/ui/input"
+import {useSubscriptions} from "@/services/subscriptions/hooks"
+import {SubscriptionInterface} from "@/types"
+import Link from "next/link";
+import {routes} from "@/lib/routes";
 
 export function SubscriptionsList() {
-  const { data: fetchedSubscriptions = [], isLoading, isError } = useSubscriptions();
+  const {data: fetchedSubscriptions = [], isLoading, isError} = useSubscriptions();
   const [subscriptions, setSubscriptions] = useState<SubscriptionInterface[]>([]);
   const [filterValue, setFilterValue] = useState("");
 
@@ -38,10 +40,10 @@ export function SubscriptionsList() {
       const searchTerm = filterValue.toLowerCase();
       const userName = `${subscription.user.first_name} ${subscription.user.last_name}`.toLowerCase();
       const userEmail = subscription.user.email.toLowerCase();
-      const planName = typeof subscription.plan === 'object' && subscription.plan ? 
-        subscription.plan.name.toLowerCase() : 
+      const planName = typeof subscription.plan === 'object' && subscription.plan ?
+        subscription.plan.name.toLowerCase() :
         '';
-      
+
       return (
         userName.includes(searchTerm) ||
         userEmail.includes(searchTerm) ||
@@ -74,7 +76,7 @@ export function SubscriptionsList() {
   const cancelSubscription = (subscriptionId: string) => {
     setSubscriptions(
       subscriptions.map((subscription) =>
-        subscription.id === subscriptionId ? { ...subscription, status: "cancelled" } : subscription,
+        subscription.id === subscriptionId ? {...subscription, status: "cancelled"} : subscription,
       ),
     );
   };
@@ -111,13 +113,25 @@ export function SubscriptionsList() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle>All Subscriptions</CardTitle>
+        <CardTitle>
+          <div className="flex items-center justify-between">
+            <div>
+              <h2 className="text-3xl font-bold">All Subscriptions</h2>
+            </div>
+            <Link href={routes.dashboard.admin.subscriptions.add}>
+              <Button>
+                <Plus className="mr-2 size-4"/>
+                Create Subscription
+              </Button>
+            </Link>
+          </div>
+        </CardTitle>
         <CardDescription>A list of all user subscriptions in your application</CardDescription>
       </CardHeader>
       <CardContent>
         <div className="mb-4 flex items-center">
           <div className="relative w-full max-w-sm">
-            <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+            <Search className="absolute left-2.5 top-2.5 size-4 text-muted-foreground"/>
             <Input
               type="text"
               placeholder="Search subscriptions..."
@@ -150,12 +164,12 @@ export function SubscriptionsList() {
                 <TableCell>
                   <div className="flex items-center gap-3">
                     <Avatar>
-                      <AvatarImage 
-                        src={subscription.user.profile_picture?.link || "/placeholder.svg"} 
-                        alt={`${subscription.user.first_name} ${subscription.user.last_name}`} 
+                      <AvatarImage
+                        src={subscription.user.profile_picture?.link || "/placeholder.svg"}
+                        alt={`${subscription.user.first_name} ${subscription.user.last_name}`}
                       />
                       <AvatarFallback>
-                        {subscription.user.first_name.charAt(0)}
+                        {subscription.user?.first_name?.charAt(0) || "N"}
                       </AvatarFallback>
                     </Avatar>
                     <div>
@@ -169,8 +183,8 @@ export function SubscriptionsList() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  {typeof subscription.plan === 'object' && subscription.plan 
-                    ? subscription.plan.name 
+                  {typeof subscription.plan === 'object' && subscription.plan
+                    ? subscription.plan.name
                     : 'Unknown Plan'}
                 </TableCell>
                 <TableCell>{getStatusBadge(subscription.status)}</TableCell>
@@ -180,36 +194,36 @@ export function SubscriptionsList() {
                   </div>
                 </TableCell>
                 <TableCell>
-                  ${typeof subscription.plan === 'object' && subscription.plan 
-                    ? subscription.plan.price 
-                    : 0}/mo
+                  ${typeof subscription.plan === 'object' && subscription.plan
+                  ? subscription.plan.price
+                  : 0}/mo
                 </TableCell>
                 <TableCell className="text-right">
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="icon">
-                        <MoreHorizontal className="h-4 w-4" />
+                        <MoreHorizontal className="size-4"/>
                         <span className="sr-only">Open menu</span>
                       </Button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent align="end">
                       <DropdownMenuLabel>Actions</DropdownMenuLabel>
-                      <DropdownMenuSeparator />
+                      <DropdownMenuSeparator/>
                       <DropdownMenuItem>
-                        <Edit className="mr-2 h-4 w-4" />
+                        <Edit className="mr-2 size-4"/>
                         Edit
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => renewSubscription(subscription.id)}>
-                        <RefreshCw className="mr-2 h-4 w-4" />
+                        <RefreshCw className="mr-2 size-4"/>
                         Renew
                       </DropdownMenuItem>
                       <DropdownMenuItem onClick={() => cancelSubscription(subscription.id)}>
-                        <XCircle className="mr-2 h-4 w-4" />
+                        <XCircle className="mr-2 size-4"/>
                         Cancel
                       </DropdownMenuItem>
-                      <DropdownMenuSeparator />
+                      <DropdownMenuSeparator/>
                       <DropdownMenuItem className="text-destructive">
-                        <Trash className="mr-2 h-4 w-4" />
+                        <Trash className="mr-2 size-4"/>
                         Delete
                       </DropdownMenuItem>
                     </DropdownMenuContent>

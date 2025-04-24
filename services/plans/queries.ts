@@ -21,6 +21,8 @@ export interface createPlanCredentials {
 	name: string;
 	price: number;
 	duration: number;
+	features: string;
+	billingCycle: string;
 	description: string;
 }
 

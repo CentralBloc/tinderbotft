@@ -13,7 +13,6 @@ import {
   Users,
 } from "lucide-react";
 
-// Function to generate the dashboard configuration based on user info
 export const dashboardConfig = (user: { super_user: boolean }) => ({
   mainNav: [
     {
@@ -41,38 +40,36 @@ export const dashboardConfig = (user: { super_user: boolean }) => ({
       icon: Network,
       href: routes.dashboard.proxy.index,
     },
-    // Conditionally include the Admin panel
     ...(user.super_user
       ? [
-          {
-            title: "Insta",
-            href: routes.dashboard.insta.index,
-            icon: Instagram,
-          },
-          {
-            title: "Admin",
-            href: routes.dashboard.admin.index,
-            icon: Settings,
-            items: [
-              {
-                title: "Users",
-                href: routes.dashboard.admin.index,
-                icon: Users,
-              },
-              {
-                title: "Plans",
-                href: routes.dashboard.admin.plans,
-                icon: Package,
-              },
-              {
-                title: "Subscriptions",
-                href: routes.dashboard.admin.subscriptions,
-                icon: CreditCard,
-              },
-            ],
-          },
-        ]
+        {
+          title: "Insta",
+          href: routes.dashboard.insta.index,
+          icon: Instagram,
+        },
+        {
+          title: "Admin",
+          href: routes.dashboard.admin.index,
+          icon: Settings,
+          items: [
+            {
+              title: "Users",
+              href: routes.dashboard.admin.index,
+              icon: Users,
+            },
+            {
+              title: "Plans",
+              href: routes.dashboard.admin.plans.index,
+              icon: Package,
+            },
+            {
+              title: "Subscriptions",
+              href: routes.dashboard.admin.subscriptions.index,
+              icon: CreditCard,
+            },
+          ],
+        },
+      ]
       : []),
-
   ] satisfies MainNavItem[],
 });

@@ -35,8 +35,8 @@ export interface UserInterface {
   is_active: boolean;
   id: string;
   username: string;
-  first_name: string;
-  last_name: string;
+  first_name: string | null;
+  last_name: string | null;
   email: string;
   profile_picture: ImageInterface | null;
   created_at: Date;
@@ -68,10 +68,13 @@ export interface SmsInterface {
 export interface PlansInterface {
   id: string;
   name: string;
-  price: number;
+  price: string;
   duration: number;
   description: string;
   account_number: number;
+  features: string;
+  billingCycle: string;
+  isActive: boolean;
 }
 
 export interface SubscriptionInterface {
@@ -81,6 +84,7 @@ export interface SubscriptionInterface {
   status: "active" | "inactive" | "cancelled";
   start_date: Date;
   end_date: Date;
+  billing_cycle: string;
 }
 
 export interface PaymentHistoryInterface {
@@ -149,7 +153,7 @@ export interface BotAccountInterface {
   min_age: number | undefined;
   max_age: number | undefined;
   distance: number | undefined;
-  tinder_bio : string | undefined;
+  tinder_bio: string | undefined;
   likes: number | undefined;
   swipes: number | undefined;
   matches: number | undefined;
@@ -210,11 +214,11 @@ export interface SwipesInterface {
 }
 
 export interface InstaStratInterface {
-    id: string;
-    name: string;
-    description: string;
-    day_number: number;
-    modele: string | ModelInterface;
+  id: string;
+  name: string;
+  description: string;
+  day_number: number;
+  modele: string | ModelInterface;
 }
 
 
