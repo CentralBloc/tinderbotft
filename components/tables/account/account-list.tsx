@@ -1,15 +1,15 @@
 "use client"
 
-import React, {useCallback, useMemo, useState} from "react"
+import React, {useCallback, useEffect, useMemo, useState} from "react"
 import {
-    type ColumnDef,
-    getCoreRowModel,
-    getFilteredRowModel,
-    getPaginationRowModel,
-    type Row,
-    type RowSelectionState,
-    type Table,
-    useReactTable,
+  type ColumnDef,
+  getCoreRowModel,
+  getFilteredRowModel,
+  getPaginationRowModel,
+  type Row,
+  type RowSelectionState,
+  type Table,
+  useReactTable,
 } from "@tanstack/react-table"
 import {DataTable} from "@/components/ui/data-table"
 import {useBotaccounts} from "@/services/bot-account/hooks"
@@ -19,7 +19,6 @@ import {Button} from "@/components/ui/button"
 import {Checkbox} from "@/components/ui/checkbox"
 import {DataTableSkeleton} from "@/components/skeleton/table-skeleton"
 
-// Placeholder for status options. Replace it with actual statuses if available.
 const STATUS_OPTIONS = ["Active", "StandBy", "Expired", "Working", "Completed", "Limited", "ShadowBan", "Banned"]
 
 export default function AccountList({
@@ -46,45 +45,23 @@ export default function AccountList({
   const [rowSelection, setRowSelection] = useState<RowSelectionState>({})
   const [selectedIds, setSelectedIds] = useState<string[]>([])
 
-  // Use external filters if provided, otherwise use local state
   const activeAccountFilter = externalFilters?.accountFilter ?? accountFilter
   const activeModelFilter = externalFilters?.modelFilter ?? modelFilter
   const activeStatusFilter = externalFilters?.statusFilter ?? statusFilter
 
-  const handleAccountFilterChange = useCallback(
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      if (externalFilters) {
-        externalFilters.setAccountFilter(e.target.value)
-      } else {
-        setAccountFilter(e.target.value)
-      }
-    },
-    [externalFilters],
-  )
+  const handleAccountFilterChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    externalFilters ? externalFilters.setAccountFilter(e.target.value) : setAccountFilter(e.target.value)
+  }, [externalFilters])
 
-  const handleModelFilterChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const value = e.target.value === "all" ? null : e.target.value
-      if (externalFilters) {
-        externalFilters.setModelFilter(value)
-      } else {
-        setModelFilter(value)
-      }
-    },
-    [externalFilters],
-  )
+  const handleModelFilterChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value === "all" ? null : e.target.value
+    externalFilters ? externalFilters.setModelFilter(value) : setModelFilter(value)
+  }, [externalFilters])
 
-  const handleStatusFilterChange = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const value = e.target.value === "all" ? null : e.target.value
-      if (externalFilters) {
-        externalFilters.setStatusFilter(value)
-      } else {
-        setStatusFilter(value)
-      }
-    },
-    [externalFilters],
-  )
+  const handleStatusFilterChange = useCallback((e: React.ChangeEvent<HTMLSelectElement>) => {
+    const value = e.target.value === "all" ? null : e.target.value
+    externalFilters ? externalFilters.setStatusFilter(value) : setStatusFilter(value)
+  }, [externalFilters])
 
   const filteredData = useMemo(() => {
     return data.filter((account) => {
@@ -98,31 +75,28 @@ export default function AccountList({
     })
   }, [data, models, activeAccountFilter, activeModelFilter, activeStatusFilter])
 
-  const columns = useMemo<ColumnDef<any>[]>(
-    () => [
-      {
-        id: "select",
-        header: ({table}: { table: Table<any> }) => (
-          <Checkbox
-            checked={table.getIsAllPageRowsSelected()}
-            onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
-            aria-label="Select all"
-          />
-        ),
-        cell: ({row}: { row: Row<any> }) => (
-          <Checkbox
-            checked={row.getIsSelected()}
-            onCheckedChange={(value) => row.toggleSelected(!!value)}
-            aria-label="Select row"
-          />
-        ),
-        enableSorting: true,
-        enableHiding: false,
-      },
-      ...(customColumns ?? []),
-    ],
-    [customColumns],
-  )
+  const columns = useMemo<ColumnDef<any>[]>(() => [
+    {
+      id: "select",
+      header: ({table}: { table: Table<any> }) => (
+        <Checkbox
+          checked={table.getIsAllPageRowsSelected()}
+          onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+          aria-label="Select all"
+        />
+      ),
+      cell: ({row}: { row: Row<any> }) => (
+        <Checkbox
+          checked={row.getIsSelected()}
+          onCheckedChange={(value) => row.toggleSelected(!!value)}
+          aria-label="Select row"
+        />
+      ),
+      enableSorting: true,
+      enableHiding: false,
+    },
+    ...(customColumns ?? []),
+  ], [customColumns])
 
   const table = useReactTable({
     data: filteredData,
@@ -131,27 +105,19 @@ export default function AccountList({
     getPaginationRowModel: getPaginationRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     onRowSelectionChange: setRowSelection,
-    state: {
-      rowSelection,
-    },
-    initialState: {
-      pagination: {
-        pageSize: 20,
-      },
-    },
+    state: {rowSelection},
+    initialState: {pagination: {pageSize: 20}},
   })
 
-  // Update selectedIds whenever row selection changes
-  React.useEffect(() => {
+  useEffect(() => {
     const selectedRows = table.getFilteredSelectedRowModel().rows
     const ids = selectedRows.map((row) => row.original.id)
     setSelectedIds(ids)
 
-    // Call the callback with selected IDs if provided
     if (onSelectionChange) {
       onSelectionChange(ids)
     }
-  }, [table.getFilteredSelectedRowModel().rows, onSelectionChange, table])
+  }, [rowSelection, onSelectionChange, table])
 
   const {pageSize, pageIndex} = table.getState().pagination
   const totalItems = filteredData.length
@@ -222,7 +188,12 @@ export default function AccountList({
               >
                 Previous
               </Button>
-              <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => table.nextPage()}
+                disabled={!table.getCanNextPage()}
+              >
                 Next
               </Button>
             </div>
