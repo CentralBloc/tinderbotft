@@ -1,6 +1,6 @@
 "use client"
 
-import {useMemo, useState} from "react"
+import {useCallback, useMemo, useState} from "react"
 import {Grid, Table} from 'lucide-react'
 import {Button} from "@/components/ui/button"
 import {useBotaccounts} from "@/services/bot-account/hooks"
@@ -19,7 +19,6 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-// Placeholder for status options. Replace with actual statuses if available.
 const STATUS_OPTIONS = ["Active", "Inactive", "Expired", "Working", "Completed", "Limited", "ShadowBan", "Banned"]
 
 export default function BotAccountsPage() {
@@ -28,34 +27,36 @@ export default function BotAccountsPage() {
   const {data: models = []} = useModels()
 
   // Filters
-  const [accountFilter, setAccountFilter] = useState("")
-  const [modelFilter, setModelFilter] = useState<string | null>(null)
-  const [statusFilter, setStatusFilter] = useState<string | null>(null)
+  const [filters, setFilters] = useState({
+    account: "",
+    model: null as string | null,
+    status: null as string | null
+  })
 
-  const handleAccountFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setAccountFilter(e.target.value)
-  }
+  const handleAccountFilterChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setFilters(prev => ({...prev, account: e.target.value}))
+  }, [])
 
-  const handleModelFilterChange = (value: string | null) => {
-    setModelFilter(value === "all" ? null : value)
-  }
+  const handleModelFilterChange = useCallback((value: string) => {
+    setFilters(prev => ({...prev, model: value === "all" ? null : value}))
+  }, [])
 
-  const handleStatusFilterChange = (value: string | null) => {
-    setStatusFilter(value === "all" ? null : value)
-  }
+  const handleStatusFilterChange = useCallback((value: string) => {
+    setFilters(prev => ({...prev, status: value === "all" ? null : value}))
+  }, [])
 
   const filteredData = useMemo(() => {
     return botAccounts.filter((account) => {
       const model = models.find((model) => model.id === account.modele)
       const modelName = model ? model.name.toLowerCase() : ""
       return (
-        account.title.toLowerCase().includes(accountFilter.toLowerCase()) &&
-        (modelFilter === null || modelName.includes(modelFilter.toLowerCase())) &&
-        (statusFilter === null || account.status.toLowerCase() === statusFilter.toLowerCase())
+        account.title.toLowerCase().includes(filters.account.toLowerCase()) &&
+        (filters.model === null || modelName.includes(filters.model.toLowerCase())) &&
+        (filters.status === null || account.status.toLowerCase() === filters.status.toLowerCase())
       )
     })
-  }, [botAccounts, models, accountFilter, modelFilter, statusFilter])
-  // Pagination for grid view
+  }, [botAccounts, models, filters])
+
   const table = useReactTable({
     data: filteredData,
     columns: [],
@@ -74,7 +75,6 @@ export default function BotAccountsPage() {
   const startItem = totalItems > 0 ? pageIndex * pageSize + 1 : 0
   const endItem = Math.min((pageIndex + 1) * pageSize, totalItems)
 
-  // Get current page data for grid view
   const currentPageData = table.getRowModel().rows.map(row => row.original)
 
   return (
@@ -101,19 +101,18 @@ export default function BotAccountsPage() {
         </div>
       </div>
 
-      {/* Filters - shown for both views */}
       <div className="flex flex-col space-y-2 md:flex-row md:items-center md:space-x-3 md:space-y-0">
         <div className="w-full md:w-1/3">
           <Input
             type="text"
             placeholder="Search account"
-            value={accountFilter}
+            value={filters.account}
             onChange={handleAccountFilterChange}
           />
         </div>
 
         <div className="w-full md:w-1/3">
-          <Select value={modelFilter ?? "all"} onValueChange={handleModelFilterChange}>
+          <Select value={filters.model ?? "all"} onValueChange={handleModelFilterChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="Select a model"/>
             </SelectTrigger>
@@ -132,7 +131,7 @@ export default function BotAccountsPage() {
         </div>
 
         <div className="w-full md:w-1/3">
-          <Select value={statusFilter ?? "all"} onValueChange={handleStatusFilterChange}>
+          <Select value={filters.status ?? "all"} onValueChange={handleStatusFilterChange}>
             <SelectTrigger className="w-full">
               <SelectValue placeholder="All Statuses"/>
             </SelectTrigger>
@@ -159,7 +158,6 @@ export default function BotAccountsPage() {
             ))}
           </div>
 
-          {/* Pagination for grid view */}
           <div
             className="flex flex-col items-center justify-between space-y-2 py-4 sm:flex-row sm:space-x-2 sm:space-y-0">
             {totalItems > 0 && (
@@ -190,12 +188,12 @@ export default function BotAccountsPage() {
       ) : (
         <AccountTabs
           externalFilters={{
-            accountFilter,
-            modelFilter,
-            statusFilter,
-            setAccountFilter,
-            setModelFilter,
-            setStatusFilter
+            accountFilter: filters.account,
+            modelFilter: filters.model,
+            statusFilter: filters.status,
+            setAccountFilter: (value: string) => setFilters(prev => ({...prev, account: value})),
+            setModelFilter: (value: string | null) => setFilters(prev => ({...prev, model: value})),
+            setStatusFilter: (value: string | null) => setFilters(prev => ({...prev, status: value}))
           }}
         />
       )}

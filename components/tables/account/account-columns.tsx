@@ -1,5 +1,5 @@
 import {BotAccountInterface} from "@/types";
-import {useEffect, useState} from "react";
+import {useEffect, useMemo, useState} from "react";
 import {useAddAccountUserName, useSetAccountBio, useUpdateBotaccount} from "@/services/bot-account/hooks";
 import {AccountContextMenu} from "@/components/ui/account-context-menu";
 import {
@@ -45,432 +45,437 @@ import RealtimeSessionLog from "@/components/logs/realtime-session-log";
 import {WebSocketProvider} from "@/lib/providers/websocket.provider";
 
 interface TinderBioCellProps {
-    row: {
-        original: Partial<BotAccountInterface>
-    }
+  row: {
+    original: Partial<BotAccountInterface>
+  }
 }
 
 interface UserNamesCellProps {
-    row: {
-        original: Partial<BotAccountInterface>
-    }
+  row: {
+    original: Partial<BotAccountInterface>
+  }
 }
 
 export const AccountActionsCell = ({row,}: { row: { original: BotAccountInterface }; }) => {
-    return (
-        <div className="flex items-center gap-2">
-            <AccountContextMenu 
-                account={row.original}
-                trigger={
-                    <Button variant="ghost" size="icon" className="p-0">
-                        <MoreVertical size={20} />
-                    </Button>
-                }
-            />
-        </div>
-    );
-};
-
-export const EditableProgressCell = ({row,}: { row: { original: BotAccountInterface }; }) => {
-    const { data: strategies = [] } = useStrategies();
-    const updateMutation = useUpdateBotaccount(row.original.id);
-    const [daysNumber, setDaysNumber] = useState<number[]>([]);
-
-    useEffect(() => {
-        const strategyId = row.original.strategy
-            ? typeof row.original.strategy === "object"
-                ? row.original.strategy.id
-                : row.original.strategy
-            : undefined;
-
-        const strategy = strategies.find((strategy) => strategy.id === strategyId);
-        if (strategy) {
-            setDaysNumber(
-                Array.from({ length: strategy.days_number }, (_, i) => i + 1),
-            );
-        } else {
-            setDaysNumber([]);
+  return (
+    <div className="flex items-center gap-2">
+      <AccountContextMenu
+        account={row.original}
+        trigger={
+          <Button variant="ghost" size="icon" className="p-0">
+            <MoreVertical size={20}/>
+          </Button>
         }
-    }, [row.original.strategy, strategies]);
-
-    const handleProgressChange = (newProgress: string) => {
-        updateMutation.mutate({ progress: parseInt(newProgress, 10) });
-    };
-
-    if (daysNumber.length === 0) {
-        return <div>{row.original.progress}</div>;
-    }
-
-    return (
-        <Popover>
-            <PopoverTrigger asChild>
-                <Button variant="outline" className="w-full justify-between">
-                    {row.original.progress
-                        ? `Day ${row.original.progress}`
-                        : "Select Progress"}
-                    <ChevronsUpDown className="ml-2 size-4 opacity-50" />
-                </Button>
-            </PopoverTrigger>
-            <PopoverContent className="w-full p-0">
-                <Command>
-                    <CommandInput placeholder="Search progress day..." />
-                    <CommandList>
-                        <CommandEmpty>No days found.</CommandEmpty>
-                        {daysNumber.map((day) => (
-                            <CommandItem
-                                key={day}
-                                value={day.toString()}
-                                onSelect={() => handleProgressChange(day.toString())}
-                            >
-                                <Check
-                                    className={cn(
-                                        "mr-2 h-4 w-4",
-                                        row.original.progress === day ? "opacity-100" : "opacity-0",
-                                    )}
-                                />
-                                {day}
-                            </CommandItem>
-                        ))}
-                    </CommandList>
-                </Command>
-            </PopoverContent>
-        </Popover>
-    );
+      />
+    </div>
+  );
 };
 
-export const TinderBioCell = ({ row }: TinderBioCellProps) => {
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [newBio, setNewBio] = useState(row.original.tinder_bio ?? "")
-    const updateMutation = useSetAccountBio(row.original.id ?? "")
+export const EditableProgressCell = ({row}: { row: { original: BotAccountInterface }; }) => {
+  const {data: strategies = []} = useStrategies();
+  const updateMutation = useUpdateBotaccount(row.original.id);
+  const [daysNumber, setDaysNumber] = useState<number[]>([]);
 
-    const handleSave = async () => {
-        await updateMutation.mutateAsync(newBio, {
-            onSuccess: () => {
-                toast({
-                    title: "Tinder bio updated successfully",
-                });
-            },
-            onError: (error: any) => {
-                toast({
-                    variant: "destructive",
-                    title: "Failed to update Tinder bio",
-                    description: error.response?.data || "An error occurred",
-                });
-            },
-        })
-        setIsModalOpen(false)
+  // Add strategy as memoized value to prevent unnecessary recalculations
+  const currentStrategy = useMemo(() => {
+    const strategyId = row.original.strategy
+      ? typeof row.original.strategy === "object"
+        ? row.original.strategy.id
+        : row.original.strategy
+      : undefined;
+
+    return strategies.find((strategy) => strategy.id === strategyId);
+  }, [row.original.strategy, strategies]);
+
+  // Update daysNumber only when currentStrategy changes
+  useEffect(() => {
+    if (currentStrategy) {
+      setDaysNumber(
+        Array.from({length: currentStrategy.days_number}, (_, i) => i + 1)
+      );
+    } else {
+      setDaysNumber([]);
     }
+  }, [currentStrategy]);
 
-    const iconColor = row.original.tinder_bio ? "text-blue-500" : "text-red-500"
+  const handleProgressChange = (newProgress: string) => {
+    updateMutation.mutate({progress: parseInt(newProgress, 10)});
+  };
 
-    return (
-        <div className="flex items-center">
-            <TooltipProvider>
-                <Tooltip>
-                    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                        <TooltipTrigger asChild>
-                            <DialogTrigger asChild>
-                                <Button variant="ghost" className={`${iconColor} flex items-center gap-2`}>
-                                    <BookUser  />
-                                </Button>
-                            </DialogTrigger>
-                        </TooltipTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Edit Tinder Bio</DialogTitle>
-                            </DialogHeader>
-                            <Textarea
-                                value={newBio}
-                                onChange={(e) => setNewBio(e.target.value)}
-                                placeholder="Enter new bio"
-                            />
-                            <DialogFooter>
-                                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
-                                    Cancel
-                                </Button>
-                                <Button onClick={handleSave}>Save</Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-                    <TooltipContent>
-                        <p>{row.original.tinder_bio ||  "No bio set"}</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-        </div>
-    )
-}
+  if (daysNumber.length === 0) {
+    return <div>{row.original.progress}</div>;
+  }
 
-export const AccountUserNameCell = ({ row }: UserNamesCellProps) => {
-    const [isModalOpen, setIsModalOpen] = useState(false)
-    const [username, setUsername] = useState(row.original.username ?? "")
-    const updateMutation = useAddAccountUserName(row.original.id ?? "")
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="w-full justify-between">
+          {row.original.progress
+            ? `Day ${row.original.progress}`
+            : "Select Progress"}
+          <ChevronsUpDown className="ml-2 size-4 opacity-50"/>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0">
+        <Command>
+          <CommandInput placeholder="Search progress day..."/>
+          <CommandList>
+            <CommandEmpty>No days found.</CommandEmpty>
+            {daysNumber.map((day) => (
+              <CommandItem
+                key={day}
+                value={day.toString()}
+                onSelect={() => handleProgressChange(day.toString())}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    row.original.progress === day ? "opacity-100" : "opacity-0",
+                  )}
+                />
+                {day}
+              </CommandItem>
+            ))}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+};
 
-    const handleSave = async () => {
-        await updateMutation.mutateAsync(username, {
-            onSuccess: () => {
-                toast({
-                    title: "Username updated successfully",
-                });
-            },
-            onError: (error: any) => {
-                toast({
-                    variant: "destructive",
-                    title: "Failed to update username",
-                    description: error.response?.data || "An error occurred",
-                });
-            },
-        })
-        setIsModalOpen(false)
-    }
+export const TinderBioCell = ({row}: TinderBioCellProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [newBio, setNewBio] = useState(row.original.tinder_bio ?? "")
+  const updateMutation = useSetAccountBio(row.original.id ?? "")
 
-    const iconColor = row.original.username ? "text-blue-500" : "text-gray-500"
+  const handleSave = async () => {
+    await updateMutation.mutateAsync(newBio, {
+      onSuccess: () => {
+        toast({
+          title: "Tinder bio updated successfully",
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Failed to update Tinder bio",
+          description: error.response?.data || "An error occurred",
+        });
+      },
+    })
+    setIsModalOpen(false)
+  }
 
-    return (
-        <div className="flex items-center">
-            <TooltipProvider>
-                <Tooltip>
-                    <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-                        <TooltipTrigger asChild>
-                            <DialogTrigger asChild>
-                                <Button variant="ghost" className={`${iconColor} flex items-center gap-2`}>
-                                    <IdCard  />
-                                </Button>
-                            </DialogTrigger>
-                        </TooltipTrigger>
-                        <DialogContent>
-                            <DialogHeader>
-                                <DialogTitle>Edit Username</DialogTitle>
-                            </DialogHeader>
-                            <Input
-                                type="text"
-                                value={username}
-                                onChange={(e) => setUsername(e.target.value)}
-                                placeholder="Enter new username"
-                            />
-                            <DialogFooter>
-                                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
-                                    Cancel
-                                </Button>
-                                <Button onClick={handleSave}>Save</Button>
-                            </DialogFooter>
-                        </DialogContent>
-                    </Dialog>
-                    <TooltipContent>
-                        <p>{row.original.username ||  "No username set"}</p>
-                    </TooltipContent>
-                </Tooltip>
-            </TooltipProvider>
-        </div>
-    )
-}
+  const iconColor = row.original.tinder_bio ? "text-blue-500" : "text-red-500"
 
-export const AccountLogCell = ({ row }: UserNamesCellProps) => {
-
-    return (
-        <div className="flex w-full items-center justify-between">
-            <div className="flex">
-                <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                        <Button
-                            variant="ghost"
-                            className="relative hover:bg-transparent hover:opacity-100"
-                        >
-                            <Badge className="bg-blue-800">Working</Badge>
-                        </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className="max-w-4xl border-none bg-transparent p-0">
-                        <div className="relative max-h-[90vh] overflow-hidden">
-                            <AlertDialogCancel className="absolute right-2 top-2 z-10 size-8 rounded-full">
-                                <X className="size-4" />
-                                <span className="sr-only">Close</span>
-                            </AlertDialogCancel>
-                            <AlertDialogTitle>
-                                <VisuallyHidden>Swipe Details</VisuallyHidden>
-                            </AlertDialogTitle>
-                            <WebSocketProvider>
-                                <div className="container mx-auto max-w-5xl p-4">
-                                    <h1 className="mb-6 text-2xl font-bold">Live Swipe Session</h1>
-                                    <RealtimeSessionLog accountId={row.original.id ?? ""} />
-                                </div>
-                            </WebSocketProvider>
-                        </div>
-                    </AlertDialogContent>
-                </AlertDialog>
-            </div>
-        </div>
-    )
-}
-
-export const AccountInfoActionsCell = ({ row }: { row: { original: BotAccountInterface }; }) => {
-    return (
-        <div className="flex items-center">
-
-            <Link href={routes.dashboard.account.view(row.original.id ?? "")}>
-                <Button variant="ghost" className="flex items-center  ">
-                    <ExternalLink color="#5c0783" />
+  return (
+    <div className="flex items-center">
+      <TooltipProvider>
+        <Tooltip>
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <TooltipTrigger asChild>
+              <DialogTrigger asChild>
+                <Button variant="ghost" className={`${iconColor} flex items-center gap-2`}>
+                  <BookUser/>
                 </Button>
-            </Link>
-            <AccountUserNameCell row={row} />
-            <TinderBioCell row={row} />
-        </div>
-    );
+              </DialogTrigger>
+            </TooltipTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Tinder Bio</DialogTitle>
+              </DialogHeader>
+              <Textarea
+                value={newBio}
+                onChange={(e) => setNewBio(e.target.value)}
+                placeholder="Enter new bio"
+              />
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSave}>Save</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <TooltipContent>
+            <p>{row.original.tinder_bio || "No bio set"}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
+  )
+}
+
+export const AccountUserNameCell = ({row}: UserNamesCellProps) => {
+  const [isModalOpen, setIsModalOpen] = useState(false)
+  const [username, setUsername] = useState(row.original.username ?? "")
+  const updateMutation = useAddAccountUserName(row.original.id ?? "")
+
+  const handleSave = async () => {
+    await updateMutation.mutateAsync(username, {
+      onSuccess: () => {
+        toast({
+          title: "Username updated successfully",
+        });
+      },
+      onError: (error: any) => {
+        toast({
+          variant: "destructive",
+          title: "Failed to update username",
+          description: error.response?.data || "An error occurred",
+        });
+      },
+    })
+    setIsModalOpen(false)
+  }
+
+  const iconColor = row.original.username ? "text-blue-500" : "text-gray-500"
+
+  return (
+    <div className="flex items-center">
+      <TooltipProvider>
+        <Tooltip>
+          <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+            <TooltipTrigger asChild>
+              <DialogTrigger asChild>
+                <Button variant="ghost" className={`${iconColor} flex items-center gap-2`}>
+                  <IdCard/>
+                </Button>
+              </DialogTrigger>
+            </TooltipTrigger>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Edit Username</DialogTitle>
+              </DialogHeader>
+              <Input
+                type="text"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="Enter new username"
+              />
+              <DialogFooter>
+                <Button variant="outline" onClick={() => setIsModalOpen(false)}>
+                  Cancel
+                </Button>
+                <Button onClick={handleSave}>Save</Button>
+              </DialogFooter>
+            </DialogContent>
+          </Dialog>
+          <TooltipContent>
+            <p>{row.original.username || "No username set"}</p>
+          </TooltipContent>
+        </Tooltip>
+      </TooltipProvider>
+    </div>
+  )
+}
+
+export const AccountLogCell = ({row}: UserNamesCellProps) => {
+
+  return (
+    <div className="flex w-full items-center justify-between">
+      <div className="flex">
+        <AlertDialog>
+          <AlertDialogTrigger asChild>
+            <Button
+              variant="ghost"
+              className="relative hover:bg-transparent hover:opacity-100"
+            >
+              <Badge className="bg-blue-800">Working</Badge>
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogContent className="max-w-4xl border-none bg-transparent p-0">
+            <div className="relative max-h-[90vh] overflow-hidden">
+              <AlertDialogCancel className="absolute right-2 top-2 z-10 size-8 rounded-full">
+                <X className="size-4"/>
+                <span className="sr-only">Close</span>
+              </AlertDialogCancel>
+              <AlertDialogTitle>
+                <VisuallyHidden>Swipe Details</VisuallyHidden>
+              </AlertDialogTitle>
+              <WebSocketProvider>
+                <div className="container mx-auto max-w-5xl p-4">
+                  <h1 className="mb-6 text-2xl font-bold">Live Swipe Session</h1>
+                  <RealtimeSessionLog accountId={row.original.id ?? ""}/>
+                </div>
+              </WebSocketProvider>
+            </div>
+          </AlertDialogContent>
+        </AlertDialog>
+      </div>
+    </div>
+  )
+}
+
+export const AccountInfoActionsCell = ({row}: { row: { original: BotAccountInterface }; }) => {
+  return (
+    <div className="flex items-center">
+
+      <Link href={routes.dashboard.account.view(row.original.id ?? "")}>
+        <Button variant="ghost" className="flex items-center  ">
+          <ExternalLink color="#5c0783"/>
+        </Button>
+      </Link>
+      <AccountUserNameCell row={row}/>
+      <TinderBioCell row={row}/>
+    </div>
+  );
 }
 
 export const accountListColumns: ColumnDef<BotAccountInterface>[] = [
-    {
-        accessorKey: "profile_url",
-        header:"",
-        cell: ({ row }) => {
-            return (
-                <Image
-                    src={row.original.profile_url ?? "/public/images/landscape-placeholder.svg"} width={40} height={40}
-                    alt="profile"
-                />
-            );
-        }
+  {
+    accessorKey: "profile_url",
+    header: "",
+    cell: ({row}) => {
+      return (
+        <Image
+          src={row.original.profile_url ?? "/public/images/landscape-placeholder.svg"} width={40} height={40}
+          alt="profile"
+        />
+      );
+    }
+  },
+  {
+    accessorKey: "title",
+    header: "Title",
+  },
+  {
+    accessorKey: "modele",
+    header: "Model",
+    cell: ModelCell,
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({row}) => {
+      if (row.original.status === "active") {
+        return <Badge className="bg-green-800">Active</Badge>;
+      } else if (row.original.status === "expired") {
+        return <Badge className="bg-gray-800">Expired</Badge>;
+      } else if (row.original.status === "working") {
+        return <AccountLogCell row={row}/>;
+      } else if (row.original.status === "inactive") {
+        return <Badge className="bg-black">Inactive</Badge>;
+      } else if (row.original.status === "banned") {
+        return <Badge className="bg-red-800">Ban</Badge>;
+      } else if (row.original.status === "shadowban") {
+        return (<Badge className="bg-orange-800">shadow</Badge>)
+      } else if (row.original.status === "limited") {
+        return <Badge className="bg-purple-800">Limited</Badge>;
+      } else if (row.original.status === "completed") {
+        return <Badge className="bg-amber-500">Completed</Badge>;
+      } else if (row.original.status === "standby") {
+        return <Badge className="bg-sky-600">StandBy</Badge>;
+      } else {
+        return <Badge variant="destructive">{row.original.status}</Badge>;
+      }
     },
-    {
-        accessorKey: "title",
-        header: "Title",
-    },
-    {
-        accessorKey: "modele",
-        header: "Model",
-        cell: ModelCell,
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => {
-            if (row.original.status === "active") {
-                return <Badge className="bg-green-800">Active</Badge>;
-            } else if (row.original.status === "expired") {
-                return <Badge className="bg-gray-800">Expired</Badge>;
-            } else if (row.original.status === "working") {
-                return <AccountLogCell  row={row}/>;
-            } else if (row.original.status === "inactive") {
-                return <Badge className="bg-black">Inactive</Badge>;
-            } else if ( row.original.status === "banned") {
-                return <Badge className="bg-red-800">Ban</Badge>;
-            } else if ( row.original.status === "shadowban") {
-                return ( <Badge className="bg-orange-800">shadow</Badge>)
-            } else if ( row.original.status === "limited") {
-                return <Badge className="bg-purple-800">Limited</Badge>;
-            } else if ( row.original.status === "completed" ) {
-                return <Badge className="bg-amber-500">Completed</Badge>;
-            } else if ( row.original.status === "standby") {
-                return <Badge className="bg-sky-600">StandBy</Badge>;
-            } else {
-                return <Badge variant="destructive">{row.original.status}</Badge>;
-            }
-        },
-    },
-    {
-        accessorKey: "progress",
-        header: "Day Progress",
-        cell: ({ row }) => <EditableProgressCell row={row} />,
-    },
-    {
-        accessorKey: "infos",
-        header: "Account infos",
-        cell: ({ row }) => <AccountInfoActionsCell row={row} />,
+  },
+  {
+    accessorKey: "progress",
+    header: "Day Progress",
+    cell: ({row}) => <EditableProgressCell row={row}/>,
+  },
+  {
+    accessorKey: "infos",
+    header: "Account infos",
+    cell: ({row}) => <AccountInfoActionsCell row={row}/>,
 
-    },
-    {
-        accessorKey: "strategy",
-        header: "Strategy",
-        cell: ({ row }) => <EditableStrategyCell row={row} />,
-    },
-    {
-        accessorKey: "proxy",
-        header: "Proxy",
-        cell: ({ row }) => <EditableProxyCell row={row} view="account" />, // Utilisation de la cellule modifiable
-    },
-    {
-        accessorKey: "actions",
-        header: "Actions",
-        cell: ({ row }) => <AccountActionsCell row={row} />,
-    },
+  },
+  {
+    accessorKey: "strategy",
+    header: "Strategy",
+    cell: ({row}) => <EditableStrategyCell row={row}/>,
+  },
+  {
+    accessorKey: "proxy",
+    header: "Proxy",
+    cell: ({row}) => <EditableProxyCell row={row} view="account"/>, // Utilisation de la cellule modifiable
+  },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({row}) => <AccountActionsCell row={row}/>,
+  },
 ];
 
 export const accountStatsColumns: ColumnDef<BotAccountInterface>[] = [
-    {
-        accessorKey: "profile_url",
-        header:"",
-        cell: ({ row }) => {
-            return (
-                <Image
-                    src={row.original.profile_url ?? "/public/images/landscape-placeholder.svg"} width={40} height={40}
-                    alt="profile"
-                />
-            );
-        }
+  {
+    accessorKey: "profile_url",
+    header: "",
+    cell: ({row}) => {
+      return (
+        <Image
+          src={row.original.profile_url ?? "/public/images/landscape-placeholder.svg"} width={40} height={40}
+          alt="profile"
+        />
+      );
+    }
+  },
+  {
+    accessorKey: "title",
+    header: "Title",
+  },
+  {
+    accessorKey: "modele",
+    header: "Model",
+    cell: ModelCell,
+  },
+  {
+    accessorKey: "status",
+    header: "Status",
+    cell: ({row}) => {
+      if (row.original.status === "active") {
+        return <Badge className="bg-green-800">Active</Badge>;
+      } else if (row.original.status === "expired") {
+        return <Badge className="bg-gray-800">Expired</Badge>;
+      } else if (row.original.status === "working") {
+        return <AccountLogCell row={row}/>;
+      } else if (row.original.status === "inactive") {
+        return <Badge className="bg-black">Inactive</Badge>;
+      } else if (row.original.status === "banned") {
+        return <Badge className="bg-red-800">Ban</Badge>;
+      } else if (row.original.status === "shadowban") {
+        return (<Badge className="bg-orange-800">shadow</Badge>)
+      } else if (row.original.status === "limited") {
+        return <Badge className="bg-purple-800">Limited</Badge>;
+      } else if (row.original.status === "completed") {
+        return <Badge className="bg-amber-500">Completed</Badge>;
+      } else if (row.original.status === "standby") {
+        return <Badge className="bg-sky-600">StandBy</Badge>;
+      } else {
+        return <Badge variant="destructive">{row.original.status}</Badge>;
+      }
     },
-    {
-        accessorKey: "title",
-        header: "Title",
-    },
-    {
-        accessorKey: "modele",
-        header: "Model",
-        cell: ModelCell,
-    },
-    {
-        accessorKey: "status",
-        header: "Status",
-        cell: ({ row }) => {
-            if (row.original.status === "active") {
-                return <Badge className="bg-green-800">Active</Badge>;
-            } else if (row.original.status === "expired") {
-                return <Badge className="bg-gray-800">Expired</Badge>;
-            } else if (row.original.status === "working") {
-                return <AccountLogCell  row={row}/>;
-            } else if (row.original.status === "inactive") {
-                return <Badge className="bg-black">Inactive</Badge>;
-            } else if ( row.original.status === "banned") {
-                return <Badge className="bg-red-800">Ban</Badge>;
-            } else if ( row.original.status === "shadowban") {
-                return ( <Badge className="bg-orange-800">shadow</Badge>)
-            } else if ( row.original.status === "limited") {
-                return <Badge className="bg-purple-800">Limited</Badge>;
-            } else if ( row.original.status === "completed" ) {
-                return <Badge className="bg-amber-500">Completed</Badge>;
-            } else if ( row.original.status === "standby") {
-                return <Badge className="bg-sky-600">StandBy</Badge>;
-            } else {
-                return <Badge variant="destructive">{row.original.status}</Badge>;
-            }
-        },
-    },
-    {
-        accessorKey: "infos",
-        header: "Account infos",
-        cell: ({ row }) => <AccountInfoActionsCell row={row} />,
+  },
+  {
+    accessorKey: "infos",
+    header: "Account infos",
+    cell: ({row}) => <AccountInfoActionsCell row={row}/>,
 
+  },
+  {
+    accessorKey: "proxy",
+    header: "Proxy",
+    cell: ({row}) => <EditableProxyCell row={row} view="account"/>, // Utilisation de la cellule modifiable
+  },
+  {
+    accessorKey: "stats",
+    header: "Account stats",
+    cell: ({row}) => {
+      return (
+        <div className="flex items-center gap-2">
+          {row.original.swipes}<ArrowLeftRight color="#201dc9" className="ml-2 size-4"/>
+          {row.original.likes} <ThumbsUp color="#0b4116" className="ml-2 size-4"/>
+          {row.original.matches} <Heart className="ml-2 size-4 " color="#c91d1d"/>
+        </div>
+      );
     },
-    {
-        accessorKey: "proxy",
-        header: "Proxy",
-        cell: ({ row }) => <EditableProxyCell row={row} view="account" />, // Utilisation de la cellule modifiable
-    },
-    {
-        accessorKey: "stats",
-        header: "Account stats",
-        cell: ({ row }) => {
-            return (
-                <div className="flex items-center gap-2">
-                    {row.original.swipes}<ArrowLeftRight color="#201dc9" className="ml-2 size-4" />
-                    {row.original.likes} <ThumbsUp color="#0b4116" className="ml-2 size-4" />
-                    {row.original.matches} <Heart className="ml-2 size-4 " color="#c91d1d" />
-                </div>
-            );
-        },
 
-    },
-    {
-        accessorKey: "actions",
-        header: "Actions",
-        cell: ({ row }) => <AccountActionsCell row={row} />,
-    },
+  },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({row}) => <AccountActionsCell row={row}/>,
+  },
 ];
