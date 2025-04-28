@@ -1,7 +1,8 @@
 "use client"
 
+import type React from "react"
 import {useCallback, useMemo, useState} from "react"
-import {Grid, Table} from 'lucide-react'
+import {Grid, Table} from "lucide-react"
 import {Button} from "@/components/ui/button"
 import {useBotaccounts} from "@/services/bot-account/hooks"
 import {useModels} from "@/services/models/hooks"
@@ -30,19 +31,32 @@ export default function BotAccountsPage() {
   const [filters, setFilters] = useState({
     account: "",
     model: null as string | null,
-    status: null as string | null
+    status: null as string | null,
   })
 
   const handleAccountFilterChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters(prev => ({...prev, account: e.target.value}))
+    setFilters((prev) => ({...prev, account: e.target.value}))
   }, [])
 
   const handleModelFilterChange = useCallback((value: string) => {
-    setFilters(prev => ({...prev, model: value === "all" ? null : value}))
+    setFilters((prev) => ({...prev, model: value === "all" ? null : value}))
   }, [])
 
   const handleStatusFilterChange = useCallback((value: string) => {
-    setFilters(prev => ({...prev, status: value === "all" ? null : value}))
+    setFilters((prev) => ({...prev, status: value === "all" ? null : value}))
+  }, [])
+
+  // These callbacks are for the AccountTabs component
+  const setAccountFilter = useCallback((value: string) => {
+    setFilters((prev) => ({...prev, account: value}))
+  }, [])
+
+  const setModelFilter = useCallback((value: string | null) => {
+    setFilters((prev) => ({...prev, model: value}))
+  }, [])
+
+  const setStatusFilter = useCallback((value: string | null) => {
+    setFilters((prev) => ({...prev, status: value}))
   }, [])
 
   const filteredData = useMemo(() => {
@@ -75,7 +89,7 @@ export default function BotAccountsPage() {
   const startItem = totalItems > 0 ? pageIndex * pageSize + 1 : 0
   const endItem = Math.min((pageIndex + 1) * pageSize, totalItems)
 
-  const currentPageData = table.getRowModel().rows.map(row => row.original)
+  const currentPageData = table.getRowModel().rows.map((row) => row.original)
 
   return (
     <div className="container mx-auto space-y-6 p-4">
@@ -174,12 +188,7 @@ export default function BotAccountsPage() {
               >
                 Previous
               </Button>
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => table.nextPage()}
-                disabled={!table.getCanNextPage()}
-              >
+              <Button variant="outline" size="sm" onClick={() => table.nextPage()} disabled={!table.getCanNextPage()}>
                 Next
               </Button>
             </div>
@@ -191,9 +200,9 @@ export default function BotAccountsPage() {
             accountFilter: filters.account,
             modelFilter: filters.model,
             statusFilter: filters.status,
-            setAccountFilter: (value: string) => setFilters(prev => ({...prev, account: value})),
-            setModelFilter: (value: string | null) => setFilters(prev => ({...prev, model: value})),
-            setStatusFilter: (value: string | null) => setFilters(prev => ({...prev, status: value}))
+            setAccountFilter: setAccountFilter,
+            setModelFilter: setModelFilter,
+            setStatusFilter: setStatusFilter,
           }}
         />
       )}
