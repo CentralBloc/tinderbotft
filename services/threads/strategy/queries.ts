@@ -12,7 +12,7 @@ export const getThreadStrategy = async (id: string) => {
 
 export interface CreateThreadStratCredentials {
   name: string;
-  day_number: string | null;
+  day_number: number | null;
   description: string | null;
 }
 
