@@ -19,7 +19,7 @@ import {useAddThreadStrat, useUpdateThreadStrat} from "@/services/threads/strate
 const threadStrategySchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().nullable(),
-  day_number: z.string().nullable(),
+  day_number: z.number().nullable(),
 });
 
 type Credentials = z.infer<typeof threadStrategySchema>;
@@ -30,7 +30,7 @@ interface AddOrUpdateThreadStrategyFormProps {
     id: string;
     name: string;
     description: string | null;
-    day_number: string | null;
+    day_number: number | null;
   };
 }
 
