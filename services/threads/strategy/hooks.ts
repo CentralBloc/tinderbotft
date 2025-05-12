@@ -1,12 +1,12 @@
 import {useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
 import {
-  addThreadStrat,
+  addThreadStrategy,
   CreateThreadStratCredentials,
-  getThreadStratById,
-  removeThreadStrat,
-  updateThreadStrat,
-} from "../../thread-strat/queries";
-import {getAllThreadStrategies} from "@/services/threads/strategy/queries";
+  deleteThreadStrategy,
+  getAllThreadStrategies,
+  getThreadStrategy,
+  updateThreadStrategy,
+} from "@/services/threads/strategy/queries";
 
 
 export const threadStratQueryKeys = {
@@ -20,7 +20,7 @@ export const threadStratQueryKeys = {
 export const useThreadStrat = (id: string) => {
   return useQuery({
     queryKey: threadStratQueryKeys.threadStratKey(id),
-    queryFn: () => getThreadStratById(id),
+    queryFn: () => getThreadStrategy(id),
   });
 };
 
@@ -39,7 +39,7 @@ export const useAddThreadStrat = () => {
   return useMutation({
     mutationKey: threadStratQueryKeys.addThreadStratKey,
     mutationFn: (credentials: CreateThreadStratCredentials) =>
-      addThreadStrat(credentials),
+      addThreadStrategy(credentials),
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: threadStratQueryKeys.threadStratsKey,
@@ -53,7 +53,7 @@ export const useUpdateThreadStrat = (id: string) => {
 
   return useMutation({
     mutationFn: (credentials: Partial<CreateThreadStratCredentials>) =>
-      updateThreadStrat(id, credentials),
+      updateThreadStrategy(id, credentials),
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: threadStratQueryKeys.threadStratKey(id),
@@ -70,7 +70,7 @@ export const useRemoveThreadStrat = (id: string) => {
 
   return useMutation({
     mutationKey: threadStratQueryKeys.removeThreadStratKey(id),
-    mutationFn: () => removeThreadStrat(id),
+    mutationFn: () => deleteThreadStrategy(id),
     onSettled: () => {
       queryClient.invalidateQueries({
         queryKey: threadStratQueryKeys.threadStratKey(id),

@@ -8,18 +8,18 @@ import {toast} from "@/components/ui/use-toast";
 import {Form, FormControl, FormField, FormItem, FormLabel, FormMessage} from "@/components/ui/form";
 import {Input} from "@/components/ui/input";
 import React from "react";
-import {useAddThreadStrategy, useUpdateThreadStrategy} from "@/services/threads/strategy/hooks";
+
 import {Loader2} from "lucide-react";
 import {Button} from "@/components/ui/button";
 import {routes} from "@/lib/routes";
 import {useProxies} from "@/services/proxy/hooks";
+import {useAddThreadStrat, useUpdateThreadStrat} from "@/services/threads/strategy/hooks";
 
 // Define validation schema
 const threadStrategySchema = z.object({
   name: z.string().min(1, "Name is required"),
   description: z.string().nullable(),
   day_number: z.string().nullable(),
-  proxy: z.string().nullable(),
 });
 
 type Credentials = z.infer<typeof threadStrategySchema>;
@@ -39,9 +39,9 @@ export default function AddOrUpdateThreadStrategyForm({
                                                         initialData,
                                                       }: Readonly<AddOrUpdateThreadStrategyFormProps>) {
   const router = useRouter();
-  const addMutation = useAddThreadStrategy();
+  const addMutation = useAddThreadStrat();
   const {data: proxies = [], isLoading, isError} = useProxies();
-  const updateMutation = useUpdateThreadStrategy(initialData?.id ?? "");
+  const updateMutation = useUpdateThreadStrat(initialData?.id ?? "");
 
   const form = useForm<Credentials>({
     resolver: zodResolver(threadStrategySchema),
