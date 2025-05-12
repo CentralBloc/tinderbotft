@@ -244,13 +244,20 @@ export interface Picture {
   file?: File
 }
 
+export interface Picture {
+  id: string
+  link: string
+  type_file: string
+  file?: File
+}
+
 export interface InstaAction {
   id: string
   action_type: "setup" | "post" | "story" | "reels"
   insta_strat: string
-  profile_pictures?: PictureInterface[]
-  stories?: PictureInterface[]
-  posts?: PictureInterface[]
+  profile_pictures?: Picture[]
+  stories?: Picture[]
+  posts?: Picture[]
   following_username?: string
   username?: string[] | null
   bio_list?: string[] | null
