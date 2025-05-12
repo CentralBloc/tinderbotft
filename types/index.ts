@@ -187,12 +187,27 @@ export interface StrategyInterface {
   proxy: ProxyInterface | undefined;
 }
 
-export interface ModelInterface {
-  id: string;
-  name: string;
-  description: string;
-  image?: string | ImageInterface;
+// Add this to your existing types file or create a new one if needed
+
+export interface PictureInterface {
+  id: string
+  name: string
+  type_file: string
+  link: string
 }
+
+export interface ModelInterface {
+  id: string
+  name: string
+  description?: string
+  image?: string | PictureInterface
+  bio_list?: string[]
+  threads_pp?: PictureInterface[]
+  posts?: string | PictureInterface
+  created_at: string
+  updated_at: string
+}
+
 
 export interface AllModelsInterface {
   id: string;
@@ -233,9 +248,9 @@ export interface InstaAction {
   id: string
   action_type: "setup" | "post" | "story" | "reels"
   insta_strat: string
-  profile_pictures?: Picture[]
-  stories?: Picture[]
-  posts?: Picture[]
+  profile_pictures?: PictureInterface[]
+  stories?: PictureInterface[]
+  posts?: PictureInterface[]
   following_username?: string
   username?: string[] | null
   bio_list?: string[] | null
@@ -295,4 +310,22 @@ export interface SwipeAction {
   min_right_swipe_percentage: number
   max_right_swipe_percentage: number
   related_day: number
+}
+
+export interface ThreadStrategyInterface {
+  id: string;
+  name: string;
+  description: string;
+  day_number: number;
+  proxy: string | ProxyInterface | undefined;
+}
+
+export interface ThreadActionInterface {
+  id: string;
+  post_number: number;
+  media_post_number: number;
+  frequency: string;
+  type: string;
+  start_time: string;
+  related_day: number;
 }

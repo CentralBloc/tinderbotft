@@ -7,27 +7,30 @@ import {Suspense} from "react";
 import InstaStratList from "@/components/tables/insta-strat/insta-strat-list";
 
 export const metadata: Metadata = {
-    title: "Dashboard - Insta - Strategy",
-    description: "Dashboard insta strategy page",
+  title: "Dashboard - Insta - Strategy",
+  description: "Dashboard insta strategy page",
 };
 
 export default function InstaStratPage() {
-    return (
-        <div className="space-y-5">
-            <div className="flex items-center justify-between">
-                <Breadcrumbs segments={[{title: "Insta - Strategy"}]}/>
-                <Button asChild className="w-fit font-heading">
-                    <Link href={routes.dashboard.insta.index}>Insta Account</Link>
-                </Button>
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <Breadcrumbs segments={[{title: "Insta - Strategy"}]}/>
+        <div className="flex items-center space-x-2">
+          <Button asChild className="w-fit font-heading">
+            <Link href={routes.dashboard.insta.index}>Insta Account</Link>
+          </Button>
 
-                <Button asChild className="w-fit font-heading">
-                    <Link href={routes.dashboard.insta.strat.add}>Add Strategy</Link>
-                </Button>
-            </div>
+          <Button asChild className="w-fit font-heading">
+            <Link href={routes.dashboard.insta.strat.add}>Add Strategy</Link>
+          </Button>
 
-            <Suspense>
-                <InstaStratList />
-            </Suspense>
         </div>
-    );
+      </div>
+
+      <Suspense>
+        <InstaStratList/>
+      </Suspense>
+    </div>
+  );
 }

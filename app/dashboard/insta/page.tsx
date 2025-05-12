@@ -7,27 +7,30 @@ import {Suspense} from "react";
 import InstaList from "@/components/tables/instagram/insta-list";
 
 export const metadata: Metadata = {
-    title: "Dashboard - Insta",
-    description: "Dashboard insta page",
+  title: "Dashboard - Insta",
+  description: "Dashboard insta page",
 };
 
 export default function InstaPage() {
-    return (
-        <div className="space-y-5">
-            <div className="flex items-center justify-between">
-                <Breadcrumbs segments={[{title: "Insta"}]}/>
-                <Button asChild className="w-fit font-heading">
-                    <Link href={routes.dashboard.insta.connect}>Connect Insta</Link>
-                </Button>
+  return (
+    <div className="space-y-5">
+      <div className="flex items-center justify-between">
+        <Breadcrumbs segments={[{title: "Insta"}]}/>
+        <div className="flex items-center space-x-2">
+          <Button asChild className="w-fit font-heading">
+            <Link href={routes.dashboard.insta.connect}>Connect Account</Link>
+          </Button>
 
-                <Button asChild className="w-fit font-heading">
-                    <Link href={routes.dashboard.insta.strat.index}>Insta - Strategy</Link>
-                </Button>
-            </div>
+          <Button asChild className="w-fit font-heading">
+            <Link href={routes.dashboard.insta.strat.add}>Add Strategy</Link>
+          </Button>
 
-            <Suspense>
-                <InstaList />
-            </Suspense>
         </div>
-    );
+      </div>
+
+      <Suspense>
+        <InstaList/>
+      </Suspense>
+    </div>
+  );
 }
