@@ -336,3 +336,23 @@ export interface ThreadActionInterface {
   start_time: string;
   related_day: number;
 }
+
+export interface ThreadAccountInterface {
+  id: string;
+  name: string;
+  username: string;
+  password: string;
+  following: string[];
+  follower: string[];
+  day_progress: number | undefined;
+  modele: ModelInterface | undefined | string;
+  token: string;
+  proxy: string | ProxyInterface | undefined;
+  strategy: string | undefined | ThreadStrategyInterface;
+  bio: string | undefined;
+  profile_picture: string | undefined;
+  website: string | undefined;
+  insta_user_id: string;
+  user_agent: string | undefined;
+  email: string | undefined;
+}

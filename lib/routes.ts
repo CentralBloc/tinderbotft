@@ -56,7 +56,7 @@ export const routes = {
         add: "/dashboard/admin/plans/add-plan",
         update: (id: string) => `/dashboard/admin/plans/update-plan/${id}`,
       },
-      subscriptions:{
+      subscriptions: {
         index: "/dashboard/admin/subscriptions",
         update: (id: string) => `/dashboard/admin/subscriptions/update-subscription/${id}`,
         add: "/dashboard/admin/subscriptions/add-subscription",
@@ -65,6 +65,8 @@ export const routes = {
     insta: {
       index: "/dashboard/insta",
       connect: "/dashboard/insta/connect",
+      view: (id: string) => `/dashboard/insta/${id}`,
+      update: (id: string) => `/dashboard/insta/update/${id}`,
       strat: {
         index: "/dashboard/insta/strat",
         add: "/dashboard/insta/strat/add",

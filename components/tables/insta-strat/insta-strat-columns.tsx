@@ -1,38 +1,156 @@
-import {ColumnDef} from "@tanstack/react-table";
+import {useRemoveStrategy} from "@/services/strategy/hooks";
+import {ThreadAccountInterface, ThreadStrategyInterface} from "@/types";
+import {useState} from "react";
 import Link from "next/link";
 import {routes} from "@/lib/routes";
-import {Cog, PencilLine} from "lucide-react";
+import {Check, ChevronsUpDown, Cog, PencilLine, Trash2} from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger
+} from "@/components/ui/dialog";
+import {Button} from "@/components/ui/button";
+import {ColumnDef} from "@tanstack/react-table";
+import {Popover, PopoverContent, PopoverTrigger} from "@/components/ui/popover";
+import {Command, CommandEmpty, CommandInput, CommandItem, CommandList} from "@/components/ui/command";
+import {cn} from "@/lib/utils";
+import {useThreadStrats} from "@/services/threads/strategy/hooks";
+import {useUpdateThreadAccount} from "@/services/threads/account/hooks";
 
 
-export const instaStratListColumns: ColumnDef<any>[] = [
-    {
-        accessorKey: "name",
-        header: "Name",
-    },
-    {
-        accessorKey: "day_number",
-        header: "Day Number",
-    },
-    {
-        accessorKey: "actions",
-        header: "Actions",
-        cell: ({ row }) => {
-            return (
-                <div className="flex items-center gap-2">
-                    <Link
-                        href={routes.dashboard.insta.strat.update(row.original.id)}
-                        className="btn btn-primary"
-                    >
-                        <PencilLine size={20} color="#2b00ff" strokeWidth={1.25} />
-                    </Link>
-                    <Link
-                        href={routes.dashboard.insta.strat.config(row.original.id)}
-                        className="btn btn-primary"
-                    >
-                        <Cog size={20} strokeWidth={1.25} />
-                    </Link>
-                </div>
-            );
-        },
-    },
+const ThreadStrategyCell = ({row}: { row: { original: any } }) => {
+  const {data: strategies = []} = useThreadStrats();
+  const strategyId =
+    typeof row.original.strategy === "object"
+      ? row.original.strategy?.id
+      : row.original.strategy;
+  const strategy = strategies.find((strategy: ThreadStrategyInterface) => strategy.id === strategyId);
+  return <div>{strategy ? strategy.name : ""}</div>;
+};
+
+const ThreadStrategyActionsCell = ({row,}: { row: { original: ThreadStrategyInterface }; }) => {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const deleteMutation = useRemoveStrategy(row.original.id);
+
+  const handleDelete = () => {
+    deleteMutation.mutate();
+    setIsModalOpen(false);
+  };
+
+  return (
+    <div className="flex items-center gap-2">
+      <Link
+        href={routes.dashboard.insta.strat.config(row.original.id)}
+        className="btn btn-primary"
+      >
+        <Cog size={20} strokeWidth={1.25}/>
+      </Link>
+      <Link
+        href={routes.dashboard.insta.strat.update(row.original.id)}
+        className="btn btn-primary"
+      >
+        <PencilLine size={20} color="#2b00ff" strokeWidth={1.25}/>
+      </Link>
+
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogTrigger asChild>
+          <button className="btn btn-secondary">
+            <Trash2 size={20} color="#ff0000" strokeWidth={1.25}/>
+          </button>
+        </DialogTrigger>
+        <DialogContent>
+          <DialogHeader>
+            <DialogTitle>Confirmation</DialogTitle>
+            <DialogDescription>
+              Are you sure you want to delete this strategy?
+            </DialogDescription>
+          </DialogHeader>
+          <DialogFooter>
+            <Button onClick={() => setIsModalOpen(false)}>Cancel</Button>
+            <Button onClick={handleDelete} variant="destructive">
+              Delete
+            </Button>
+          </DialogFooter>
+        </DialogContent>
+      </Dialog>
+    </div>
+  );
+};
+
+export const EditableThreadStrategyCell = ({row,}: { row: { original: ThreadAccountInterface }; }) => {
+  const {data: strategies = []} = useThreadStrats();
+  const updateMutation = useUpdateThreadAccount(row.original.id);
+
+  const handleStrategyChange = (newStrategyId: string) => {
+    updateMutation.mutate({strategy: newStrategyId});
+  };
+
+  const selectedStrategyId = row.original.strategy
+    ? typeof row.original.strategy === "object"
+      ? row.original.strategy.id
+      : row.original.strategy
+    : undefined;
+
+  return (
+    <Popover>
+      <PopoverTrigger asChild>
+        <Button variant="outline" className="w-full justify-between">
+          {selectedStrategyId
+            ? strategies.find((strategy: ThreadStrategyInterface) => strategy.id === selectedStrategyId)
+              ?.name
+            : "Select Strategy"}
+          <ChevronsUpDown className="ml-2 size-4 opacity-50"/>
+        </Button>
+      </PopoverTrigger>
+      <PopoverContent className="w-full p-0">
+        <Command>
+          <CommandInput placeholder="Search strategy..."/>
+          <CommandList>
+            <CommandEmpty>No strategies found.</CommandEmpty>
+            {strategies.map((strategy: ThreadStrategyInterface) => (
+              <CommandItem
+                key={strategy.id}
+                value={strategy.name}
+                onSelect={() => handleStrategyChange(strategy.id)}
+              >
+                <Check
+                  className={cn(
+                    "mr-2 h-4 w-4",
+                    strategy.id === selectedStrategyId
+                      ? "opacity-100"
+                      : "opacity-0",
+                  )}
+                />
+                {strategy.name}
+              </CommandItem>
+            ))}
+          </CommandList>
+        </Command>
+      </PopoverContent>
+    </Popover>
+  );
+};
+
+export const threadStrategyListColumns: ColumnDef<ThreadStrategyInterface>[] = [
+  {
+    accessorKey: "name",
+    header: "Name",
+  },
+  {
+    accessorKey: "description",
+    header: "Description",
+  },
+  {
+    accessorKey: "days_number",
+    header: "Days Number",
+  },
+  {
+    accessorKey: "actions",
+    header: "Actions",
+    cell: ({row}) => <ThreadStrategyActionsCell row={row}/>,
+  },
 ];

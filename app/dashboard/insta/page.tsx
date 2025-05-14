@@ -22,7 +22,7 @@ export default function InstaPage() {
           </Button>
 
           <Button asChild className="w-fit font-heading">
-            <Link href={routes.dashboard.insta.strat.add}>Add Strategy</Link>
+            <Link href={routes.dashboard.insta.strat.index}>Strategy</Link>
           </Button>
 
         </div>

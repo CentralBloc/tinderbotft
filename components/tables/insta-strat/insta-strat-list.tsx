@@ -2,8 +2,9 @@
 
 
 import {DataTable} from "@/components/ui/data-table";
-import {instaStratListColumns} from "@/components/tables/insta-strat/insta-strat-columns";
+
 import {useThreadStrats} from "@/services/threads/strategy/hooks";
+import {threadStrategyListColumns} from "@/components/tables/insta-strat/insta-strat-columns";
 
 
 export default function InstaStratList() {
@@ -13,7 +14,7 @@ export default function InstaStratList() {
       <h1 className="font-heading">Insta Strategy list</h1>
 
       <div className="space-y-6">
-        <DataTable columns={instaStratListColumns} data={instaStrat ?? []}/>
+        <DataTable columns={threadStrategyListColumns} data={instaStrat ?? []}/>
       </div>
     </div>
   );
