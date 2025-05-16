@@ -1,14 +1,16 @@
+"use client";
+
 import {useParams} from "next/navigation";
 import {Breadcrumbs} from "@/components/pagers/breadcrumbs";
 import {routes} from "@/lib/routes";
-import {useUpdateThreadAccount} from "@/services/threads/account/hooks";
+import {useThreadAccount} from "@/services/threads/account/hooks";
 import AddOrUpdateThreadAccountForm from "@/components/forms/add-thread-account-form";
 
 
 export default function UpdateThreadAccountPage() {
   const {id} = useParams();
   const accountId = Array.isArray(id) ? id[0] : id;
-  const {data: account} = useUpdateThreadAccount(accountId);
+  const {data: account} = useThreadAccount(accountId);
 
 
   return (

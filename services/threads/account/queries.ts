@@ -21,11 +21,13 @@ export const updateThreadAccount = async (id: string, data: any) => {
 }
 
 export const syncThreadAccount = async (id: string) => {
-  const response = await axios.post(`/sync-thread-account/${id}`);
+  const response = await axios.patch(`/sync-thread-account/${id}`);
   return response.data;
 }
 
 export interface CreateThreadAccountCredentials {
+  username: string;
+  password: string;
   insta_user_id: string;
   token: string;
   proxy: string | null;

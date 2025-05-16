@@ -39,6 +39,8 @@ export default function AddOrUpdateThreadAccountForm({mode, initialData}: Readon
   const form = useForm<ThreadAccountFormData>({
     resolver: zodResolver(threadAccountSchema),
     defaultValues: {
+      username: initialData?.username ?? "",
+      password: initialData?.password ?? "",
       insta_user_id: initialData?.insta_user_id ?? "",
       token: initialData?.token ?? "",
       strategy:
@@ -79,7 +81,34 @@ export default function AddOrUpdateThreadAccountForm({mode, initialData}: Readon
   return (
     <Form {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="grid max-w-2xl gap-4">
-
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-7">
+          <FormField
+            control={form.control}
+            name="username"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>UserName</FormLabel>
+                <FormControl>
+                  <Input placeholder="Thread account username" {...field} />
+                </FormControl>
+                <FormMessage/>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="password"
+            render={({field}) => (
+              <FormItem>
+                <FormLabel>Password</FormLabel>
+                <FormControl>
+                  <Input placeholder="Thread Account Password" {...field} value={field.value || ""}/>
+                </FormControl>
+                <FormMessage/>
+              </FormItem>
+            )}
+          />
+        </div>
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-7">
           <FormField
             control={form.control}

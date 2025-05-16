@@ -145,13 +145,13 @@ export const ThreadAccountActionsCell = ({row}: { row: { original: any } }) => {
         </DropdownMenuTrigger>
         <DropdownMenuContent align="end">
           <DropdownMenuItem asChild>
-            <Link href={routes.dashboard.insta.index}>
+            <Link href={routes.dashboard.insta.view(row.original.id)}>
               <Eye className="mr-2 size-4"/>
               View
             </Link>
           </DropdownMenuItem>
           <DropdownMenuItem asChild>
-            <Link href={routes.dashboard.insta.index}>
+            <Link href={routes.dashboard.insta.update(row.original.id)}>
               <PencilLine className="mr-2 size-4"/>
               Edit
             </Link>
