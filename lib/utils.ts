@@ -2,36 +2,36 @@ import {type ClassValue, clsx} from "clsx";
 import {twMerge} from "tailwind-merge";
 
 export function cn(...inputs: ClassValue[]) {
-	return twMerge(clsx(inputs));
+  return twMerge(clsx(inputs));
 }
 
 export function truncate(str: string, length: number) {
-	return str.length > length ? `${str.substring(0, length)}...` : str;
+  return str.length > length ? `${str.substring(0, length)}...` : str;
 }
 
 export const getStatusColor = (status = "") => {
-	switch (status.toLowerCase()) {
-		case "active":
-			return "bg-green-800 text-white"
-		case "expired":
-			return "bg-gray-800 text-white"
-		case "working":
-			return "bg-blue-800 text-white"
-		case "inactive":
-			return "bg-slate-800 text-white"
-		case "banned":
-			return "bg-red-800 text-white"
-		case "shadowban":
-			return "bg-orange-800 text-white"
-		case "limited":
-			return "bg-purple-800 text-white"
-		case "completed":
-			return "bg-amber-800 text-white"
-		case "standby":
-			return "bg-sky-600 text-white"
-		default:
-			return "bg-slate-800 text-white"
-	}
+  switch (status.toLowerCase()) {
+    case "active":
+      return "bg-green-800 text-white"
+    case "expired":
+      return "bg-gray-800 text-white"
+    case "working":
+      return "bg-blue-800 text-white"
+    case "inactive":
+      return "bg-slate-800 text-white"
+    case "banned":
+      return "bg-red-800 text-white"
+    case "shadowban":
+      return "bg-orange-800 text-white"
+    case "limited":
+      return "bg-purple-800 text-white"
+    case "completed":
+      return "bg-amber-800 text-white"
+    case "standby":
+      return "bg-sky-600 text-white"
+    default:
+      return "bg-slate-800 text-white"
+  }
 }
 
 // Convert RGB to HSL
@@ -130,4 +130,24 @@ export async function extractDominantColors(imagePath: string): Promise<{
       value: gradientValue
     }
   };
+}
+
+
+export function formatFollowerCount(count: number): string {
+  if (count < 1000) return count.toString()
+  if (count < 1000000) return `${(count / 1000).toFixed(1)}k`
+  return `${(count / 1000000).toFixed(1)}M`
+}
+
+export function formatDistanceToNow(timestamp: number): string {
+  const now = Date.now() / 1000
+  const seconds = now - timestamp
+
+  if (seconds < 60) return "à l'instant"
+  if (seconds < 3600) return `${Math.floor(seconds / 60)}m`
+  if (seconds < 86400) return `${Math.floor(seconds / 3600)}h`
+  if (seconds < 2592000) return `${Math.floor(seconds / 86400)}j`
+
+  const date = new Date(timestamp * 1000)
+  return `${date.getDate().toString().padStart(2, "0")}/${(date.getMonth() + 1).toString().padStart(2, "0")}/${date.getFullYear()}`
 }

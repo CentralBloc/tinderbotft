@@ -329,9 +329,11 @@ export interface ThreadStrategyInterface {
 
 export interface ThreadActionInterface {
   id: string;
-  post_number: number;
+  min_post_number: number;
+  max_post_number: number;
   media_post_number: number;
-  frequency: string;
+  min_frequency: number;
+  max_frequency: number;
   type: string;
   start_time: string;
   related_day: number;
@@ -355,4 +357,5 @@ export interface ThreadAccountInterface {
   insta_user_id: string;
   user_agent: string | undefined;
   email: string | undefined;
+  
 }

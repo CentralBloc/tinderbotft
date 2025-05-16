@@ -145,7 +145,7 @@ export const threadStrategyListColumns: ColumnDef<ThreadStrategyInterface>[] = [
     header: "Description",
   },
   {
-    accessorKey: "days_number",
+    accessorKey: "day_number",
     header: "Days Number",
   },
   {

@@ -16,14 +16,17 @@ import {routes} from "@/lib/routes"
 import {useCreateThreadStratActions} from "@/services/threads/action/hooks"
 import {useEffect, useState} from "react"
 import type {ThreadActionInterface} from "@/types"
+import {DualSlider} from "@/components/ui/dual-slider";
 
 const fieldSchema = (daysNumber: number) =>
   z.object({
-    frequency: z.number().min(1).max(24),
+    min_frequency: z.number().min(1).max(180),
+    max_frequency: z.number().min(1).max(180),
     start_time: z.string().default("00:00"),
     related_day: z.number().min(1).max(daysNumber),
     type: z.string(),
-    post_number: z.number().min(1),
+    min_post_number: z.number().min(1).max(30),
+    max_post_number: z.number().min(1).max(30),
     media_post_number: z.number().min(0),
   })
 
@@ -51,19 +54,23 @@ export default function ConfigThreadStrategyForm({
     defaultValues: {
       actions: existingActions && existingActions.length > 0
         ? existingActions.map((action) => ({
-          frequency: Number(action.frequency),
+          min_frequency: action.min_frequency ?? 1,
+          max_frequency: action.max_frequency ?? 1,
           start_time: action.start_time ?? "00:00",
           related_day: action.related_day,
           type: action.type,
-          post_number: action.post_number,
+          min_post_number: action.min_post_number,
+          max_post_number: action.max_post_number,
           media_post_number: action.media_post_number,
         }))
         : [{
-          frequency: 1,
+          min_frequency: 1,
+          max_frequency: 1,
           start_time: "00:00",
           related_day: 1,
           type: "posting",
-          post_number: 1,
+          min_post_number: 1,
+          max_post_number: 1,
           media_post_number: 0,
         }],
     },
@@ -126,11 +133,13 @@ export default function ConfigThreadStrategyForm({
   const handleAddField = () => {
     if (fields.length < daysNumber) {
       append({
-        frequency: 1,
+        min_frequency: 1,
+        max_frequency: 60,
         start_time: "00:00",
         related_day: fields.length + 1,
         type: "posting",
-        post_number: fields.length,
+        min_post_number: 1,
+        max_post_number: 10,
         media_post_number: 0,
       })
     } else {
@@ -150,7 +159,7 @@ export default function ConfigThreadStrategyForm({
             <Card key={field.id}>
               <CardHeader className="flex flex-row items-center justify-between space-y-0 bg-muted/30 pb-2">
                 <div className="flex items-center gap-3">
-                  <CardTitle className="text-lg font-medium">Position {field.post_number}</CardTitle>
+                  <CardTitle className="text-lg font-medium">Position {index + 1}</CardTitle>
                   <Badge className="bg-purple-500 text-white hover:bg-purple-600">
                     {field.type}
                   </Badge>
@@ -199,34 +208,40 @@ export default function ConfigThreadStrategyForm({
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-2 md:gap-6">
                   <FormField
                     control={form.control}
-                    name={`actions.${index}.post_number`}
-                    render={({field}) => (
-                      <FormItem>
-                        <FormLabel>Number of posts</FormLabel>
-                        <FormControl>
-                          <Input
-                            type="number"
-                            {...field}
+                    name={`actions.${index}.min_post_number`}
+                    render={({field: minField}) => (
+                      <FormField
+                        control={form.control}
+                        name={`actions.${index}.max_post_number`}
+                        render={({field: maxField}) => (
+                          <DualSlider
+                            minField={minField}
+                            maxField={maxField}
+                            label="Post number (min and max)"
                             min={1}
-                            placeholder="Enter number of posts"
-                            onChange={(e) => field.onChange(e.target.value.toString())}
+                            max={30}
                           />
-                        </FormControl>
-                        <FormMessage/>
-                      </FormItem>
+                        )}
+                      />
                     )}
                   />
                   <FormField
                     control={form.control}
-                    name={`actions.${index}.frequency`}
-                    render={({field}) => (
-                      <FormItem>
-                        <FormLabel>Frequency (posts per day)</FormLabel>
-                        <FormControl>
-                          <Input type="number" {...field} min={1} max={60}/>
-                        </FormControl>
-                        <FormMessage/>
-                      </FormItem>
+                    name={`actions.${index}.min_frequency`}
+                    render={({field: minField}) => (
+                      <FormField
+                        control={form.control}
+                        name={`actions.${index}.max_frequency`}
+                        render={({field: maxField}) => (
+                          <DualSlider
+                            minField={minField}
+                            maxField={maxField}
+                            label="Frequency (min and max) mins"
+                            min={1}
+                            max={180}
+                          />
+                        )}
+                      />
                     )}
                   />
                   <FormField
@@ -236,7 +251,7 @@ export default function ConfigThreadStrategyForm({
                       <FormItem>
                         <FormLabel>Media posts number</FormLabel>
                         <FormControl>
-                          <Input type="number" {...field} />
+                          <Input type="number" {...field} onChange={(e) => field.onChange(Number(e.target.value))}/>
                         </FormControl>
                         <FormMessage/>
                       </FormItem>
@@ -272,7 +287,7 @@ export default function ConfigThreadStrategyForm({
             disabled={fields.length >= daysNumber}
           >
             <Plus className="mr-2 size-4"/>
-            Add new position
+            Add new action
           </Button>
           <Button type="submit" className="w-full bg-green-500 text-white hover:bg-green-600 sm:w-fit">
             Configure Strategy

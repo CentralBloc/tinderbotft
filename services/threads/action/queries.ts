@@ -13,9 +13,11 @@ export const getThreadActionById = async (id: string) => {
 
 type ThreadAction = {
   type: string;
-  frequency: number;
-  start_time: string; // This should match the format "HH:MM"
-  post_number: number;
+  min_frequency: number;
+  max_frequency: number;
+  start_time: string;
+  min_post_number: number;
+  max_post_number: number;
   media_post_number: number;
   related_day: number;
 }
