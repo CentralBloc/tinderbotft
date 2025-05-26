@@ -27,9 +27,14 @@ type ThreadAccountFormData = z.infer<typeof threadAccountSchema>;
 interface AddOrUpdateThreadAccountFormProps {
   mode: "add" | "update";
   initialData?: ThreadAccountInterface;
+  verification_code?: string;
 }
 
-export default function AddOrUpdateThreadAccountForm({mode, initialData}: Readonly<AddOrUpdateThreadAccountFormProps>) {
+export default function AddOrUpdateThreadAccountForm({
+                                                       mode,
+                                                       initialData,
+                                                       verification_code
+                                                     }: Readonly<AddOrUpdateThreadAccountFormProps>) {
   const router = useRouter();
   const addMutation = useAddThreadAccount();
   const updateMutation = useUpdateThreadAccount(initialData?.id ?? "");
@@ -41,7 +46,7 @@ export default function AddOrUpdateThreadAccountForm({mode, initialData}: Readon
     defaultValues: {
       username: initialData?.username ?? "",
       password: initialData?.password ?? "",
-      insta_user_id: initialData?.insta_user_id ?? "",
+      verification_code: verification_code ?? "",
       token: initialData?.token ?? "",
       strategy:
         typeof initialData?.strategy === "object"
@@ -125,12 +130,12 @@ export default function AddOrUpdateThreadAccountForm({mode, initialData}: Readon
           />
           <FormField
             control={form.control}
-            name="insta_user_id"
+            name="verification_code"
             render={({field}) => (
               <FormItem>
-                <FormLabel>Insta User ID</FormLabel>
+                <FormLabel>OTP Code</FormLabel>
                 <FormControl>
-                  <Input placeholder="Insta user id" {...field} />
+                  <Input placeholder="otp verification code" {...field} />
                 </FormControl>
                 <FormMessage/>
               </FormItem>

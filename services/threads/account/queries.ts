@@ -28,15 +28,16 @@ export const syncThreadAccount = async (id: string) => {
 export interface CreateThreadAccountCredentials {
   username: string;
   password: string;
-  insta_user_id: string;
-  token: string;
+  verification_code: string | null;
   proxy: string | null;
   strategy: string | null;
   modele: string | null;
+  country: string | null;
 
 }
 
 export const addThreadAccount = async (credentials: CreateThreadAccountCredentials) => {
   const response = await axios.post('/create-thread-account/', credentials);
+  console.log(response.data);
   return response.data;
 }

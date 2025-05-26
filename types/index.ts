@@ -357,5 +357,5 @@ export interface ThreadAccountInterface {
   insta_user_id: string;
   user_agent: string | undefined;
   email: string | undefined;
-  
+
 }

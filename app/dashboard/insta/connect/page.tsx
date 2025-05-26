@@ -2,7 +2,6 @@ import {Metadata} from "next";
 import {Breadcrumbs} from "@/components/pagers/breadcrumbs";
 import {routes} from "@/lib/routes";
 import AddOrUpdateThreadAccountForm from "@/components/forms/add-thread-account-form";
-import ConnectInsta from "@/components/forms/connect-insta";
 
 export const metadata: Metadata = {
   title: "Connect - Insta",
@@ -21,9 +20,7 @@ export default function InstaPage() {
       <div className="w-full">
         <AddOrUpdateThreadAccountForm mode="add"/>
       </div>
-      <div className="w-full">
-        <ConnectInsta/>
-      </div>
+
     </div>
   );
 }
